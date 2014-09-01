@@ -4,9 +4,6 @@ import android.app.*;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.test.ActivityInstrumentationTestCase2;
-import ch.tapit.wallet.payment.CardMaker;
-import ch.tapit.wallet.payment.PayWithCardActivity;
-import ch.tapit.wallet.payment.roboguice.ExecutorProvider;
 import com.google.inject.*;
 import org.mockito.Mock;
 
@@ -17,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static ch.tapit.wallet.payment.broadcast.Broadcasts.TAG_AID;
 import static com.google.inject.util.Modules.override;
 import static java.lang.Thread.currentThread;
 import static org.mockito.MockitoAnnotations.initMocks;
