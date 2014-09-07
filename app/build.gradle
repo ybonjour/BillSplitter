@@ -36,8 +36,10 @@ dependencies {
             'org.hamcrest:hamcrest-integration:1.1',
             'org.hamcrest:hamcrest-library:1.1'
 
-    androidTestCompile('org.mockito:mockito-core:1.9.5'){
+    androidTestCompile('org.mockito:mockito-core:1.9.5',
+            'com.google.dexmaker:dexmaker-mockito:1.1')
+
+    androidTestCompile('junit:junit:4.11'){
         exclude group: 'org.hamcrest'
     }
-
 }

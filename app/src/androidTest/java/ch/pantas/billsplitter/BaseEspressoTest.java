@@ -1,23 +1,26 @@
 package ch.pantas.billsplitter;
 
-import android.app.*;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.app.Activity;
+import android.app.Application;
 import android.test.ActivityInstrumentationTestCase2;
-import com.google.inject.*;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Module;
+import com.google.inject.Stage;
+
 import org.mockito.Mock;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.google.inject.util.Modules.override;
 import static java.lang.Thread.currentThread;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static roboguice.RoboGuice.*;
+import static roboguice.RoboGuice.destroyInjector;
+import static roboguice.RoboGuice.getInjector;
+import static roboguice.RoboGuice.newDefaultRoboModule;
+import static roboguice.RoboGuice.setBaseApplicationInjector;
 
 public abstract class BaseEspressoTest<U, T extends Activity> extends ActivityInstrumentationTestCase2<T> {
 
@@ -34,7 +37,11 @@ public abstract class BaseEspressoTest<U, T extends Activity> extends ActivityIn
     public void setUp() throws Exception {
         super.setUp();
         currentThread().setContextClassLoader(getClass().getClassLoader());
-        initRoboGuice();
+        application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
+        initMocks(getInstance());
+        setBaseApplicationInjector(application, Stage.DEVELOPMENT,
+                override(newDefaultRoboModule(application)).with(getMockModule()));
+        getInjector(application).injectMembers(this);
     }
 
     @Override
@@ -79,14 +86,6 @@ public abstract class BaseEspressoTest<U, T extends Activity> extends ActivityIn
         return fields;
     }
 
-    private void initRoboGuice() throws IllegalAccessException {
-        application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
-        initMocks(getInstance());
-        setBaseApplicationInjector(application, Stage.DEVELOPMENT,
-                override(newDefaultRoboModule(application)).with(getMockModule()));
-        getInjector(application).injectMembers(this);
-    }
-
     class MockModule extends AbstractModule {
 
         private List<Object> mocksToInject;
@@ -98,8 +97,6 @@ public abstract class BaseEspressoTest<U, T extends Activity> extends ActivityIn
         @SuppressWarnings("unchecked")
         @Override
         protected void configure() {
-            bind(Executor.class).toProvider(ExecutorProvider.class);
-
             for (final Object mock : mocksToInject) {
                 Class clazz = mock.getClass();
                 bind(clazz.getSuperclass()).toInstance(mock);

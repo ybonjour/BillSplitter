@@ -20,7 +20,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static org.hamcrest.Matchers.anything;
 import static org.mockito.Mockito.when;
 
-public class EventListTest extends BaseEspressoTest<EventList> {
+public class EventListTest extends BaseEspressoTest<EventListTest, EventList> {
     public EventListTest() {
         super(EventList.class);
     }
@@ -53,4 +53,8 @@ public class EventListTest extends BaseEspressoTest<EventList> {
     }
 
 
+    @Override
+    protected EventListTest getInstance() {
+        return this;
+    }
 }
