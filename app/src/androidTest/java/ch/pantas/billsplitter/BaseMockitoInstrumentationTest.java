@@ -1,8 +1,7 @@
 package ch.pantas.billsplitter;
 
-import android.app.Activity;
 import android.app.Application;
-import android.test.ActivityInstrumentationTestCase2;
+import android.test.InstrumentationTestCase;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
@@ -22,22 +21,18 @@ import static roboguice.RoboGuice.getInjector;
 import static roboguice.RoboGuice.newDefaultRoboModule;
 import static roboguice.RoboGuice.setBaseApplicationInjector;
 
-public abstract class BaseEspressoTest<U, T extends Activity> extends ActivityInstrumentationTestCase2<T> {
+public abstract class BaseMockitoInstrumentationTest extends InstrumentationTestCase {
 
     private static final Module[] EMPTY_MODULES_ARRAY = new Module[0];
 
     protected Application application;
-
-    public BaseEspressoTest(Class<T> activityClass) {
-        super(activityClass);
-    }
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         currentThread().setContextClassLoader(getClass().getClassLoader());
         application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
-        initMocks(getInstance());
+        initMocks(this);
         setBaseApplicationInjector(application, Stage.DEVELOPMENT,
                 override(newDefaultRoboModule(application)).with(getMockModule()));
         getInjector(application).injectMembers(this);
@@ -53,10 +48,8 @@ public abstract class BaseEspressoTest<U, T extends Activity> extends ActivityIn
     }
 
     protected AbstractModule getMockModule() throws IllegalAccessException {
-        return new MockModule(getListOfMocks(getInstance()));
+        return new MockModule(getListOfMocks(this));
     }
-
-    protected abstract U getInstance();
 
     private List<Object> getListOfMocks(Object test) throws IllegalAccessException {
         List<Object> objects = new ArrayList<Object>();
@@ -102,4 +95,3 @@ public abstract class BaseEspressoTest<U, T extends Activity> extends ActivityIn
         }
     }
 }
-

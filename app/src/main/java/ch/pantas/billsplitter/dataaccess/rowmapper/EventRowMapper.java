@@ -4,8 +4,8 @@ import android.database.Cursor;
 
 import ch.pantas.billsplitter.model.Event;
 
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabase.EventTable.ID;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabase.EventTable.NAME;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.ID;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.NAME;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class EventRowMapper implements RowMapper<Event> {

@@ -9,8 +9,8 @@ import junit.framework.TestCase;
 
 import ch.pantas.billsplitter.model.Event;
 
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabase.EventTable.ID;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabase.EventTable.NAME;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.ID;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.NAME;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
