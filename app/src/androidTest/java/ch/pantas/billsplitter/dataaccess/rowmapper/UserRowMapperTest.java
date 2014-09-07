@@ -5,20 +5,20 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
 
-import junit.framework.TestCase;
+import org.mockito.Mock;
 
+import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
-import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.User;
 
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.ID;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.NAME;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.UserTable.ID;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.UserTable.NAME;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
-
+public class UserRowMapperTest extends BaseMockitoInstrumentationTest {
     @Inject
-    private EventRowMapper mapper;
+    private UserRowMapper mapper;
 
     @SmallTest
     public void testMapThrowsNullPointerExceptionIfNoCursorProvided() {
@@ -33,20 +33,20 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testMapCorrectlyMapsCursor() {
         // Given
-        int id = 1;
-        String name = "Event 1";
-        Cursor cursor = createEventCursor(id, name);
+        int id = 2;
+        String name = "Joe";
+        Cursor c = createUserCursor(id, name);
 
         // When
-        Event event = mapper.map(cursor);
+        User user = mapper.map(c);
 
         // Then
-        assertNotNull(event);
-        assertEquals(id, event.getId());
-        assertEquals(name, event.getName());
+        assertNotNull(user);
+        assertEquals(id, user.getId());
+        assertEquals(name, user.getName());
     }
 
-    private Cursor createEventCursor(int id, String name) {
+    private Cursor createUserCursor(int id, String name){
         Cursor c = mock(Cursor.class);
         when(c.getColumnIndex(ID)).thenReturn(0);
         when(c.getInt(0)).thenReturn(id);
@@ -55,4 +55,5 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
 
         return c;
     }
+
 }

@@ -1,6 +1,5 @@
-package ch.pantas.billsplitter.dataaccess.rowmapper;
+package ch.pantas.billsplitter.dataaccess;
 
-import android.database.Cursor;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
@@ -9,42 +8,20 @@ import org.mockito.Mock;
 
 import java.util.List;
 
-import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
-import ch.pantas.billsplitter.dataaccess.EventStore;
-import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabase;
-import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
+import ch.pantas.billsplitter.dataaccess.rowmapper.EventRowMapper;
 import ch.pantas.billsplitter.model.Event;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-public class EventStoreTest extends BaseMockitoInstrumentationTest {
+public class EventStoreTest extends BaseStoreTest {
     @Inject
     private EventStore store;
-
-    @Mock
-    private BillSplitterDatabaseOpenHelper databaseHelper;
 
     @Mock
     private EventRowMapper mapper;
 
     @Mock
-    private BillSplitterDatabase database;
-
-    @Mock
-    private Cursor cursor;
-
-    @Mock
     private Event event;
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-
-        when(databaseHelper.getDatabase()).thenReturn(database);
-        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
-    }
 
     @SmallTest
     public void testGetAllEventsReturnsEmptyListWithZeroEvents() {

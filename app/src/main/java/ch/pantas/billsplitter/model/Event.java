@@ -14,8 +14,8 @@ public class Event extends Model {
         this.name = name;
     }
 
-    public String getName(){
-        return this.name;
+    public String getName() {
+        return name;
     }
 
     @Override

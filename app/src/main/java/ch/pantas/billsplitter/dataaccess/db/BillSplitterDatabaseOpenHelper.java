@@ -26,6 +26,8 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(EventTable.CREATE);
+        db.execSQL(UserTable.CREATE);
+        db.execSQL(AttendanceTable.CREATE);
         //createDummyEvent(db);
     }
 
@@ -53,5 +55,29 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         static final String CREATE = "CREATE TABLE " + TABLE + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + NAME + " TEXT);";
+    }
+
+    public class UserTable {
+        public static final String TABLE = "User";
+
+        public static final String ID = "_id";
+        public static final String NAME = "Name";
+
+        static final String CREATE = "CREATE TABLE " + TABLE + "("
+                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + NAME + " TEXT);";
+    }
+
+    public class AttendanceTable {
+        public static final String TABLE = "Attendance";
+
+        public static final String ID = "_id";
+        public static final String USER = "user";
+        public static final String EVENT = "event";
+
+        static final String CREATE = "CREATE TABLE " + TABLE + "("
+                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + USER + " INTEGER, "
+                + EVENT + " INTEGER);";
     }
 }
