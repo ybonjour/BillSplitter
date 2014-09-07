@@ -4,7 +4,6 @@ import android.app.Application;
 import android.test.InstrumentationTestCase;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Module;
 import com.google.inject.Stage;
 
 import static ch.pantas.billsplitter.framework.AbstractModuleFactory.EMPTY_MODULES_ARRAY;
