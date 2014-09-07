@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
+import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.ui.EventList;
 import ch.yvu.myapplication.R;
@@ -20,7 +21,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static org.hamcrest.Matchers.anything;
 import static org.mockito.Mockito.when;
 
-public class EventListTest extends BaseEspressoTest<EventListTest, EventList> {
+public class EventListTest extends BaseEspressoTest<EventList> {
     public EventListTest() {
         super(EventList.class);
     }
@@ -50,11 +51,5 @@ public class EventListTest extends BaseEspressoTest<EventListTest, EventList> {
 
         // Then
         onData(anything()).atPosition(0).check(matches(withText(eventName)));
-    }
-
-
-    @Override
-    protected EventListTest getInstance() {
-        return this;
     }
 }

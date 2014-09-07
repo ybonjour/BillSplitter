@@ -9,7 +9,7 @@ import org.mockito.Mock;
 
 import java.util.List;
 
-import ch.pantas.billsplitter.BaseMockitoInstrumentationTest;
+import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabase;
 import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
