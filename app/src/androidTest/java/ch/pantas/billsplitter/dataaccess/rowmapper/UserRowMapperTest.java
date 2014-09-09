@@ -7,6 +7,8 @@ import com.google.inject.Inject;
 
 import org.mockito.Mock;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.User;
@@ -33,7 +35,7 @@ public class UserRowMapperTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testMapCorrectlyMapsCursor() {
         // Given
-        int id = 2;
+        String id = UUID.randomUUID().toString();
         String name = "Joe";
         Cursor c = createUserCursor(id, name);
 
@@ -46,10 +48,10 @@ public class UserRowMapperTest extends BaseMockitoInstrumentationTest {
         assertEquals(name, user.getName());
     }
 
-    private Cursor createUserCursor(int id, String name){
+    private Cursor createUserCursor(String id, String name){
         Cursor c = mock(Cursor.class);
         when(c.getColumnIndex(ID)).thenReturn(0);
-        when(c.getInt(0)).thenReturn(id);
+        when(c.getString(0)).thenReturn(id);
         when(c.getColumnIndex(NAME)).thenReturn(1);
         when(c.getString(1)).thenReturn(name);
 

@@ -53,7 +53,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         public static final String NAME = "Name";
 
         static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ID + " TEXT PRIMARY KEY, "
                 + NAME + " TEXT);";
     }
 
@@ -64,7 +64,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         public static final String NAME = "Name";
 
         static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ID + " TEXT PRIMARY KEY, "
                 + NAME + " TEXT);";
     }
 
@@ -76,8 +76,8 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         public static final String EVENT = "event";
 
         static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + USER + " INTEGER, "
-                + EVENT + " INTEGER);";
+                + ID + " TEXT PRIMARY KEY, "
+                + USER + " TEXT, "
+                + EVENT + " TEXT);";
     }
 }

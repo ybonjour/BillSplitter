@@ -16,7 +16,7 @@ public class UserRowMapper implements RowMapper<User> {
         int idIdx = cursor.getColumnIndex(ID);
         int nameIdx = cursor.getColumnIndex(NAME);
 
-        int id = cursor.getInt(idIdx);
+        String id = cursor.getString(idIdx);
         String name = cursor.getString(nameIdx);
 
         return new User(id, name);

@@ -7,6 +7,8 @@ import com.google.inject.Inject;
 
 import junit.framework.TestCase;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Event;
 
@@ -33,7 +35,7 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testMapCorrectlyMapsCursor() {
         // Given
-        int id = 1;
+        String id = UUID.randomUUID().toString();
         String name = "Event 1";
         Cursor cursor = createEventCursor(id, name);
 
@@ -46,10 +48,10 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         assertEquals(name, event.getName());
     }
 
-    private Cursor createEventCursor(int id, String name) {
+    private Cursor createEventCursor(String id, String name) {
         Cursor c = mock(Cursor.class);
         when(c.getColumnIndex(ID)).thenReturn(0);
-        when(c.getInt(0)).thenReturn(id);
+        when(c.getString(0)).thenReturn(id);
         when(c.getColumnIndex(NAME)).thenReturn(1);
         when(c.getString(1)).thenReturn(name);
 

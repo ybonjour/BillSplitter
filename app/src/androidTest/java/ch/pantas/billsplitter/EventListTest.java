@@ -6,6 +6,7 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
@@ -42,8 +43,9 @@ public class EventListTest extends BaseEspressoTest<EventList> {
     public void testListItemIsShownCorrectly() {
         // Given
         String eventName = "Event 1";
+        String uuid = UUID.randomUUID().toString();
         List<Event> events = new ArrayList<Event>();
-        events.add(new Event(1, eventName));
+        events.add(new Event(uuid, eventName));
         when(store.getAllEvents()).thenReturn(events);
 
         // When

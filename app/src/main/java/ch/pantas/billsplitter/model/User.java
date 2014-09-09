@@ -4,7 +4,7 @@ public class User extends Model {
 
     private final String name;
 
-    public User(int id, String name) {
+    public User(String id, String name) {
         super(id);
         this.name = name;
     }

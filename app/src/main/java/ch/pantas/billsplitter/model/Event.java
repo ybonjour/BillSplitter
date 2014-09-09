@@ -6,7 +6,7 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 public class Event extends Model {
     private final String name;
 
-    public Event(int id, String name) {
+    public Event(String id, String name) {
         super(id);
         checkNotNull(name);
         checkArgument(!name.isEmpty());

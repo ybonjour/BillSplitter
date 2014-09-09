@@ -2,13 +2,13 @@ package ch.pantas.billsplitter.model;
 
 public abstract class Model {
 
-    private final int id;
+    private final String id;
 
-    public Model(int id) {
+    public Model(String id) {
         this.id = id;
     }
 
-    public int getId(){
+    public String getId(){
         return this.id;
     }
 }

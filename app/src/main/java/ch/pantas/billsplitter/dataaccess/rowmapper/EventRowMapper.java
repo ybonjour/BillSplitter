@@ -16,7 +16,7 @@ public class EventRowMapper implements RowMapper<Event> {
         int idIdx = cursor.getColumnIndex(ID);
         int nameIdx = cursor.getColumnIndex(NAME);
 
-        int id = cursor.getInt(idIdx);
+        String id = cursor.getString(idIdx);
         String name = cursor.getString(nameIdx);
 
         return new Event(id, name);
