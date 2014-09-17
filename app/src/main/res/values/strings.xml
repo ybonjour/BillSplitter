@@ -1,4 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">BillSplitter</string>
     <string name="events_title">Events</string>
+    <string name="title_activity_expenses_list">ExpensesList</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

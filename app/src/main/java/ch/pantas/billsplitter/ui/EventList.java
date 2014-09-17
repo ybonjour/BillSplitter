@@ -1,7 +1,10 @@
 package ch.pantas.billsplitter.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.inject.Inject;
 
@@ -29,5 +32,13 @@ public class EventList extends RoboListActivity {
         List<Event> events = store.getAllEvents();
         ArrayAdapter<Event> adapter = new ArrayAdapter<Event>(this, android.R.layout.simple_list_item_1, events);
         setListAdapter(adapter);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        Intent intent = new Intent(this, ExpensesList.class);
+        Event e = (Event) getListAdapter().getItem(position);
+        intent.putExtra("event_id", e.getId());
+        startActivity(intent);
     }
 }

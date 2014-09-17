@@ -1,5 +1,6 @@
 package ch.pantas.billsplitter.dataaccess;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.google.inject.Inject;
@@ -41,4 +42,8 @@ public class BaseStore<M extends Model> {
         return models;
     }
 
+    protected void insertRow(String table, ContentValues values) {
+        BillSplitterDatabase db = dbHelper.getDatabase();
+        db.insert(table, values);
+    }
 }
