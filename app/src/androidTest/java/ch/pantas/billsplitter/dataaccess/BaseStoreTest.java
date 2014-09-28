@@ -8,7 +8,7 @@ import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabase;
 import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +27,6 @@ public class BaseStoreTest extends BaseMockitoInstrumentationTest {
         super.setUp();
 
         when(databaseHelper.getDatabase()).thenReturn(database);
-        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        when(database.query(anyString(), anyMap())).thenReturn(cursor);
     }
 }

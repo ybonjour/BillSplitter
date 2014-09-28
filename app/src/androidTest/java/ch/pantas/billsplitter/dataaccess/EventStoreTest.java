@@ -29,7 +29,7 @@ public class EventStoreTest extends BaseStoreTest {
         when(cursor.moveToNext()).thenReturn(false);
 
         // When
-        List<Event> events = store.getAllEvents();
+        List<Event> events = store.getAll();
 
         // Then
         assertEquals(0, events.size());
@@ -42,7 +42,7 @@ public class EventStoreTest extends BaseStoreTest {
         when(mapper.map(cursor)).thenReturn(event);
 
         // When
-        List<Event> events = store.getAllEvents();
+        List<Event> events = store.getAll();
 
         // Then
         assertEquals(1, events.size());

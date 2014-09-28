@@ -17,16 +17,18 @@ import roboguice.activity.RoboActivity;
 
 public class ExpensesList extends RoboActivity {
 
+    public static final String ARGUMENT_EVENT_ID = "event_id";
+
     @Inject
     private ExpenseStore store;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_expenses_list);
+        setContentView(R.layout.expenses_list);
 
 
-        String eventId = getIntent().getStringExtra("event_id");
+        String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
 
         List<Expense> expenses = store.getExpensesOfEvent(eventId);
         ListView expenseListView = (ListView) findViewById(R.id.expensesListView);

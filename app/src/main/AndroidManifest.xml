@@ -16,12 +16,8 @@
         </activity>
         <activity
             android:name="ch.pantas.billsplitter.ui.ExpensesList"
-            android:label="@string/title_activity_expenses_list"
-            android:parentActivityName="ch.pantas.billsplitter.ui.EventList" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ch.pantas.billsplitter.ui.EventList" />
-        </activity>
+            android:label="@string/title_activity_expenses_list" />
+        <activity android:name="ch.pantas.billsplitter.ui.AddEvent" />
     </application>
 
 </manifest>

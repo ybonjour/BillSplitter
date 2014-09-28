@@ -14,6 +14,13 @@ public class Event extends Model {
         this.name = name;
     }
 
+    public Event(String name) {
+        checkNotNull(name);
+        checkArgument(!name.isEmpty());
+
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

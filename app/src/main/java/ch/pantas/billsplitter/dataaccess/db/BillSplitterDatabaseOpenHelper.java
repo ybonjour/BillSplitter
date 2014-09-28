@@ -47,10 +47,14 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         return db.init(getReadableDatabase());
     }
 
-    public class EventTable {
+    public class Table {
+        public static final String ID = "_id";
+    }
+
+    public class EventTable extends Table {
         public static final String TABLE = "Event";
 
-        public static final String ID = "_id";
+
         public static final String NAME = "Name";
 
         static final String CREATE = "CREATE TABLE " + TABLE + "("
@@ -69,10 +73,9 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                 + NAME + " TEXT);";
     }
 
-    public class AttendanceTable {
+    public class AttendanceTable extends Table {
         public static final String TABLE = "Attendance";
 
-        public static final String ID = "_id";
         public static final String USER = "user";
         public static final String EVENT = "event";
 
@@ -82,10 +85,9 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                 + EVENT + " TEXT);";
     }
 
-    public class ExpenseTable {
+    public class ExpenseTable extends Table {
         public static final String TABLE = "Expense";
 
-        public static final String ID = "_id";
         public static final String EVENT = "event";
         public static final String USER = "user";
         public static final String DESCRIPTION = "description";

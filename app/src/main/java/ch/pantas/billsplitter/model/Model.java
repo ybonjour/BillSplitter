@@ -5,7 +5,9 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public abstract class Model {
 
-    private final String id;
+    private String id;
+
+    public Model(){ }
 
     public Model(String id) {
         checkNotNull(id);
@@ -16,4 +18,12 @@ public abstract class Model {
     public String getId(){
         return this.id;
     }
+
+    public void setId(String id) {
+        checkNotNull(id);
+        checkArgument(!id.isEmpty());
+        this.id = id;
+    }
+
+    public boolean isNew() { return id == null; }
 }

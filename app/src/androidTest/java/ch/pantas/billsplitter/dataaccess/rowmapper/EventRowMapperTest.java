@@ -1,11 +1,10 @@
 package ch.pantas.billsplitter.dataaccess.rowmapper;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
-
-import junit.framework.TestCase;
 
 import java.util.UUID;
 
@@ -46,6 +45,44 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         assertNotNull(event);
         assertEquals(id, event.getId());
         assertEquals(name, event.getName());
+    }
+
+    @SmallTest
+    public void testValuesThrowsNullPointerExceptionIfNoEventProvided() {
+        try {
+            mapper.values(null);
+            fail("No exception has been thrown");
+        } catch (NullPointerException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testValuesReturnsCorrectValues() {
+        // Given
+        String id = UUID.randomUUID().toString();
+        String name = "Event 1";
+        Event event = new Event(id, name);
+
+        // When
+        ContentValues values = mapper.values(event);
+
+        // Then
+        assertEquals(id, values.getAsString(ID));
+        assertEquals(name, values.getAsString(NAME));
+    }
+
+    @SmallTest
+    public void testValuesDoesNotReturnIdIfIdIsNull() {
+        // Given
+        String name = "Event 1";
+        Event event = new Event(name);
+
+        // When
+        ContentValues values = mapper.values(event);
+
+        // Then
+        assertFalse(values.containsKey(ID));
     }
 
     private Cursor createEventCursor(String id, String name) {

@@ -1,5 +1,6 @@
 package ch.pantas.billsplitter.dataaccess.rowmapper;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import ch.pantas.billsplitter.model.Expense;
@@ -9,6 +10,7 @@ import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelpe
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.EVENT;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.ID;
 
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.TABLE;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.USER;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
@@ -30,5 +32,22 @@ public class ExpenseRowMapper implements RowMapper<Expense> {
         double amount = cursor.getDouble(amountIdx);
 
         return new Expense(id, eventId, userId, description, amount);
+    }
+
+    @Override
+    public ContentValues values(Expense expense) {
+        ContentValues values = new ContentValues();
+        values.put(ID, expense.getId());
+        values.put(EVENT, expense.getEventId());
+        values.put(USER, expense.getPayerId());
+        values.put(DESCRIPTION, expense.getDescription());
+        values.put(AMOUNT, expense.getAmount());
+
+        return values;
+    }
+
+    @Override
+    public String getTableName() {
+        return TABLE;
     }
 }
