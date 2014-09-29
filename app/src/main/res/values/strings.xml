@@ -8,4 +8,6 @@
     <string name="save">Save</string>
     <string name="description">Description</string>
     <string name="add_expense">Add Expense</string>
+    <string name="amount">Amount</string>
+    <string name="paid_by">Paid by</string>
 </resources>

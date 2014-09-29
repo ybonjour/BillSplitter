@@ -13,5 +13,24 @@
         android:layout_height="wrap_content"
         android:text="@string/description"
         android:labelFor="@id/expense_description"/>
+    <EditText
+        android:id="@+id/expense_amount"
+        android:inputType="numberDecimal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/amount"
+        android:labelFor="@id/expense_amount"/>
+    <EditText
+        android:id="@+id/expense_payer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/paid_by"
+        android:labelFor="@id/expense_payer"/>
 
 </LinearLayout>
