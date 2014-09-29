@@ -50,7 +50,7 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testValuesThrowsNullPointerExceptionIfNoEventProvided() {
         try {
-            mapper.values(null);
+            mapper.getValues(null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -65,7 +65,7 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         Event event = new Event(id, name);
 
         // When
-        ContentValues values = mapper.values(event);
+        ContentValues values = mapper.getValues(event);
 
         // Then
         assertEquals(id, values.getAsString(ID));
@@ -79,7 +79,7 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         Event event = new Event(name);
 
         // When
-        ContentValues values = mapper.values(event);
+        ContentValues values = mapper.getValues(event);
 
         // Then
         assertFalse(values.containsKey(ID));

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
 import ch.pantas.billsplitter.dataaccess.rowmapper.RowMapper;
 import ch.pantas.billsplitter.model.Model;
 
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.Table.ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public abstract class BaseStore<M extends Model> {
@@ -29,6 +31,18 @@ public abstract class BaseStore<M extends Model> {
         checkNotNull(mapper);
 
         this.mapper = mapper;
+    }
+
+    public M getById(String id){
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(ID, id);
+        List<M> models = getModelsByQuery(where);
+
+        if(models.size() == 0){
+            return null;
+        } else {
+            return models.get(0);
+        }
     }
 
     public List<M> getAll(){
@@ -47,9 +61,10 @@ public abstract class BaseStore<M extends Model> {
         if(model.isNew()){
             String id = UUID.randomUUID().toString();
             model.setId(id);
-            db.insert(mapper.getTableName(), mapper.values(model));
+            ContentValues values = mapper.getValues(model);
+            db.insert(mapper.getTableName(), mapper.getValues(model));
         } else {
-            db.update(mapper.getTableName(), mapper.values(model));
+            db.update(mapper.getTableName(), mapper.getValues(model));
         }
     }
 

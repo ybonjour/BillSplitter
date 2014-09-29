@@ -17,7 +17,7 @@ public class BaseStoreTest extends BaseMockitoInstrumentationTest {
     private BillSplitterDatabaseOpenHelper databaseHelper;
 
     @Mock
-    private BillSplitterDatabase database;
+    protected BillSplitterDatabase database;
 
     @Mock
     protected Cursor cursor;

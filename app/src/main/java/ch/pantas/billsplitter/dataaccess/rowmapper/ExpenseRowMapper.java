@@ -3,6 +3,7 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.AMOUNT;
@@ -35,7 +36,7 @@ public class ExpenseRowMapper implements RowMapper<Expense> {
     }
 
     @Override
-    public ContentValues values(Expense expense) {
+    public ContentValues getValues(Expense expense) {
         ContentValues values = new ContentValues();
         values.put(ID, expense.getId());
         values.put(EVENT, expense.getEventId());

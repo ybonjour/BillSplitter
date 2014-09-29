@@ -14,10 +14,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="ch.pantas.billsplitter.ui.ExpensesList"
-            android:label="@string/title_activity_expenses_list" />
+        <activity android:name="ch.pantas.billsplitter.ui.ExpensesList" />
         <activity android:name="ch.pantas.billsplitter.ui.AddEvent" />
+        <activity android:name="ch.pantas.billsplitter.ui.AddExpense" />
     </application>
 
 </manifest>

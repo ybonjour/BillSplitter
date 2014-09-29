@@ -16,6 +16,12 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
+        <Button
+            android:id="@+id/add_expense"
+            android:text="@string/add_expense"
+            android:onClick="onAddExpense"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

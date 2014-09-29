@@ -25,7 +25,7 @@ public class EventRowMapper implements RowMapper<Event> {
     }
 
     @Override
-    public ContentValues values(Event event) {
+    public ContentValues getValues(Event event) {
         checkNotNull(event);
 
         ContentValues values = new ContentValues();

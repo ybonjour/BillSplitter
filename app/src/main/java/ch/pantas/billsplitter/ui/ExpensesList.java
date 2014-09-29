@@ -1,8 +1,7 @@
 package ch.pantas.billsplitter.ui;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -10,49 +9,59 @@ import com.google.inject.Inject;
 
 import java.util.List;
 
+import ch.pantas.billsplitter.ActivityStarter;
+import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
+import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
+
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class ExpensesList extends RoboActivity {
 
     public static final String ARGUMENT_EVENT_ID = "event_id";
 
+    @InjectView(R.id.expensesListView)
+    private ListView expensesListView;
+
     @Inject
-    private ExpenseStore store;
+    private ExpenseStore expenseStore;
+
+    @Inject
+    private EventStore eventStore;
+
+    @Inject
+    private ActivityStarter activityStarter;
+
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expenses_list);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
+        event = eventStore.getById(eventId);
+        checkNotNull(event);
+        reloadList(event);
+    }
 
-        List<Expense> expenses = store.getExpensesOfEvent(eventId);
-        ListView expenseListView = (ListView) findViewById(R.id.expensesListView);
+    private void reloadList(Event event){
+        List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
         ArrayAdapter<Expense> adapter = new ArrayAdapter<Expense>(this, android.R.layout.simple_list_item_1, expenses);
-        expenseListView.setAdapter(adapter);
+        expensesListView.setAdapter(adapter);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.expenses_list, menu);
-        return true;
+    public void onAddExpense(View view) {
+        activityStarter.startAddExpense(this, event);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
