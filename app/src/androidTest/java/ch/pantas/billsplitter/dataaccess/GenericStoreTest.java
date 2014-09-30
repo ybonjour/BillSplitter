@@ -5,19 +5,15 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
 
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.EventRowMapper;
-import ch.pantas.billsplitter.dataaccess.rowmapper.RowMapper;
 import ch.pantas.billsplitter.model.Event;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
