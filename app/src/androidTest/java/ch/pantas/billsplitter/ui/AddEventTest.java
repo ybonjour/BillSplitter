@@ -1,5 +1,6 @@
 package ch.pantas.billsplitter.ui;
 
+import android.graphics.drawable.ColorDrawable;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.hamcrest.Description;
@@ -62,6 +63,26 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
 
         // Then
         verify(eventStore, times(1)).persist(argThat(newEventWithName(eventName)));
+    }
+
+    @LargeTest
+    public void testEventIsNotAddedIfSaveButtonIsPressedWithEmptyData() {
+        // Given
+        String eventName = "";
+        getActivity();
+        int color = getActivity().getResources().getColor(R.color.error_color);
+        onView(withId(R.id.event_name)).perform(typeText(eventName));
+
+        // When
+        onView(withText(R.string.save)).perform(click());
+
+        // Then
+        // No Event is persisted
+        verify(eventStore, times(0)).persist(argThat(newEventWithName(eventName)));
+        // EditText background is red
+        assertEquals(((ColorDrawable)getActivity().findViewById(R.id.event_name).getBackground()).getColor(), color);
+        // Add expense activity is still shown
+        onView(withId(R.id.event_name)).check(matches(isDisplayed()));
     }
 
     private static Matcher<Event> newEventWithName(final String eventName) {

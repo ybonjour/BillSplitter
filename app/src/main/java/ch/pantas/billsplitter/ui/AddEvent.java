@@ -29,9 +29,14 @@ public class AddEvent extends RoboActivity {
 
     public void onSave(View v){
         String eventName = eventNameField.getText().toString();
-        Event event = new Event(eventName);
-        eventStore.persist(event);
+        if (eventName.isEmpty()) {
+            eventNameField.setBackgroundColor(getResources().getColor(R.color.error_color));
+        }
+        else {
+            Event event = new Event(eventName);
+            eventStore.persist(event);
 
-        finish();
+            finish();
+        }
     }
 }

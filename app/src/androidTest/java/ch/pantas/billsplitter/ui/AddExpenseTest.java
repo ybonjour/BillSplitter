@@ -1,6 +1,7 @@
 package ch.pantas.billsplitter.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 import android.widget.EditText;
@@ -200,6 +201,33 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         // Then
         verify(userStore, times(1)).persist(eq(user));
         verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, parseDouble(amount), event.getId(), payerId)));
+    }
+
+    @LargeTest
+    public void testExpenseIsNotAddedIfSaveButtonIsPressedWithMissingValues(){
+        // Given
+        String description = "abcdef";
+        String amount = "";
+        String payer = "";
+
+        getActivity();
+        int color = getActivity().getResources().getColor(R.color.error_color);
+        onView(withId(R.id.expense_description)).perform(typeText(description));
+        onView(withId(R.id.expense_amount)).perform(typeText(amount));
+        onView(withId(R.id.expense_payer)).perform(typeText(payer));
+        when(userStore.getUserWithName(payer)).thenReturn(null);
+
+        // When
+        onView(withText(R.string.save)).perform(click());
+
+        // Then
+        verify(userStore, times(0)).persist(any(User.class));
+        verify(expenseStore, times(0)).persist(any(Expense.class));
+        assertEquals(((ColorDrawable)getActivity().findViewById(R.id.expense_payer).getBackground()).getColor(), color);
+        assertEquals(((ColorDrawable)getActivity().findViewById(R.id.expense_amount).getBackground()).getColor(), color);
+
+        onView(withId(R.id.expense_amount)).check(matches(isDisplayed()));
+        onView(withId(R.id.expense_payer)).check(matches(isDisplayed()));
     }
 
     private static Matcher<User> userWithName(final String name) {

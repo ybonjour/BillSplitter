@@ -33,8 +33,6 @@ public class AddExpense extends RoboActivity {
     @InjectView(R.id.expense_payer_me)
     private CheckBox payerMeCheckbox;
 
-
-
     @Inject
     private EventStore eventStore;
 
@@ -71,27 +69,38 @@ public class AddExpense extends RoboActivity {
     }
 
     public void onSave(View v) {
-        // TODO: check field validity
-
         User payer = persistPayer();
 
         String description = descriptionField.getText().toString();
-        double amount = Double.parseDouble(amountField.getText().toString());
-        Expense expense = new Expense(event.getId(), payer.getId(), description, amount);
-        expenseStore.persist(expense);
-
-        finish();
+        double amount;
+        try {
+            amount = Double.parseDouble(amountField.getText().toString());
+        }
+        catch(NumberFormatException e) {
+            amountField.setBackgroundColor(getResources().getColor(R.color.error_color));
+            amount = 0.0;
+        }
+        if (payer != null && amount > 0.0) {
+            Expense expense = new Expense(event.getId(), payer.getId(), description, amount);
+            expenseStore.persist(expense);
+            finish();
+        }
     }
 
     private User persistPayer(){
-        // TODO: check field validity
-
         String payerName = payerField.getText().toString();
-        User payer = userStore.getUserWithName(payerName);
-        if(payer == null){
-            payer = new User(payerName);
+        User payer;
+        if (payerName.isEmpty()) {
+            payerField.setBackgroundColor(getResources().getColor(R.color.error_color));
+            payer = null;
         }
-        userStore.persist(payer);
+        else {
+            payer = userStore.getUserWithName(payerName);
+            if (payer == null) {
+                payer = new User(payerName);
+            }
+            userStore.persist(payer);
+        }
         return payer;
     }
 }
