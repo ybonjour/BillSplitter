@@ -4,6 +4,10 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/description"/>
     <EditText
         android:id="@+id/expense_description"
         android:layout_width="fill_parent"
@@ -11,8 +15,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/description"
-        android:labelFor="@id/expense_description"/>
+        android:text="@string/amount" />
     <EditText
         android:id="@+id/expense_amount"
         android:inputType="numberDecimal"
@@ -21,16 +24,31 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/amount"
-        android:labelFor="@id/expense_amount"/>
-    <EditText
-        android:id="@+id/expense_payer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-    <TextView
+        android:text="@string/paid_by" />
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/paid_by"
-        android:labelFor="@id/expense_payer"/>
-
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/expense_payer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:text="@string/me"
+            android:onClick="onPayerMeClicked"/>
+        <CheckBox
+            android:id="@+id/expense_payer_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onPayerMeClicked"/>
+    </LinearLayout>
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:onClick="onSave"/>
 </LinearLayout>

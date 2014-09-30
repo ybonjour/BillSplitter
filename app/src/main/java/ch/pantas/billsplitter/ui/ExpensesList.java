@@ -51,6 +51,7 @@ public class ExpensesList extends RoboActivity {
         String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
         event = eventStore.getById(eventId);
         checkNotNull(event);
+        setTitle(event.getName());
         reloadList(event);
     }
 

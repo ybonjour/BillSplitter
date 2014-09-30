@@ -2,8 +2,9 @@ package ch.pantas.billsplitter.ui;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.mockito.Mock;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -32,7 +33,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     private EventStore eventStore;
 
     @LargeTest
-    public void testCorrectTitleIsShown() {
+    public void testCorrectTitleIsDisplayed() {
         // When
         getActivity();
 
@@ -41,7 +42,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     }
 
     @LargeTest
-    public void testSaveButtonIsShown() {
+    public void testSaveButtonIsDisplayed() {
         // When
         getActivity();
 
@@ -60,31 +61,21 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
         onView(withText(R.string.save)).perform(click());
 
         // Then
-        verify(eventStore, times(1)).persist(argThat(new EventMatcher(true, eventName)));
+        verify(eventStore, times(1)).persist(argThat(newEventWithName(eventName)));
     }
 
-    private class EventMatcher extends BaseMatcher<Event> {
+    private static Matcher<Event> newEventWithName(final String eventName) {
+        return new TypeSafeMatcher<Event>() {
+            @Override
+            public boolean matchesSafely(Event event) {
+                return event.isNew() && eventName.equals(event.getName());
+            }
 
-        private final boolean isNew;
-        private final String eventName;
-
-        private EventMatcher(boolean isNew, String eventName) {
-            this.isNew = isNew;
-            this.eventName = eventName;
-        }
-
-        @Override
-        public boolean matches(Object o) {
-            if (!(o instanceof Event)) return false;
-
-            Event event = (Event) o;
-
-            return event.isNew() == isNew && eventName.equals(event.getName());
-        }
-
-        @Override
-        public void describeTo(Description description) {
-
-        }
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("new event with name ");
+                description.appendText(eventName);
+            }
+        };
     }
 }

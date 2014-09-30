@@ -24,6 +24,20 @@ public class Expense extends Model {
         this.amount = amount;
     }
 
+    public Expense(String eventId, String payerId, String description, double amount) {
+        checkNotNull(eventId);
+        checkArgument(!eventId.isEmpty());
+        checkNotNull(payerId);
+        checkArgument(!payerId.isEmpty());
+        checkNotNull(description);
+        checkArgument(amount > 0.0);
+
+        this.eventId = eventId;
+        this.payerId = payerId;
+        this.description = description;
+        this.amount = amount;
+    }
+
     @Override
     public String toString() {
         return getAmount() + " for " + getDescription();

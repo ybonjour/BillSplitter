@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.google.android.apps.common.testing.ui.espresso.action.ViewActions;
-
 import org.mockito.Mock;
 
 import ch.pantas.billsplitter.ActivityStarter;
@@ -15,7 +13,7 @@ import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.yvu.myapplication.R;
 
-import static ch.pantas.billsplitter.ui.ExpensesList.*;
+import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
@@ -38,7 +36,6 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
     @Mock
     private ActivityStarter activityStarter;
 
-    @Mock
     private Event event;
 
     public ExpenseListTest() {
@@ -52,7 +49,7 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
         intent.putExtra(ARGUMENT_EVENT_ID, "abc");
         setActivityIntent(intent);
 
-        when(event.getId()).thenReturn("abc");
+        event = new Event("abc", "An event");
         when(eventStore.getById("abc")).thenReturn(event);
     }
 
@@ -66,7 +63,7 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
     }
 
     @LargeTest
-    public void testAddExpenseActivityIsOpenWhenAddIsPressed(){
+    public void testAddExpenseActivityIsOpenWhenAddIsPressed() {
         // Given
         getActivity();
 
@@ -75,6 +72,15 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
 
         // Then
         verify(activityStarter, times(1)).startAddExpense(any(Context.class), eq(event));
+    }
+
+    @LargeTest
+    public void testTitleIsEventName() {
+        // When
+        getActivity();
+
+        // Then
+        onView(withText(event.getName())).check(matches(isDisplayed()));
     }
 
 }

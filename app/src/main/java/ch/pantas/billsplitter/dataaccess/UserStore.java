@@ -20,10 +20,16 @@ public class UserStore extends BaseStore<User> {
         super(mapper);
     }
 
-    public List<User> getUsersWithName(String name) {
+    public User getUserWithName(String name) {
         Map<String, String> where = new HashMap<String, String>();
         where.put(NAME, name);
 
-        return getModelsByQuery(where);
+        List<User> users = getModelsByQuery(where);
+
+        if(users.size() == 0){
+            return null;
+        } else {
+            return users.get(0);
+        }
     }
 }
