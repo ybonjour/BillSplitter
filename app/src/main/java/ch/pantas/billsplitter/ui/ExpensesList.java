@@ -2,6 +2,7 @@ package ch.pantas.billsplitter.ui;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -53,6 +54,19 @@ public class ExpensesList extends RoboActivity {
         checkNotNull(event);
         setTitle(event.getName());
         reloadList(event);
+        expensesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Expense expense = (Expense) adapterView.getAdapter().getItem(position);
+                activityStarter.startAddParticipants(ExpensesList.this, expense);
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        expensesListView.setOnItemClickListener(null);
     }
 
     private void reloadList(Event event){
@@ -64,5 +78,4 @@ public class ExpensesList extends RoboActivity {
     public void onAddExpense(View view) {
         activityStarter.startAddExpense(this, event);
     }
-
 }

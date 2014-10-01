@@ -11,14 +11,18 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.Expense;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.anything;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -38,6 +42,8 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
 
     private Event event;
 
+    public Expense expense;
+
     public ExpenseListTest() {
         super(ExpensesList.class);
     }
@@ -51,6 +57,9 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
 
         event = new Event("abc", "An event");
         when(eventStore.getById("abc")).thenReturn(event);
+
+        expense = new Expense("id", event.getId(), "payerId", "description", 10);
+        when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
     }
 
     @LargeTest
@@ -83,4 +92,24 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
         onView(withText(event.getName())).check(matches(isDisplayed()));
     }
 
+    @LargeTest
+    public void testCorrectItemIsShownInExpensesList() {
+        // When
+        getActivity();
+
+        // Then
+        onData(anything()).atPosition(0).check(matches(withText(expense.toString())));
+    }
+
+    @LargeTest
+    public void testClickingOnExpenseOpensAddParticipantsActivity() {
+        // Given
+        getActivity();
+
+        // When
+        onData(anything()).atPosition(0).perform(click());
+
+        // Then
+        activityStarter.startAddParticipants(any(Context.class), eq(expense));
+    }
 }
