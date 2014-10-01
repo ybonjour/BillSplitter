@@ -3,6 +3,9 @@ package ch.pantas.billsplitter.ui;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions;
+import com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -14,12 +17,14 @@ import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
+import ch.pantas.billsplitter.framework.CustomViewMatchers;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
+import static ch.pantas.billsplitter.framework.CustomViewMatchers.emptyEditText;
 import static ch.pantas.billsplitter.ui.AddParticipants.ARGUMENT_EXPENSE_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
@@ -129,6 +134,36 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     }
 
     @LargeTest
+    public void testParticipantIsNotAddedIfItAlreadyExists() {
+        // Given
+        when(userStore.getUserWithName(user.getName())).thenReturn(user);
+        Participant participant = new Participant("participantId", expense.getId(), user.getId());
+        when(participantStore.getParticipantByExpenseAndUser(expense.getId(), user.getId())).thenReturn(participant);
+        getActivity();
+        onView(withId(R.id.participant_name)).perform(typeText(user.getName()));
+
+        // When
+        onView(withText(R.string.add)).perform(click());
+
+        // Then
+        verify(participantStore, never()).persist(any(Participant.class));
+    }
+
+    @LargeTest
+    public void testNameFieldIsClearedAfterParticipantIsAdded(){
+        // Given
+        when(userStore.getUserWithName(user.getName())).thenReturn(user);
+        getActivity();
+        onView(withId(R.id.participant_name)).perform(typeText(user.getName()));
+
+        // When
+        onView(withText(R.string.add)).perform(click());
+
+        // Then
+        onView(withId(R.id.participant_name)).check(matches(emptyEditText()));
+    }
+
+    @LargeTest
     public void testParticipantNotPersistedIfNoNameEntered() {
         // Given
         getActivity();
@@ -150,22 +185,6 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
 
         // Then
         onView(withId(R.id.participant_name)).check(hasBackgroundColor(R.color.error_color));
-    }
-
-    @LargeTest
-    public void testParticipantIsNotAddedIfItAlreadyExists() {
-        // Given
-        when(userStore.getUserWithName(user.getName())).thenReturn(user);
-        Participant participant = new Participant("participantId", expense.getId(), user.getId());
-        when(participantStore.getParticipantByExpenseAndUser(expense.getId(), user.getId())).thenReturn(participant);
-        getActivity();
-        onView(withId(R.id.participant_name)).perform(typeText(user.getName()));
-
-        // When
-        onView(withText(R.string.add)).perform(click());
-
-        // Then
-        verify(participantStore, never()).persist(any(Participant.class));
     }
 
     private static Matcher<Participant> participantWith(final String expenseId, final String userId) {

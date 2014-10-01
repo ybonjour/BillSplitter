@@ -76,6 +76,7 @@ public class AddParticipants extends RoboActivity {
         }
 
         reloadParticipantList(expense);
+        nameField.setText("");
     }
 
     public void onFinish(View view) {
