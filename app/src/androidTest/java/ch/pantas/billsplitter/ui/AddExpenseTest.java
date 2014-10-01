@@ -1,12 +1,7 @@
 package ch.pantas.billsplitter.ui;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.view.View;
-import android.widget.EditText;
-
-import com.google.android.apps.common.testing.ui.espresso.matcher.BoundedMatcher;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -24,6 +19,9 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
+import static ch.pantas.billsplitter.framework.CustomViewMatchers.editTextWithText;
+import static ch.pantas.billsplitter.framework.CustomViewMatchers.emptyEditText;
 import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
@@ -114,7 +112,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testUncheckingOnMeCheckboxEnablesPayerField(){
+    public void testUncheckingOnMeCheckboxEnablesPayerField() {
         // Given
         getActivity();
         onView(withId(R.id.expense_payer_me)).perform(click());
@@ -127,7 +125,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testUncheckingOnMeCheckboxEmptiesPayerField(){
+    public void testUncheckingOnMeCheckboxEmptiesPayerField() {
         // Given
         getActivity();
         onView(withId(R.id.expense_payer)).perform(typeText("A name"));
@@ -141,7 +139,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testSaveButtonIsDisplayed(){
+    public void testSaveButtonIsDisplayed() {
         // When
         getActivity();
 
@@ -150,7 +148,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testExpenseIsAddedIfSaveButtonIsPressedWithNewUser(){
+    public void testExpenseIsAddedIfSaveButtonIsPressedWithNewUser() {
         // Given
         String description = "An expense";
         String amount = "25.00";
@@ -182,7 +180,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testExpenseIsAddedIfSaveButtonIsPressedWithExistingUser(){
+    public void testExpenseIsAddedIfSaveButtonIsPressedWithExistingUser() {
         // Given
         String description = "An expense";
         String amount = "25.00";
@@ -204,18 +202,11 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testExpenseIsNotAddedIfSaveButtonIsPressedWithMissingValues(){
+    public void testExpenseIsNotAddedIfSaveButtonIsPressedWithMissingValues() {
         // Given
         String description = "abcdef";
-        String amount = "";
-        String payer = "";
-
         getActivity();
-        int color = getActivity().getResources().getColor(R.color.error_color);
         onView(withId(R.id.expense_description)).perform(typeText(description));
-        onView(withId(R.id.expense_amount)).perform(typeText(amount));
-        onView(withId(R.id.expense_payer)).perform(typeText(payer));
-        when(userStore.getUserWithName(payer)).thenReturn(null);
 
         // When
         onView(withText(R.string.save)).perform(click());
@@ -223,11 +214,8 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         // Then
         verify(userStore, times(0)).persist(any(User.class));
         verify(expenseStore, times(0)).persist(any(Expense.class));
-        assertEquals(((ColorDrawable)getActivity().findViewById(R.id.expense_payer).getBackground()).getColor(), color);
-        assertEquals(((ColorDrawable)getActivity().findViewById(R.id.expense_amount).getBackground()).getColor(), color);
-
-        onView(withId(R.id.expense_amount)).check(matches(isDisplayed()));
-        onView(withId(R.id.expense_payer)).check(matches(isDisplayed()));
+        onView(withId(R.id.expense_payer)).check(hasBackgroundColor(R.color.error_color));
+        onView(withId(R.id.expense_amount)).check(hasBackgroundColor(R.color.error_color));
     }
 
     private static Matcher<User> userWithName(final String name) {
@@ -245,15 +233,15 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         };
     }
 
-    private static Matcher<Expense> newExpenseWith(final String expenseDescription, final double amount, final String eventId, final String userId){
+    private static Matcher<Expense> newExpenseWith(final String expenseDescription, final double amount, final String eventId, final String userId) {
         return new TypeSafeMatcher<Expense>() {
             @Override
             public boolean matchesSafely(Expense expense) {
-                if(!expense.isNew()) return false;
-                if(!expenseDescription.equals(expense.getDescription())) return false;
-                if(amount != expense.getAmount()) return false;
-                if(!eventId.equals(expense.getEventId())) return false;
-                if(userId != null && !userId.equals(expense.getPayerId())) return false;
+                if (!expense.isNew()) return false;
+                if (!expenseDescription.equals(expense.getDescription())) return false;
+                if (amount != expense.getAmount()) return false;
+                if (!eventId.equals(expense.getEventId())) return false;
+                if (userId != null && !userId.equals(expense.getPayerId())) return false;
 
                 return true;
             }
@@ -266,39 +254,6 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
                 description.appendValue(amount);
                 description.appendText(" and event ");
                 description.appendText(eventId);
-            }
-        };
-    }
-
-    private static Matcher<View> editTextWithText(final int resId) {
-        return new BoundedMatcher<View, EditText>(EditText.class) {
-
-            @Override
-            protected boolean matchesSafely(EditText editText) {
-                String text = editText.getResources().getString(resId);
-                if (text == null) return false;
-
-                return text.equals(editText.getText().toString());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("has content text with resource id ");
-                description.appendText(String.valueOf(resId));
-            }
-        };
-    }
-
-    private static Matcher<View> emptyEditText(){
-        return new BoundedMatcher<View, EditText>(EditText.class) {
-            @Override
-            protected boolean matchesSafely(EditText editText) {
-                return "".equals(editText.getText().toString());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("empty EditText");
             }
         };
     }

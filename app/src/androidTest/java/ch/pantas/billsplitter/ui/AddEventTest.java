@@ -1,6 +1,5 @@
 package ch.pantas.billsplitter.ui;
 
-import android.graphics.drawable.ColorDrawable;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.hamcrest.Description;
@@ -13,6 +12,7 @@ import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
@@ -23,6 +23,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 public class AddEventTest extends BaseEspressoTest<AddEvent> {
 
@@ -68,20 +69,14 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     @LargeTest
     public void testEventIsNotAddedIfSaveButtonIsPressedWithEmptyData() {
         // Given
-        String eventName = "";
         getActivity();
-        int color = getActivity().getResources().getColor(R.color.error_color);
-        onView(withId(R.id.event_name)).perform(typeText(eventName));
 
         // When
         onView(withText(R.string.save)).perform(click());
 
         // Then
-        // No Event is persisted
-        verify(eventStore, times(0)).persist(argThat(newEventWithName(eventName)));
-        // EditText background is red
-        assertEquals(((ColorDrawable)getActivity().findViewById(R.id.event_name).getBackground()).getColor(), color);
-        // Add expense activity is still shown
+        verifyZeroInteractions(eventStore);
+        onView(withId(R.id.event_name)).check(hasBackgroundColor(R.color.error_color));
         onView(withId(R.id.event_name)).check(matches(isDisplayed()));
     }
 
