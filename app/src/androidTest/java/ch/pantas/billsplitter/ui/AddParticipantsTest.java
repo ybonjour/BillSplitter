@@ -152,6 +152,22 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         onView(withId(R.id.participant_name)).check(hasBackgroundColor(R.color.error_color));
     }
 
+    @LargeTest
+    public void testParticipantIsNotAddedIfItAlreadyExists() {
+        // Given
+        when(userStore.getUserWithName(user.getName())).thenReturn(user);
+        Participant participant = new Participant("participantId", expense.getId(), user.getId());
+        when(participantStore.getParticipantByExpenseAndUser(expense.getId(), user.getId())).thenReturn(participant);
+        getActivity();
+        onView(withId(R.id.participant_name)).perform(typeText(user.getName()));
+
+        // When
+        onView(withText(R.string.add)).perform(click());
+
+        // Then
+        verify(participantStore, never()).persist(any(Participant.class));
+    }
+
     private static Matcher<Participant> participantWith(final String expenseId, final String userId) {
         return new TypeSafeMatcher<Participant>() {
             @Override

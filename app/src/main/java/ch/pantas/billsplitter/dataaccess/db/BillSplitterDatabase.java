@@ -66,6 +66,9 @@ public class BillSplitterDatabase {
 
         for (String column : whereClause.keySet()) {
             Object value = whereClause.get(column);
+            if(i > 0){
+                selection.append("and ");
+            }
             selection.append(column).append("= ? ");
             selectionArgs[i] = value.toString();
             i += 1;

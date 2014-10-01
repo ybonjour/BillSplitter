@@ -11,8 +11,10 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import ch.pantas.billsplitter.ActivityStarter;
+import ch.pantas.billsplitter.DebtCalculator;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
+import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.yvu.myapplication.R;
@@ -25,14 +27,20 @@ public class ExpensesList extends RoboActivity {
 
     public static final String ARGUMENT_EVENT_ID = "event_id";
 
-    @InjectView(R.id.expensesListView)
-    private ListView expensesListView;
+    @InjectView(R.id.expenses_list)
+    private ListView expensesList;
+
+    @InjectView(R.id.debts_list)
+    private ListView debtsList;
 
     @Inject
     private ExpenseStore expenseStore;
 
     @Inject
     private EventStore eventStore;
+
+    @Inject
+    private DebtCalculator debtCalculator;
 
     @Inject
     private ActivityStarter activityStarter;
@@ -53,8 +61,9 @@ public class ExpensesList extends RoboActivity {
         event = eventStore.getById(eventId);
         checkNotNull(event);
         setTitle(event.getName());
-        reloadList(event);
-        expensesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        reloadExpensesList(event);
+        reloadDebtsList(event);
+        expensesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Expense expense = (Expense) adapterView.getAdapter().getItem(position);
@@ -66,13 +75,19 @@ public class ExpensesList extends RoboActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        expensesListView.setOnItemClickListener(null);
+        expensesList.setOnItemClickListener(null);
     }
 
-    private void reloadList(Event event){
+    private void reloadExpensesList(Event event){
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
         ArrayAdapter<Expense> adapter = new ArrayAdapter<Expense>(this, android.R.layout.simple_list_item_1, expenses);
-        expensesListView.setAdapter(adapter);
+        expensesList.setAdapter(adapter);
+    }
+
+    private void reloadDebtsList(Event event) {
+        List<Debt> debts = debtCalculator.calculateDebts(event);
+        ArrayAdapter<Debt> adapter = new ArrayAdapter<Debt>(this, android.R.layout.simple_list_item_1, debts);
+        debtsList.setAdapter(adapter);
     }
 
     public void onAddExpense(View view) {

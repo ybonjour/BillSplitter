@@ -4,17 +4,13 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.mockito.Mock;
-
-import java.util.Map;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.UserRowMapper;
 import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.UserTable.NAME;
+import static ch.pantas.billsplitter.framework.CustomMatchers.hasSize;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.mockito.Matchers.anyString;
@@ -63,7 +59,6 @@ public class UserStoreTest extends BaseStoreTest {
     @SmallTest
     public void testGetUserWithNameHasCorrectWhereArgument() {
         // Given
-        when(cursor.moveToNext()).thenReturn(false);
         String name = "Joe";
 
         // When
@@ -72,21 +67,4 @@ public class UserStoreTest extends BaseStoreTest {
         // Then
         verify(database, times(1)).query(anyString(), argThat(allOf(hasSize(1), hasEntry(NAME, name))));
     }
-
-    private static Matcher<Map<String, String>> hasSize(final int size) {
-        return new TypeSafeMatcher<Map<String, String>>() {
-            @Override
-            public boolean matchesSafely(Map<String, String> kvMap) {
-                return kvMap.size() == size;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("map with size ");
-                description.appendValue(size);
-            }
-        };
-    }
-
-
 }
