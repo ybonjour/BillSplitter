@@ -69,8 +69,11 @@ public class AddParticipants extends RoboActivity {
             userStore.persist(user);
         }
 
-        Participant participant = new Participant(expense.getId(), user.getId());
-        participantStore.persist(participant);
+        if(participantStore.getParticipantByExpenseAndUser(expense.getId(), user.getId()) == null){
+            Participant participant = new Participant(expense.getId(), user.getId());
+            participantStore.persist(participant);
+
+        }
 
         reloadParticipantList(expense);
     }
