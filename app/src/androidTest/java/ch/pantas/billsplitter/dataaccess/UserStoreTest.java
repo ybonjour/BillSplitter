@@ -6,13 +6,11 @@ import com.google.inject.Inject;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.mockito.Mock;
 
 import java.util.Map;
 
-import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
 import ch.pantas.billsplitter.dataaccess.rowmapper.UserRowMapper;
 import ch.pantas.billsplitter.model.User;
 
@@ -38,7 +36,7 @@ public class UserStoreTest extends BaseStoreTest {
 
 
     @SmallTest
-    public void testGetUserWithNameReturnsNullIfNoUserWithThatNameExists(){
+    public void testGetUserWithNameReturnsNullIfNoUserWithThatNameExists() {
         // Given
         when(cursor.moveToNext()).thenReturn(false);
 
@@ -50,7 +48,7 @@ public class UserStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetUserWithNameReturnsUserIfItExists(){
+    public void testGetUserWithNameReturnsUserIfItExists() {
         // Given
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
         when(mapper.map(cursor)).thenReturn(user);
@@ -63,7 +61,7 @@ public class UserStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetUserWithNameHasCorrectWhereArgument(){
+    public void testGetUserWithNameHasCorrectWhereArgument() {
         // Given
         when(cursor.moveToNext()).thenReturn(false);
         String name = "Joe";
@@ -75,7 +73,7 @@ public class UserStoreTest extends BaseStoreTest {
         verify(database, times(1)).query(anyString(), argThat(allOf(hasSize(1), hasEntry(NAME, name))));
     }
 
-    private static Matcher<Map<String, String>> hasSize(final int size){
+    private static Matcher<Map<String, String>> hasSize(final int size) {
         return new TypeSafeMatcher<Map<String, String>>() {
             @Override
             public boolean matchesSafely(Map<String, String> kvMap) {
@@ -89,7 +87,6 @@ public class UserStoreTest extends BaseStoreTest {
             }
         };
     }
-
 
 
 }

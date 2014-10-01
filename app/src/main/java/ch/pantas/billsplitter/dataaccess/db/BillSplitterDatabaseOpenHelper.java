@@ -27,14 +27,8 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(EventTable.CREATE);
         db.execSQL(UserTable.CREATE);
-        db.execSQL(AttendanceTable.CREATE);
         db.execSQL(ExpenseTable.CREATE);
-        //createDummyEvent(db);
-    }
-
-    private static void createDummyEvent(SQLiteDatabase db) {
-        db.execSQL("DELETE FROM " + EventTable.TABLE);
-        db.execSQL("INSERT INTO " + EventTable.TABLE + "(" + EventTable.NAME + ") VALUES(?)", new String[] { "Event 1" });
+        db.execSQL(ParticipantTable.CREATE);
     }
 
     @Override
@@ -73,18 +67,6 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                 + NAME + " TEXT);";
     }
 
-    public class AttendanceTable extends Table {
-        public static final String TABLE = "Attendance";
-
-        public static final String USER = "user";
-        public static final String EVENT = "event";
-
-        static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " TEXT PRIMARY KEY, "
-                + USER + " TEXT, "
-                + EVENT + " TEXT);";
-    }
-
     public class ExpenseTable extends Table {
         public static final String TABLE = "Expense";
 
@@ -99,5 +81,17 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                 + USER + " TEXT, "
                 + DESCRIPTION + " TEXT, "
                 + AMOUNT + " REAL);";
+    }
+
+    public class ParticipantTable extends Table {
+        public static final String TABLE = "Participant";
+
+        public static final String EXPENSE = "expense";
+        public static final String USER = "user";
+
+        static final String CREATE = "CREATE TABLE " + TABLE + "("
+                + ID + " TEXT PRIMARY KEY, "
+                + EXPENSE + " TEXT,"
+                + USER + " TEXT);";
     }
 }

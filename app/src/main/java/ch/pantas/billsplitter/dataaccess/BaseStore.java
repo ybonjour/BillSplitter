@@ -1,6 +1,5 @@
 package ch.pantas.billsplitter.dataaccess;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.google.inject.Inject;
@@ -33,39 +32,43 @@ public abstract class BaseStore<M extends Model> {
         this.mapper = mapper;
     }
 
-    public M getById(String id){
+    public M getById(String id) {
         Map<String, String> where = new HashMap<String, String>();
         where.put(ID, id);
         List<M> models = getModelsByQuery(where);
 
-        if(models.size() == 0){
+        if (models.size() == 0) {
             return null;
         } else {
             return models.get(0);
         }
     }
 
-    public List<M> getAll(){
+    public List<M> getAll() {
         return getModelsByQuery(null);
+    }
+
+    public void persist(M model) {
+        BillSplitterDatabase db = dbHelper.getDatabase();
+
+        if (model.isNew()) {
+            String id = UUID.randomUUID().toString();
+            model.setId(id);
+            db.insert(mapper.getTableName(), mapper.getValues(model));
+        } else {
+            db.update(mapper.getTableName(), mapper.getValues(model));
+        }
+    }
+
+    public void removeAll(Map<String, String> where) {
+        BillSplitterDatabase db = dbHelper.getDatabase();
+        db.removeAll(mapper.getTableName(), where);
     }
 
     protected List<M> getModelsByQuery(Map<String, String> where) {
         BillSplitterDatabase db = dbHelper.getDatabase();
         Cursor cursor = db.query(mapper.getTableName(), where);
         return toModelList(cursor, mapper);
-    }
-
-    public void persist(M model){
-        BillSplitterDatabase db = dbHelper.getDatabase();
-
-        if(model.isNew()){
-            String id = UUID.randomUUID().toString();
-            model.setId(id);
-            ContentValues values = mapper.getValues(model);
-            db.insert(mapper.getTableName(), mapper.getValues(model));
-        } else {
-            db.update(mapper.getTableName(), mapper.getValues(model));
-        }
     }
 
     private static <M extends Model> List<M> toModelList(Cursor cursor, RowMapper<M> mapper) {

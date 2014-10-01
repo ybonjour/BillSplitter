@@ -1,15 +1,18 @@
 package ch.pantas.billsplitter.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import ch.pantas.billsplitter.ActivityStarter;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
@@ -54,6 +57,9 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
 
     @Mock
     private UserStore userStore;
+
+    @Mock
+    private ActivityStarter activityStarter;
 
     private Event event;
 
@@ -177,6 +183,32 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         // Then
         verify(userStore, times(1)).persist(argThat(userWithName(payer)));
         verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, parseDouble(amount), event.getId(), payerId)));
+    }
+
+    @LargeTest
+    public void testAddParticipantsIsCalledWhenSaveButtonIsPressed() {
+        // Given
+        String description = "An expense";
+        String amount = "25.00";
+        String payerId = "abc";
+        String payer = "Joe";
+        getActivity();
+        onView(withId(R.id.expense_description)).perform(typeText(description));
+        onView(withId(R.id.expense_amount)).perform(typeText(amount));
+        onView(withId(R.id.expense_payer)).perform(typeText(payer));
+
+        User user = new User(payerId, payer);
+        when(userStore.getUserWithName(payer)).thenReturn(user);
+
+        // When
+        onView(withText(R.string.save)).perform(click());
+
+        // Then
+        ArgumentCaptor<Expense> expenseArgumentCaptor = ArgumentCaptor.forClass(Expense.class);
+        verify(expenseStore).persist(expenseArgumentCaptor.capture());
+        verify(activityStarter, times(1)).startAddParticipants(any(Context.class),
+                eq(expenseArgumentCaptor.getValue()));
+
     }
 
     @LargeTest

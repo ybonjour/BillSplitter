@@ -45,23 +45,28 @@ public class BillSplitterDatabase {
         checkArgument(values.containsKey(ID));
 
         String where = ID + " = ?";
-        String[] whereArguments = new String[]{ values.getAsString(ID) };
+        String[] whereArguments = new String[]{values.getAsString(ID)};
 
         int rowAffected = database.update(table, values, where, whereArguments);
         checkState(rowAffected == 1, "Not exactly one row updated.");
     }
 
+    public void removeAll(String tableName, Map<String, String> where) {
+        Pair<String, String[]> selection = createSelection(where);
+        database.delete(tableName, selection.first, selection.second);
+    }
+
     private static Pair<String, String[]> createSelection(Map<String, String> whereClause) {
         if (whereClause == null) return create(null, null);
 
-        StringBuffer selection = new StringBuffer();
+        StringBuilder selection = new StringBuilder();
         String[] selectionArgs = new String[whereClause.size()];
 
         int i = 0;
 
         for (String column : whereClause.keySet()) {
             Object value = whereClause.get(column);
-            selection.append(column + "= ? ");
+            selection.append(column).append("= ? ");
             selectionArgs[i] = value.toString();
             i += 1;
         }

@@ -46,6 +46,10 @@
             android:layout_height="wrap_content"
             android:onClick="onPayerMeClicked"/>
     </LinearLayout>
+    <ListView
+        android:id="@+id/expense_participants"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

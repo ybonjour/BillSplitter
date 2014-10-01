@@ -17,6 +17,7 @@
         <activity android:name="ch.pantas.billsplitter.ui.ExpensesList" />
         <activity android:name="ch.pantas.billsplitter.ui.AddEvent" />
         <activity android:name="ch.pantas.billsplitter.ui.AddExpense" />
+        <activity android:name="ch.pantas.billsplitter.ui.AddParticipants" />
     </application>
 
 </manifest>

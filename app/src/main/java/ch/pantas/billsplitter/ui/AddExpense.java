@@ -7,6 +7,7 @@ import android.widget.EditText;
 
 import com.google.inject.Inject;
 
+import ch.pantas.billsplitter.ActivityStarter;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
@@ -42,6 +43,9 @@ public class AddExpense extends RoboActivity {
     @Inject
     private UserStore userStore;
 
+    @Inject
+    private ActivityStarter activityStarter;
+
     private Event event;
 
     @Override
@@ -59,7 +63,7 @@ public class AddExpense extends RoboActivity {
     }
 
     public void onPayerMeClicked(View v) {
-        if (payerMeCheckbox.isChecked()){
+        if (payerMeCheckbox.isChecked()) {
             payerField.setText(R.string.me);
             payerField.setEnabled(false);
         } else {
@@ -75,26 +79,25 @@ public class AddExpense extends RoboActivity {
         double amount;
         try {
             amount = Double.parseDouble(amountField.getText().toString());
-        }
-        catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             amountField.setBackgroundColor(getResources().getColor(R.color.error_color));
             amount = 0.0;
         }
         if (payer != null && amount > 0.0) {
             Expense expense = new Expense(event.getId(), payer.getId(), description, amount);
             expenseStore.persist(expense);
+            activityStarter.startAddParticipants(this, expense);
             finish();
         }
     }
 
-    private User persistPayer(){
+    private User persistPayer() {
         String payerName = payerField.getText().toString();
         User payer;
         if (payerName.isEmpty()) {
             payerField.setBackgroundColor(getResources().getColor(R.color.error_color));
             payer = null;
-        }
-        else {
+        } else {
             payer = userStore.getUserWithName(payerName);
             if (payer == null) {
                 payer = new User(payerName);
@@ -103,4 +106,5 @@ public class AddExpense extends RoboActivity {
         }
         return payer;
     }
+
 }
