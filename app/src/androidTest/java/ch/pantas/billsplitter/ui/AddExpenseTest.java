@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import ch.pantas.billsplitter.ActivityStarter;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
@@ -20,6 +19,8 @@ import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
@@ -60,6 +61,9 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
 
     @Mock
     private ActivityStarter activityStarter;
+
+    @Mock
+    private SharedPreferenceService sharedPreferenceService;
 
     private Event event;
 
@@ -105,8 +109,10 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testClickingOnMeCheckboxWritesMeToPayerField() {
+    public void testClickingOnMeCheckboxWritesUserNameToPayerField() {
         // Given
+        String username = "Joe";
+        when(sharedPreferenceService.getUserName()).thenReturn(username);
         getActivity();
         onView(withId(R.id.expense_payer)).perform(typeText("A name"));
 
@@ -114,7 +120,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         onView(withId(R.id.expense_payer_me)).perform(click());
 
         // Then
-        onView(withId(R.id.expense_payer)).check(matches(editTextWithText(R.string.me)));
+        onView(withId(R.id.expense_payer)).check(matches(editTextWithText(username)));
     }
 
     @LargeTest

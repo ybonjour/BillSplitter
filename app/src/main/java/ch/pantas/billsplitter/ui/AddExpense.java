@@ -7,13 +7,14 @@ import android.widget.EditText;
 
 import com.google.inject.Inject;
 
-import ch.pantas.billsplitter.ActivityStarter;
+import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -46,6 +47,9 @@ public class AddExpense extends RoboActivity {
     @Inject
     private ActivityStarter activityStarter;
 
+    @Inject
+    private SharedPreferenceService sharedPreferenceService;
+
     private Event event;
 
     @Override
@@ -64,7 +68,7 @@ public class AddExpense extends RoboActivity {
 
     public void onPayerMeClicked(View v) {
         if (payerMeCheckbox.isChecked()) {
-            payerField.setText(R.string.me);
+            payerField.setText(sharedPreferenceService.getUserName());
             payerField.setEnabled(false);
         } else {
             payerField.setText("");

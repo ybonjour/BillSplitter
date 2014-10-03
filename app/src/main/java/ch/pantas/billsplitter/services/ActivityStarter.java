@@ -1,4 +1,4 @@
-package ch.pantas.billsplitter;
+package ch.pantas.billsplitter.services;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.ui.AddEvent;
 import ch.pantas.billsplitter.ui.AddExpense;
 import ch.pantas.billsplitter.ui.AddParticipants;
+import ch.pantas.billsplitter.ui.EventList;
 import ch.pantas.billsplitter.ui.ExpensesList;
 
 import static ch.pantas.billsplitter.ui.AddParticipants.ARGUMENT_EXPENSE_ID;
@@ -50,6 +51,13 @@ public class ActivityStarter {
 
         Intent intent = new Intent(context, AddParticipants.class);
         intent.putExtra(ARGUMENT_EXPENSE_ID, expense.getId());
+        context.startActivity(intent);
+    }
+
+    public void startEventList(Context context) {
+        checkNotNull(context);
+
+        Intent intent = new Intent(context, EventList.class);
         context.startActivity(intent);
     }
 }

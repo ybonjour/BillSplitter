@@ -1,4 +1,4 @@
-package ch.pantas.billsplitter;
+package ch.pantas.billsplitter.services;
 
 import com.google.inject.Inject;
 

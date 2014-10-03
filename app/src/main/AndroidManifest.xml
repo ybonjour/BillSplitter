@@ -7,13 +7,14 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="ch.pantas.billsplitter.ui.EventList" >
+        <activity android:name="ch.pantas.billsplitter.ui.Login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="ch.pantas.billsplitter.ui.EventList" />
         <activity android:name="ch.pantas.billsplitter.ui.ExpensesList" />
         <activity android:name="ch.pantas.billsplitter.ui.AddEvent" />
         <activity android:name="ch.pantas.billsplitter.ui.AddExpense" />

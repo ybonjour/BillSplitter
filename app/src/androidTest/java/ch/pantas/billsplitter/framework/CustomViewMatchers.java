@@ -50,7 +50,23 @@ public class CustomViewMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("has content text with resource id ");
-                description.appendText(String.valueOf(resId));
+                description.appendValue(resId);
+            }
+        };
+    }
+
+    public static Matcher<View> editTextWithText(final String text) {
+        return new BoundedMatcher<View, EditText>(EditText.class) {
+
+            @Override
+            protected boolean matchesSafely(EditText editText) {
+                return text.equals(editText.getText().toString());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has content text with resource id ");
+                description.appendText(text);
             }
         };
     }

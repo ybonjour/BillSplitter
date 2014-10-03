@@ -6,7 +6,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import org.mockito.Mock;
 
-import ch.pantas.billsplitter.ActivityStarter;
+import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;

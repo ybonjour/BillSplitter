@@ -10,7 +10,7 @@ import com.google.inject.Inject;
 
 import java.util.List;
 
-import ch.pantas.billsplitter.ActivityStarter;
+import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.yvu.myapplication.R;
