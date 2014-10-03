@@ -9,18 +9,18 @@ import com.google.inject.Inject;
 import java.util.UUID;
 
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
-import ch.pantas.billsplitter.model.Participant;
+import ch.pantas.billsplitter.model.Attendee;
 
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.EXPENSE;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.USER;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.EXPENSE;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.USER;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.Table.ID;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ParticipantRowMapperTest extends BaseMockitoInstrumentationTest {
+public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
 
     @Inject
-    private ParticipantRowMapper mapper;
+    private AttendeeRowMapper mapper;
 
     @SmallTest
     public void testMapThrowsNullPointerExceptionIfNoCursorProvided() {
@@ -39,20 +39,20 @@ public class ParticipantRowMapperTest extends BaseMockitoInstrumentationTest {
         String id = UUID.randomUUID().toString();
         String expense = UUID.randomUUID().toString();
         String user = UUID.randomUUID().toString();
-        Cursor c = createParticipantCursor(id, expense, user);
+        Cursor c = createAttendeeCursor(id, expense, user);
 
         // When
-        Participant participant = mapper.map(c);
+        Attendee attendee = mapper.map(c);
 
         // Then
-        assertNotNull(participant);
-        assertEquals(id, participant.getId());
-        assertEquals(expense, participant.getExpense());
-        assertEquals(user, participant.getUser());
+        assertNotNull(attendee);
+        assertEquals(id, attendee.getId());
+        assertEquals(expense, attendee.getExpense());
+        assertEquals(user, attendee.getUser());
     }
 
     @SmallTest
-    public void testGetValuesThrowsExceptionIfNoParticipantProvided() {
+    public void testGetValuesThrowsExceptionIfNoAttendeeProvided() {
         try {
             mapper.getValues(null);
             fail("No exception has been thrown");
@@ -67,10 +67,10 @@ public class ParticipantRowMapperTest extends BaseMockitoInstrumentationTest {
         String id = UUID.randomUUID().toString();
         String expense = UUID.randomUUID().toString();
         String user = UUID.randomUUID().toString();
-        Participant participant = new Participant(id, expense, user);
+        Attendee attendee = new Attendee(id, expense, user);
 
         // When
-        ContentValues values = mapper.getValues(participant);
+        ContentValues values = mapper.getValues(attendee);
 
         // Then
         assertNotNull(values);
@@ -80,7 +80,7 @@ public class ParticipantRowMapperTest extends BaseMockitoInstrumentationTest {
         assertEquals(user, values.get(USER));
     }
 
-    private Cursor createParticipantCursor(String id, String expense, String user) {
+    private Cursor createAttendeeCursor(String id, String expense, String user) {
         Cursor c = mock(Cursor.class);
         when(c.getColumnIndex(ID)).thenReturn(0);
         when(c.getString(0)).thenReturn(id);

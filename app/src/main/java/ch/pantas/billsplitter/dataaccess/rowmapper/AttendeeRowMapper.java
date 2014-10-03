@@ -3,17 +3,17 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import ch.pantas.billsplitter.model.Participant;
+import ch.pantas.billsplitter.model.Attendee;
 
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.EXPENSE;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.TABLE;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.USER;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.EXPENSE;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.TABLE;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.USER;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.Table.ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
-public class ParticipantRowMapper implements RowMapper<Participant> {
+public class AttendeeRowMapper implements RowMapper<Attendee> {
     @Override
-    public Participant map(Cursor cursor) {
+    public Attendee map(Cursor cursor) {
         checkNotNull(cursor);
 
         int idIdx = cursor.getColumnIndex(ID);
@@ -24,15 +24,15 @@ public class ParticipantRowMapper implements RowMapper<Participant> {
         String expense = cursor.getString(expenseIdx);
         String user = cursor.getString(userIdx);
 
-        return new Participant(id, expense, user);
+        return new Attendee(id, expense, user);
     }
 
     @Override
-    public ContentValues getValues(Participant participant) {
+    public ContentValues getValues(Attendee attendee) {
         ContentValues values = new ContentValues();
-        values.put(ID, participant.getId());
-        values.put(EXPENSE, participant.getExpense());
-        values.put(USER, participant.getUser());
+        values.put(ID, attendee.getId());
+        values.put(EXPENSE, attendee.getExpense());
+        values.put(USER, attendee.getUser());
 
         return values;
     }

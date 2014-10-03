@@ -192,7 +192,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testAddParticipantsIsCalledWhenSaveButtonIsPressed() {
+    public void testAddAttendeessIsCalledWhenSaveButtonIsPressed() {
         // Given
         String description = "An expense";
         String amount = "25.00";
@@ -212,7 +212,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         // Then
         ArgumentCaptor<Expense> expenseArgumentCaptor = ArgumentCaptor.forClass(Expense.class);
         verify(expenseStore).persist(expenseArgumentCaptor.capture());
-        verify(activityStarter, times(1)).startAddParticipants(any(Context.class),
+        verify(activityStarter, times(1)).startAddAttendees(any(Context.class),
                 eq(expenseArgumentCaptor.getValue()));
 
     }

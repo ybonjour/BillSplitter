@@ -1,17 +1,17 @@
 package ch.pantas.billsplitter.model;
 
-public class Participant extends Model {
+public class Attendee extends Model {
 
     private String expense;
     private String user;
 
-    public Participant(String id, String expense, String user) {
+    public Attendee(String id, String expense, String user) {
         super(id);
         this.expense = expense;
         this.user = user;
     }
 
-    public Participant(String expense, String user) {
+    public Attendee(String expense, String user) {
         this.expense = expense;
         this.user = user;
     }

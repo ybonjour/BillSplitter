@@ -102,7 +102,7 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
     }
 
     @LargeTest
-    public void testClickingOnExpenseOpensAddParticipantsActivity() {
+    public void testClickingOnExpenseOpensAddAttendeesActivity() {
         // Given
         getActivity();
 
@@ -110,6 +110,6 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
         onData(anything()).atPosition(0).perform(click());
 
         // Then
-        activityStarter.startAddParticipants(any(Context.class), eq(expense));
+        activityStarter.startAddAttendees(any(Context.class), eq(expense));
     }
 }

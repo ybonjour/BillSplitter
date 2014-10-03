@@ -3,9 +3,6 @@ package ch.pantas.billsplitter.ui;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions;
-import com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -14,18 +11,17 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
-import ch.pantas.billsplitter.dataaccess.ParticipantStore;
+import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
-import ch.pantas.billsplitter.framework.CustomViewMatchers;
 import ch.pantas.billsplitter.model.Expense;
-import ch.pantas.billsplitter.model.Participant;
+import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
 import static ch.pantas.billsplitter.framework.CustomViewMatchers.emptyEditText;
-import static ch.pantas.billsplitter.ui.AddParticipants.ARGUMENT_EXPENSE_ID;
+import static ch.pantas.billsplitter.ui.AddAttendees.ARGUMENT_EXPENSE_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
@@ -44,9 +40,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
+public class AddAttendeesTest extends BaseEspressoTest<AddAttendees> {
     @Mock
-    private ParticipantStore participantStore;
+    private AttendeeStore attendeeStore;
 
     @Mock
     private UserStore userStore;
@@ -57,8 +53,8 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     private Expense expense;
     private User user;
 
-    public AddParticipantsTest() {
-        super(AddParticipants.class);
+    public AddAttendeesTest() {
+        super(AddAttendees.class);
     }
 
     @Override
@@ -73,7 +69,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         when(expenseStore.getById(expense.getId())).thenReturn(expense);
 
         user = new User("id", "userName");
-        when(participantStore.getParticipants(expense.getId())).thenReturn(asList(user));
+        when(attendeeStore.getAttendees(expense.getId())).thenReturn(asList(user));
     }
 
     @LargeTest
@@ -86,7 +82,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     }
 
     @LargeTest
-    public void testParticipantsAreShown() {
+    public void testAttendeesAreShown() {
         // When
         getActivity();
 
@@ -99,14 +95,14 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         // Given
         when(userStore.getUserWithName(user.getName())).thenReturn(user);
         getActivity();
-        onView(withId(R.id.participant_name)).perform(typeText(user.getName()));
+        onView(withId(R.id.attendee_name)).perform(typeText(user.getName()));
 
         // When
         onView(withText(R.string.add)).perform(click());
 
         // Then
         verify(userStore, never()).persist(any(User.class));
-        verify(participantStore, times(1)).persist(argThat(participantWith(expense.getId(), user.getId())));
+        verify(attendeeStore, times(1)).persist(argThat(attendeeWith(expense.getId(), user.getId())));
     }
 
     @LargeTest
@@ -124,47 +120,47 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
             }
         }).when(userStore).persist(any(User.class));
         getActivity();
-        onView(withId(R.id.participant_name)).perform(typeText(newUsername));
+        onView(withId(R.id.attendee_name)).perform(typeText(newUsername));
 
         // When
         onView(withText(R.string.add)).perform(click());
 
         // Then
-        verify(participantStore, times(1)).persist(argThat(participantWith(expense.getId(), newUserId)));
+        verify(attendeeStore, times(1)).persist(argThat(attendeeWith(expense.getId(), newUserId)));
     }
 
     @LargeTest
-    public void testParticipantIsNotAddedIfItAlreadyExists() {
+    public void testAttendeeIsNotAddedIfItAlreadyExists() {
         // Given
         when(userStore.getUserWithName(user.getName())).thenReturn(user);
-        Participant participant = new Participant("participantId", expense.getId(), user.getId());
-        when(participantStore.getParticipantByExpenseAndUser(expense.getId(), user.getId())).thenReturn(participant);
+        Attendee attendee = new Attendee("attendeeId", expense.getId(), user.getId());
+        when(attendeeStore.getAttendeeByExpenseAndUser(expense.getId(), user.getId())).thenReturn(attendee);
         getActivity();
-        onView(withId(R.id.participant_name)).perform(typeText(user.getName()));
+        onView(withId(R.id.attendee_name)).perform(typeText(user.getName()));
 
         // When
         onView(withText(R.string.add)).perform(click());
 
         // Then
-        verify(participantStore, never()).persist(any(Participant.class));
+        verify(attendeeStore, never()).persist(any(Attendee.class));
     }
 
     @LargeTest
-    public void testNameFieldIsClearedAfterParticipantIsAdded(){
+    public void testNameFieldIsClearedAfterAttendeeIsAdded(){
         // Given
         when(userStore.getUserWithName(user.getName())).thenReturn(user);
         getActivity();
-        onView(withId(R.id.participant_name)).perform(typeText(user.getName()));
+        onView(withId(R.id.attendee_name)).perform(typeText(user.getName()));
 
         // When
         onView(withText(R.string.add)).perform(click());
 
         // Then
-        onView(withId(R.id.participant_name)).check(matches(emptyEditText()));
+        onView(withId(R.id.attendee_name)).check(matches(emptyEditText()));
     }
 
     @LargeTest
-    public void testParticipantNotPersistedIfNoNameEntered() {
+    public void testAttendeeNotPersistedIfNoNameEntered() {
         // Given
         getActivity();
 
@@ -172,7 +168,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         onView(withText(R.string.add)).perform(click());
 
         // Then
-        verify(participantStore, never()).persist(any(Participant.class));
+        verify(attendeeStore, never()).persist(any(Attendee.class));
     }
 
     @LargeTest
@@ -184,19 +180,19 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         onView(withText(R.string.add)).perform(click());
 
         // Then
-        onView(withId(R.id.participant_name)).check(hasBackgroundColor(R.color.error_color));
+        onView(withId(R.id.attendee_name)).check(hasBackgroundColor(R.color.error_color));
     }
 
-    private static Matcher<Participant> participantWith(final String expenseId, final String userId) {
-        return new TypeSafeMatcher<Participant>() {
+    private static Matcher<Attendee> attendeeWith(final String expenseId, final String userId) {
+        return new TypeSafeMatcher<Attendee>() {
             @Override
-            public boolean matchesSafely(Participant participant) {
-                return expenseId.equals(participant.getExpense()) && userId.equals(participant.getUser());
+            public boolean matchesSafely(Attendee attendee) {
+                return expenseId.equals(attendee.getExpense()) && userId.equals(attendee.getUser());
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("Participant with Expense ");
+                description.appendText("Attendee with Expense ");
                 description.appendText(expenseId);
                 description.appendText(" and User ");
                 description.appendText(userId);

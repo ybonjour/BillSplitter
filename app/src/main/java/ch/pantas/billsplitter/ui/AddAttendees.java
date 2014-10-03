@@ -11,27 +11,27 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
-import ch.pantas.billsplitter.dataaccess.ParticipantStore;
+import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Expense;
-import ch.pantas.billsplitter.model.Participant;
+import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
-public class AddParticipants extends RoboActivity {
+public class AddAttendees extends RoboActivity {
 
     public static final String ARGUMENT_EXPENSE_ID = "expense_id";
 
-    @InjectView(R.id.participant_name)
+    @InjectView(R.id.attendee_name)
     private EditText nameField;
 
-    @InjectView(R.id.participant_list)
-    private ListView participantListView;
+    @InjectView(R.id.attendee_list)
+    private ListView attendeeListView;
 
     @Inject
-    private ParticipantStore participantStore;
+    private AttendeeStore attendeeStore;
 
     @Inject
     private UserStore userStore;
@@ -44,7 +44,7 @@ public class AddParticipants extends RoboActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_participants);
+        setContentView(R.layout.add_attendees);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class AddParticipants extends RoboActivity {
         String expenseId = getIntent().getStringExtra(ARGUMENT_EXPENSE_ID);
         expense = expenseStore.getById(expenseId);
         setTitle(expense.getDescription());
-        reloadParticipantList(expense);
+        reloadAttendeeList(expense);
     }
 
     public void onAdd(View view){
@@ -69,13 +69,13 @@ public class AddParticipants extends RoboActivity {
             userStore.persist(user);
         }
 
-        if(participantStore.getParticipantByExpenseAndUser(expense.getId(), user.getId()) == null){
-            Participant participant = new Participant(expense.getId(), user.getId());
-            participantStore.persist(participant);
+        if(attendeeStore.getAttendeeByExpenseAndUser(expense.getId(), user.getId()) == null){
+            Attendee attendee = new Attendee(expense.getId(), user.getId());
+            attendeeStore.persist(attendee);
 
         }
 
-        reloadParticipantList(expense);
+        reloadAttendeeList(expense);
         nameField.setText("");
     }
 
@@ -83,9 +83,9 @@ public class AddParticipants extends RoboActivity {
         finish();
     }
 
-    private void reloadParticipantList(Expense expense){
-        List<User> users = participantStore.getParticipants(expense.getId());
+    private void reloadAttendeeList(Expense expense){
+        List<User> users = attendeeStore.getAttendees(expense.getId());
         ArrayAdapter<User> adapter = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, users);
-        participantListView.setAdapter(adapter);
+        attendeeListView.setAdapter(adapter);
     }
 }

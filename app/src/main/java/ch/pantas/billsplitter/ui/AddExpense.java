@@ -90,7 +90,7 @@ public class AddExpense extends RoboActivity {
         if (payer != null && amount > 0.0) {
             Expense expense = new Expense(event.getId(), payer.getId(), description, amount);
             expenseStore.persist(expense);
-            activityStarter.startAddParticipants(this, expense);
+            activityStarter.startAddAttendees(this, expense);
             finish();
         }
     }

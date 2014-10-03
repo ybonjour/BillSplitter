@@ -8,13 +8,13 @@ import org.mockito.Mock;
 
 import java.util.List;
 
-import ch.pantas.billsplitter.dataaccess.rowmapper.ParticipantRowMapper;
-import ch.pantas.billsplitter.model.Participant;
+import ch.pantas.billsplitter.dataaccess.rowmapper.AttendeeRowMapper;
+import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.User;
 
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.EXPENSE;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.TABLE;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.USER;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.EXPENSE;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.TABLE;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.USER;
 import static ch.pantas.billsplitter.framework.CustomMatchers.hasSize;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasEntry;
@@ -24,24 +24,24 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ParticipantStoreTest extends BaseStoreTest {
+public class AttendeeStoreTest extends BaseStoreTest {
 
     @Inject
-    private ParticipantStore store;
+    private AttendeeStore store;
 
     @Mock
-    private ParticipantRowMapper mapper;
+    private AttendeeRowMapper mapper;
 
     @Mock
-    private Participant participant;
+    private Attendee attendee;
 
     @Mock
     private UserStore userStore;
 
     @SmallTest
-    public void testGetParticipantsThrowsNullPointerExceptionIfNoExpenseIdProvided() {
+    public void testGetAttendeesThrowsNullPointerExceptionIfNoExpenseIdProvided() {
         try {
-            store.getParticipants(null);
+            store.getAttendees(null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -49,9 +49,9 @@ public class ParticipantStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetParticipantsThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
+    public void testGetAttendeesThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
         try {
-            store.getParticipants("");
+            store.getAttendees("");
             fail("No exception has been thrown");
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -59,12 +59,12 @@ public class ParticipantStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetParticipantsReturnsEmptyUserListIfNoExpensesExist() {
+    public void testGetAttendeesReturnsEmptyUserListIfNoExpensesExist() {
         // Given
         when(cursor.moveToNext()).thenReturn(false);
 
         // When
-        List<User> users = store.getParticipants("abc");
+        List<User> users = store.getAttendees("abc");
 
         // Then
         assertNotNull(users);
@@ -72,16 +72,16 @@ public class ParticipantStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetParticipantsReturnsCorrectUser() {
+    public void testGetAttendeesReturnsCorrectUser() {
         // Given
         User user = new User("userId", "Joe");
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mapper.map(cursor)).thenReturn(participant);
-        when(participant.getUser()).thenReturn(user.getId());
+        when(mapper.map(cursor)).thenReturn(attendee);
+        when(attendee.getUser()).thenReturn(user.getId());
         when(userStore.getById(user.getId())).thenReturn(user);
 
         // When
-        List<User> users = store.getParticipants("abc");
+        List<User> users = store.getAttendees("abc");
 
         // Then
         assertNotNull(users);
@@ -90,17 +90,17 @@ public class ParticipantStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetParticipantsDoesNotReturnUserIfItDoesNotExist() {
+    public void testGetAttendeesDoesNotReturnUserIfItDoesNotExist() {
         // Given
         String userId = "userId";
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mapper.map(cursor)).thenReturn(participant);
-        when(participant.getUser()).thenReturn(userId);
+        when(mapper.map(cursor)).thenReturn(attendee);
+        when(attendee.getUser()).thenReturn(userId);
         when(userStore.getById(userId)).thenReturn(null);
         when(mapper.getTableName()).thenReturn(TABLE);
 
         // When
-        List<User> users = store.getParticipants("abc");
+        List<User> users = store.getAttendees("abc");
 
         // Then
         assertNotNull(users);
@@ -108,38 +108,38 @@ public class ParticipantStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetParticipantByExpenseAndUserReturnsNullIfNoParticipantExists() {
+    public void testGetAttendeeByExpenseAndUserReturnsNullIfNoAttendeeExists() {
         // Given
         when(cursor.moveToNext()).thenReturn(false);
 
         // When
-        Participant result = store.getParticipantByExpenseAndUser("expenseId", "userId");
+        Attendee result = store.getAttendeeByExpenseAndUser("expenseId", "userId");
 
         // Then
         assertNull(result);
     }
 
     @SmallTest
-    public void testGetParticipantByExpenseAndUserReturnsCorrectParticipant() {
+    public void testGetAttendeeByExpenseAndUserReturnsCorrectAttendee() {
         // Given
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mapper.map(cursor)).thenReturn(participant);
+        when(mapper.map(cursor)).thenReturn(attendee);
 
         // When
-        Participant result = store.getParticipantByExpenseAndUser("expenseId", "userId");
+        Attendee result = store.getAttendeeByExpenseAndUser("expenseId", "userId");
 
         // Then
-        assertEquals(participant, result);
+        assertEquals(attendee, result);
     }
 
     @SmallTest
-    public void testGetParticipantByExpenseAndUserHasCorrectWhereArgument() {
+    public void testGetAttendeeByExpenseAndUserHasCorrectWhereArgument() {
         // Given
         String expense = "expenseId";
         String user = "userId";
 
         // When
-        store.getParticipantByExpenseAndUser(expense, user);
+        store.getAttendeeByExpenseAndUser(expense, user);
 
         // Then
         verify(database, times(1)).query(anyString(), argThat(allOf(
