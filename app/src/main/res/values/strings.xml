@@ -16,4 +16,6 @@
     <string name="debts">Debts</string>
     <string name="set_user_name">Set your Username</string>
     <string name="set_user_name_description">Please provide your name:</string>
+    <string name="name">Name</string>
+    <string name="participants">Participants</string>
 </resources>

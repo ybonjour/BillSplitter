@@ -4,8 +4,24 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:text="@string/name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/event_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:text="@string/participants"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <GridView
+        android:id="@+id/user_grid"
+        android:numColumns="auto_fit"
+        android:columnWidth="60dp"
+        android:gravity="center"
+        android:layout_margin="5dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
     <Button
