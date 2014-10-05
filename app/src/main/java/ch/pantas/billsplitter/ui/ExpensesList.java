@@ -63,13 +63,6 @@ public class ExpensesList extends RoboActivity {
         setTitle(event.getName());
         reloadExpensesList(event);
         reloadDebtsList(event);
-        expensesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Expense expense = (Expense) adapterView.getAdapter().getItem(position);
-                activityStarter.startAddAttendees(ExpensesList.this, expense);
-            }
-        });
     }
 
     @Override

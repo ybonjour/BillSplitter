@@ -61,4 +61,10 @@ public class AttendeeStore extends BaseStore<Attendee> {
             return attendees.get(0);
         }
     }
+
+    public void removeAll(String expenseId) {
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(EXPENSE, expenseId);
+        removeAll(where);
+    }
 }

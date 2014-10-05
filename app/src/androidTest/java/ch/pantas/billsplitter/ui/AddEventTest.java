@@ -13,6 +13,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.closeSoftKeyboard;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
@@ -53,11 +54,14 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     }
 
     @LargeTest
-    public void testEventIsAddedIfSaveButtonIsPressed() {
+    public void testEventIsAddedIfSaveButtonIsPressed() throws InterruptedException {
         // Given
         String eventName = "An Event";
         getActivity();
         onView(withId(R.id.event_name)).perform(typeText(eventName));
+        closeSoftKeyboard();
+        // HACK: Sleep to await finish of keyboard close (animation can not be disabled)
+        Thread.sleep(40);
 
         // When
         onView(withText(R.string.save)).perform(click());

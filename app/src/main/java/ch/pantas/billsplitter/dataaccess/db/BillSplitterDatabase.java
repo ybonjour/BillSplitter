@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 
+import com.google.inject.Inject;
+
 import java.util.Map;
 
 import static android.util.Pair.create;
@@ -28,6 +30,13 @@ public class BillSplitterDatabase {
         checkNotNull(database, "BillSplitterDatabase must be initialized with a SQLiteDatabase");
 
         Pair<String, String[]> selection = createSelection(where);
+        return database.query(table, null, selection.first, selection.second, null, null, null);
+    }
+
+    public Cursor queryWithLike(String table, Map<String, String> where){
+        checkNotNull(database, "BillSplitterDatabase must be initialized with a SQLiteDatabase");
+
+        Pair<String, String[]> selection = createSelection(where, MatchType.LIKE);
         return database.query(table, null, selection.first, selection.second, null, null, null);
     }
 
@@ -56,7 +65,11 @@ public class BillSplitterDatabase {
         database.delete(tableName, selection.first, selection.second);
     }
 
-    private static Pair<String, String[]> createSelection(Map<String, String> whereClause) {
+    private static Pair<String, String[]> createSelection(Map<String, String> whereClause){
+        return createSelection(whereClause, MatchType.EQUAL);
+    }
+
+    private static Pair<String, String[]> createSelection(Map<String, String> whereClause, MatchType matchType) {
         if (whereClause == null) return create(null, null);
 
         StringBuilder selection = new StringBuilder();
@@ -69,11 +82,40 @@ public class BillSplitterDatabase {
             if(i > 0){
                 selection.append("and ");
             }
-            selection.append(column).append("= ? ");
-            selectionArgs[i] = value.toString();
+            selection.append(column);
+            selection.append(" ").append(matchType.getOperator());
+            selection.append(" ").append(matchType.getPlaceholder()).append(" ");
+            selectionArgs[i] = matchType.formatArgument(value.toString());
             i += 1;
         }
 
         return create(selection.toString(), selectionArgs);
+    }
+
+    public enum MatchType{
+        EQUAL("=", "?", "?"),
+        LIKE("LIKE", "?", "?%");
+
+        private String operator;
+        private String argumentPattern;
+        private String placeholder;
+
+        MatchType(String operator, String placeholder, String argumentPattern){
+            this.operator = operator;
+            this.argumentPattern = argumentPattern;
+            this.placeholder = placeholder;
+        }
+
+        public String getOperator(){
+            return operator;
+        }
+
+        public String formatArgument(String argument){
+            return argumentPattern.replace("?", argument);
+        }
+
+        public String getPlaceholder() {
+            return placeholder;
+        }
     }
 }

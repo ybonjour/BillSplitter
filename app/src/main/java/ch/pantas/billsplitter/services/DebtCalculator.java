@@ -13,6 +13,8 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.User;
 
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
+
 public class DebtCalculator {
     @Inject
     private ExpenseStore expenseStore;
@@ -24,6 +26,8 @@ public class DebtCalculator {
     private AttendeeStore attendeeStore;
 
     public List<Debt> calculateDebts(Event event) {
+        checkNotNull(event);
+
         List<Debt> debts = new LinkedList<Debt>();
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
         for (Expense expense : expenses) {

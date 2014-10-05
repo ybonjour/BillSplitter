@@ -18,4 +18,9 @@
     <string name="set_user_name_description">Please provide your name:</string>
     <string name="name">Name</string>
     <string name="participants">Participants</string>
+    <string name="add_participant">Add participant</string>
+    <string name="enter_username">Please enter a username</string>
+    <string name="cancel">Cancel</string>
+    <string name="recently_used">Recently Used</string>
+    <string name="attendees">Attendees</string>
 </resources>

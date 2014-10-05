@@ -20,9 +20,12 @@ import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -98,18 +101,6 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
         getActivity();
 
         // Then
-        onData(anything()).atPosition(0).check(matches(withText(expense.toString())));
-    }
-
-    @LargeTest
-    public void testClickingOnExpenseOpensAddAttendeesActivity() {
-        // Given
-        getActivity();
-
-        // When
-        onData(anything()).atPosition(0).perform(click());
-
-        // Then
-        activityStarter.startAddAttendees(any(Context.class), eq(expense));
+        onData(anything()).inAdapterView(withId(R.id.expenses_list)).atPosition(0).check(matches(withText(expense.toString())));
     }
 }

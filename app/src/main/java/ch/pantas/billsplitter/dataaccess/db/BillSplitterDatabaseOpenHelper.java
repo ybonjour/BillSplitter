@@ -28,6 +28,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         db.execSQL(EventTable.CREATE);
         db.execSQL(UserTable.CREATE);
         db.execSQL(ExpenseTable.CREATE);
+        db.execSQL(ParticipantTable.CREATE);
         db.execSQL(AttendeeTable.CREATE);
     }
 
@@ -92,6 +93,18 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         static final String CREATE = "CREATE TABLE " + TABLE + "("
                 + ID + " TEXT PRIMARY KEY, "
                 + EXPENSE + " TEXT,"
+                + USER + " TEXT);";
+    }
+
+    public class ParticipantTable extends Table {
+        public static final String TABLE = "Participant";
+
+        public static final String EVENT = "event";
+        public static final String USER = "user";
+
+        static final String CREATE = "CREATE TABLE " + TABLE + "("
+                + ID + " TEXT PRIMARY KEY, "
+                + EVENT + " TEXT,"
                 + USER + " TEXT);";
     }
 }

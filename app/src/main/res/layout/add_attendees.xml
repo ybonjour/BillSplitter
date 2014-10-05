@@ -4,23 +4,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <EditText
-            android:id="@+id/attendee_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-        <Button
-            android:onClick="onAdd"
-            android:text="@string/add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    <ListView
+    <GridView
         android:id="@+id/attendee_list"
+        android:numColumns="auto_fit"
+        android:columnWidth="60dp"
+        android:gravity="center"
+        android:layout_margin="5dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
     <Button

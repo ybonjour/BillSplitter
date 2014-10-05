@@ -28,5 +28,6 @@ public class BaseStoreTest extends BaseMockitoInstrumentationTest {
 
         when(databaseHelper.getDatabase()).thenReturn(database);
         when(database.query(anyString(), anyMap())).thenReturn(cursor);
+        when(database.queryWithLike(anyString(), anyMap())).thenReturn(cursor);
     }
 }

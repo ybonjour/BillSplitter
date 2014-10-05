@@ -71,6 +71,12 @@ public abstract class BaseStore<M extends Model> {
         return toModelList(cursor, mapper);
     }
 
+    protected List<M> getModelsByQueryWithLike(Map<String, String> where) {
+        BillSplitterDatabase db = dbHelper.getDatabase();
+        Cursor cursor = db.queryWithLike(mapper.getTableName(), where);
+        return toModelList(cursor, mapper);
+    }
+
     private static <M extends Model> List<M> toModelList(Cursor cursor, RowMapper<M> mapper) {
         ArrayList<M> models = new ArrayList<M>();
         while (cursor.moveToNext()) {
