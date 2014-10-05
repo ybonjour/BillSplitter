@@ -13,6 +13,8 @@ import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
+import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE;
+
 public class AddEvent extends RoboActivity {
 
     @InjectView(R.id.event_name)
@@ -29,6 +31,12 @@ public class AddEvent extends RoboActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_event);
         setTitle(R.string.add_event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getWindow().setSoftInputMode(SOFT_INPUT_STATE_VISIBLE);
     }
 
     public void onNext(View v) {

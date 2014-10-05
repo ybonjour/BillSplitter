@@ -27,6 +27,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import static android.view.View.GONE;
+import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
@@ -81,6 +82,8 @@ public class AddParticipants extends RoboActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getWindow().setSoftInputMode(SOFT_INPUT_STATE_HIDDEN);
+
         String eventId = getIntent().getStringExtra(EVENT_ID);
         event = eventStore.getById(eventId);
         checkNotNull(event);
@@ -146,12 +149,12 @@ public class AddParticipants extends RoboActivity {
         userNameField.setText("");
     }
 
-    private void enableSearchMode(){
+    private void enableSearchMode() {
         participantContainer.setVisibility(GONE);
         saveButton.setVisibility(GONE);
     }
 
-    private void disableSearchMode(){
+    private void disableSearchMode() {
         participantContainer.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.VISIBLE);
     }

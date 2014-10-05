@@ -15,7 +15,9 @@
         android:maxLines="1"
         android:inputType="textCapWords"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <requestFocus />
+    </EditText>
 
     <Button
         android:text="@string/next"
