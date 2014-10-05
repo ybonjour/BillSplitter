@@ -23,4 +23,6 @@
     <string name="cancel">Cancel</string>
     <string name="recently_used">Recently Used</string>
     <string name="attendees">Attendees</string>
+    <string name="add_event_help">Please provide a name for the new event</string>
+    <string name="next">Next</string>
 </resources>

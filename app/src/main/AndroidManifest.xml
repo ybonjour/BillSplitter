@@ -18,18 +18,18 @@
         </activity>
         <activity
             android:name="ch.pantas.billsplitter.ui.EventList"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ch.pantas.billsplitter.ui.AddEvent"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ch.pantas.billsplitter.ui.AddParticipants"
+            android:screenOrientation="portrait" />
         <activity
             android:name="ch.pantas.billsplitter.ui.ExpensesList"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ch.pantas.billsplitter.ui.AddEvent"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name="ch.pantas.billsplitter.ui.AddExpense"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="ch.pantas.billsplitter.ui.AddAttendees"
             android:screenOrientation="portrait" />
     </application>
 

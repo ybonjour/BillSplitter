@@ -1,5 +1,6 @@
 package ch.pantas.billsplitter.ui;
 
+import android.content.Context;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.hamcrest.Description;
@@ -10,10 +11,10 @@ import org.mockito.Mock;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.closeSoftKeyboard;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
@@ -21,6 +22,7 @@ import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewA
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,12 +30,15 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
 public class AddEventTest extends BaseEspressoTest<AddEvent> {
 
+    @Mock
+    private EventStore eventStore;
+
+    @Mock
+    private ActivityStarter activityStarter;
+
     public AddEventTest() {
         super(AddEvent.class);
     }
-
-    @Mock
-    private EventStore eventStore;
 
     @LargeTest
     public void testCorrectTitleIsDisplayed() {
@@ -45,46 +50,57 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     }
 
     @LargeTest
-    public void testSaveButtonIsDisplayed() {
+    public void testNextButtonIsDisplayed() {
         // When
         getActivity();
 
         // Then
-        onView(withText(R.string.save)).check(matches(isDisplayed()));
+        onView(withText(R.string.next)).check(matches(isDisplayed()));
     }
 
     @LargeTest
-    public void testEventIsAddedIfSaveButtonIsPressed() throws InterruptedException {
+    public void testEventIsAddedIfNextButtonIsPressed() {
         // Given
         String eventName = "An Event";
         getActivity();
         onView(withId(R.id.event_name)).perform(typeText(eventName));
-        closeSoftKeyboard();
-        // HACK: Sleep to await finish of keyboard close (animation can not be disabled)
-        Thread.sleep(40);
 
         // When
-        onView(withText(R.string.save)).perform(click());
+        onView(withText(R.string.next)).perform(click());
 
         // Then
-        verify(eventStore, times(1)).persist(argThat(newEventWithName(eventName)));
+        verify(eventStore, times(1)).persist(argThat(newEventWith(eventName)));
     }
 
     @LargeTest
-    public void testEventIsNotAddedIfSaveButtonIsPressedWithEmptyData() {
+    public void testAddParticipantsIsStartedIfNextButtonIsPressed() {
+        // Given
+        String eventName = "An Event";
+        getActivity();
+        onView(withId(R.id.event_name)).perform(typeText(eventName));
+
+        // When
+        onView(withText(R.string.next)).perform(click());
+
+        // Then
+        verify(activityStarter, times(1)).startAddParticipants(any(Context.class), any(Event.class));
+    }
+
+    @LargeTest
+    public void testEventIsNotAddedIfNextButtonIsPressedWithEmptyData() {
         // Given
         getActivity();
 
         // When
-        onView(withText(R.string.save)).perform(click());
+        onView(withText(R.string.next)).perform(click());
 
         // Then
         verifyZeroInteractions(eventStore);
         onView(withId(R.id.event_name)).check(hasBackgroundColor(R.color.error_color));
-        onView(withId(R.id.event_name)).check(matches(isDisplayed()));
     }
 
-    private static Matcher<Event> newEventWithName(final String eventName) {
+
+    private static Matcher<Event> newEventWith(final String eventName) {
         return new TypeSafeMatcher<Event>() {
             @Override
             public boolean matchesSafely(Event event) {
@@ -93,9 +109,10 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("new event with name ");
+                description.appendText("New event with name ");
                 description.appendText(eventName);
             }
         };
     }
+
 }
