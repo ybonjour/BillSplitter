@@ -9,6 +9,7 @@ import java.util.Map;
 import ch.pantas.billsplitter.dataaccess.rowmapper.ExpenseRowMapper;
 import ch.pantas.billsplitter.model.Expense;
 
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.ID;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.EVENT;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.USER;
 
@@ -31,9 +32,15 @@ public class ExpenseStore extends BaseStore<Expense> {
         return getModelsByQuery(where);
     }
 
-    public void removeAll(String expenseId) {
+    public void remove(String expenseId) {
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, expenseId);
+        where.put(ID, expenseId);
+        removeAll(where);
+    }
+
+    public void removeAll(String eventId) {
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(EVENT, eventId);
         removeAll(where);
     }
 }

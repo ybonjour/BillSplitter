@@ -32,6 +32,8 @@ import static java.lang.Double.parseDouble;
 
 public class AddExpense extends RoboActivity {
 
+    public static final String ARGUMENT_EXPENSE_ID = "expense_id";
+
     @InjectView(R.id.expense_description)
     private EditText descriptionField;
 

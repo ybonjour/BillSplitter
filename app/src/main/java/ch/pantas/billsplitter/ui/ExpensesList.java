@@ -1,10 +1,13 @@
 package ch.pantas.billsplitter.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -12,6 +15,8 @@ import com.google.inject.Inject;
 
 import java.util.List;
 
+import ch.pantas.billsplitter.dataaccess.AttendeeStore;
+import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -42,6 +47,12 @@ public class ExpensesList extends RoboActivity {
     private EventStore eventStore;
 
     @Inject
+    private AttendeeStore attendeeStore;
+
+    @Inject
+    private ParticipantStore participantStore;
+
+    @Inject
     private DebtCalculator debtCalculator;
 
     @Inject
@@ -65,6 +76,32 @@ public class ExpensesList extends RoboActivity {
         setTitle(event.getName());
         reloadExpensesList(event);
         reloadDebtsList(event);
+
+        expensesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                final Expense expense = (Expense) expensesList.getAdapter().getItem(position);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(adapterView.getContext());
+                builder.setTitle("Edit or delete this expense?");
+
+                builder.setMessage(expense.toString());
+                builder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        activityStarter.startEditExpense(ExpensesList.this, expense);
+                    }
+                });
+                builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        expenseStore.remove(expense.getId());
+                        attendeeStore.removeAll(expense.getId());
+                        reloadExpensesList(event);
+                        reloadDebtsList(event);
+                    }
+                });
+                builder.show();
+                }
+        });
     }
 
     @Override
@@ -105,7 +142,14 @@ public class ExpensesList extends RoboActivity {
                 activityStarter.startEditEvent(this, event);
                 return true;
             case R.id.action_delete_event:
+                // Delete event, participants of event, attendees of all expenses, all expenses
                 eventStore.removeAll(event.getId());
+                List<Expense> expensesOfEvent = expenseStore.getExpensesOfEvent(event.getId());
+                for (Expense e : expensesOfEvent) {
+                    attendeeStore.removeAll(e.getId());
+                }
+                expenseStore.removeAll(event.getId());
+                participantStore.removeAll(event.getId());
                 finish();
                 return true;
             default:
