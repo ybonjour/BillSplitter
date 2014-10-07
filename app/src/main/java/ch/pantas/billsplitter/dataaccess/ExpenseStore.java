@@ -30,4 +30,10 @@ public class ExpenseStore extends BaseStore<Expense> {
         where.put(USER, userId);
         return getModelsByQuery(where);
     }
+
+    public void removeAll(String expenseId) {
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(EVENT, expenseId);
+        removeAll(where);
+    }
 }

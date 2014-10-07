@@ -14,6 +14,8 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE;
+import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class AddEvent extends RoboActivity {
 
@@ -26,11 +28,25 @@ public class AddEvent extends RoboActivity {
     @Inject
     private ActivityStarter activityStarter;
 
+    Event event;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_event);
-        setTitle(R.string.add_event);
+
+        String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
+        if (eventId == null) {
+            // Add Event
+            setTitle(R.string.add_event);
+        }
+        else {
+            // Edit Event
+            event = eventStore.getById(eventId);
+            checkNotNull(event);
+            setTitle("Edit " + event.getName());
+            eventNameField.setText(event.getName());
+        }
     }
 
     @Override
@@ -44,7 +60,12 @@ public class AddEvent extends RoboActivity {
         if (eventName.isEmpty()) {
             eventNameField.setBackgroundColor(getResources().getColor(R.color.error_color));
         } else {
-            Event event = new Event(eventName);
+            if (event == null) {
+                event = new Event(eventName);
+            }
+            else {
+                event.setName(eventName);
+            }
             eventStore.persist(event);
             activityStarter.startAddParticipants(this, event);
             finish();

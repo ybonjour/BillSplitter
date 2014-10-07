@@ -26,6 +26,15 @@ public class ActivityStarter {
         context.startActivity(intent);
     }
 
+    public void startEditEvent(Context context, Event event) {
+        checkNotNull(context);
+        checkNotNull(event);
+
+        Intent intent = new Intent(context, AddEvent.class);
+        intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
+        context.startActivity(intent);
+    }
+
     public void startExpensesList(Context context, Event event) {
         checkNotNull(context);
         checkNotNull(event);

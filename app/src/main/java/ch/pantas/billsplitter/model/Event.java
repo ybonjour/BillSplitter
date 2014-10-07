@@ -4,7 +4,7 @@ import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class Event extends Model {
-    private final String name;
+    private String name;
 
     public Event(String id, String name) {
         super(id);
@@ -24,6 +24,8 @@ public class Event extends Model {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) { this.name = name; }
 
     @Override
     public String toString() {

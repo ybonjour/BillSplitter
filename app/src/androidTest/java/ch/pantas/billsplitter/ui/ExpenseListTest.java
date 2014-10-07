@@ -17,6 +17,7 @@ import ch.yvu.myapplication.R;
 import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
@@ -102,5 +103,37 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
 
         // Then
         onData(anything()).inAdapterView(withId(R.id.expenses_list)).atPosition(0).check(matches(withText(expense.toString())));
+    }
+
+    @LargeTest
+    public void testMenuEditOpensEventEdit() {
+        // When
+        getActivity();
+
+        // Open the overflow menu OR open the options menu,
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Click edit event
+        onView(withText(R.string.action_edit_event)).perform(click());
+
+        // Verify that edit event view has opened
+        verify(activityStarter, times(1)).startEditEvent(any(Context.class), eq(event));
+    }
+
+    @LargeTest
+    public void testMenuDeleteRemovesEvent() {
+        // When
+        getActivity();
+
+        // Open the overflow menu OR open the options menu,
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Click edit event
+        onView(withText(R.string.action_delete_event)).perform(click());
+
+        // Verify that edit event view has opened
+        verify(activityStarter, times(1)).startEventList(any(Context.class));
+        verify(eventStore, times(1)).removeAll(event.getId());
+        verify(expenseStore, times(1)).removeAll(event.getId());
     }
 }

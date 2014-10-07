@@ -41,4 +41,10 @@ public class ParticipantStore extends BaseStore<Participant> {
 
         return users;
     }
+
+    public void removeAll(String eventId) {
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(EVENT, eventId);
+        removeAll(where);
+    }
 }

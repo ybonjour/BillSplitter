@@ -1,6 +1,7 @@
 package ch.pantas.billsplitter.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.hamcrest.Description;
@@ -15,6 +16,7 @@ import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
+import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
@@ -24,9 +26,11 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 public class AddEventTest extends BaseEspressoTest<AddEvent> {
 
@@ -99,6 +103,40 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
         onView(withId(R.id.event_name)).check(hasBackgroundColor(R.color.error_color));
     }
 
+    @LargeTest
+    public void testEditEventCurrentEventNameDisplayed() {
+        // Given
+        Event event = new Event("abc", "testname");
+        Intent intent = new Intent();
+        intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
+        setActivityIntent(intent);
+        when(eventStore.getById(event.getId())).thenReturn(event);
+
+        // When
+        getActivity();
+
+        // Then
+        onView(withId(R.id.event_name)).check(matches(withText(event.getName())));
+
+    }
+
+    @LargeTest
+    public void testEditParticipantsIsStartedIfNextButtonIsPressed() {
+        // Given
+        Event event = new Event("abc", "testname");
+        Intent intent = new Intent();
+        intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
+        setActivityIntent(intent);
+        when(eventStore.getById(event.getId())).thenReturn(event);
+
+        // When
+        getActivity();
+        onView(withText(R.string.next)).perform(click());
+
+        // Then
+        verify(eventStore, times(1)).persist(eq(event));
+        verify(activityStarter, times(1)).startAddParticipants(any(Context.class), eq(event));
+    }
 
     private static Matcher<Event> newEventWith(final String eventName) {
         return new TypeSafeMatcher<Event>() {

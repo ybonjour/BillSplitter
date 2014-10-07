@@ -76,7 +76,10 @@ public class AddParticipants extends RoboActivity {
         setTitle(R.string.add_event);
 
         User me = userStore.getUserWithName(sharedPreferenceService.getUserName());
-        participantManager.addFixedParticipant(me);
+        if (!participantManager.getParticipants().contains(me))
+            participantManager.addFixedParticipant(me);
+
+        reloadLists();
     }
 
     @Override
@@ -87,6 +90,9 @@ public class AddParticipants extends RoboActivity {
         String eventId = getIntent().getStringExtra(EVENT_ID);
         event = eventStore.getById(eventId);
         checkNotNull(event);
+
+        List<User> participants = participantStore.getParticipants(event.getId());
+        for (User user : participants) participantManager.addParticipant(user);
 
         reloadLists();
         userGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -136,6 +142,7 @@ public class AddParticipants extends RoboActivity {
 
     public void onSave(View v) {
 
+        participantStore.removeAll(event.getId());
         for (User user : participantManager.getParticipants()) {
             Participant participant = new Participant(user.getId(), event.getId());
             participantStore.persist(participant);
