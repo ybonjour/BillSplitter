@@ -5,9 +5,10 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class Expense extends Model {
     private final String eventId;
-    private final String payerId;
-    private final String description;
-    private final double amount;
+
+    private String payerId;
+    private String description;
+    private double amount;
 
     public Expense(String id, String eventId, String payerId, String description, double amount) {
         super(id);
@@ -50,4 +51,16 @@ public class Expense extends Model {
     public String getDescription() { return description; }
 
     public double getAmount() { return amount; }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setPayerId(String payerId) {
+        this.payerId = payerId;
+    }
 }

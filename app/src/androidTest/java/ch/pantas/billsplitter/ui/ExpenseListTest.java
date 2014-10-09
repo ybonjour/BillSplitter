@@ -25,7 +25,6 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -134,6 +133,6 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
         // Verify that edit event view has opened
         verify(activityStarter, times(1)).startEventList(any(Context.class));
         verify(eventStore, times(1)).removeAll(event.getId());
-        verify(expenseStore, times(1)).removeAll(event.getId());
+        verify(expenseStore, times(1)).remove(event.getId());
     }
 }

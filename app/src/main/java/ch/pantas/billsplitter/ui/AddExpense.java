@@ -71,6 +71,7 @@ public class AddExpense extends RoboActivity {
     private AttendeeAdapter attendeeAdapter;
 
     private Event event;
+    private Expense expense;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +83,41 @@ public class AddExpense extends RoboActivity {
     protected void onResume() {
         super.onResume();
         String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
-        event = eventStore.getById(eventId);
-        setTitle(event.getName());
+        if (eventId != null) {
+            // Add expense
+            event = eventStore.getById(eventId);
+            setTitle(event.getName());
 
-        loadPayerList();
-        loadAttendeesList();
+            loadPayerList();
+            loadAttendeesList();
+        }
+
+        String expenseId = getIntent().getStringExtra(ARGUMENT_EXPENSE_ID);
+        if (expenseId != null) {
+            // Edit expense
+            expense = expenseStore.getById(expenseId);
+            eventId = expense.getEventId();
+            event = eventStore.getById(eventId);
+            setTitle(event.getName());
+
+            // Initialize text fields
+            descriptionField.setText(expense.getDescription());
+            amountField.setText(String.valueOf(expense.getAmount()));
+
+            // Normally initialize payer and attendee list
+            loadPayerList();
+
+            // Select saved payer
+            User payer = userStore.getById(expense.getPayerId());
+            selectPayer(payer);
+
+            // Select already saved attendees
+            List<User> attendees = attendeeStore.getAttendees(expenseId);
+            attendeeAdapter.deselectAll();
+            for (User user : attendees) {
+                attendeeAdapter.select(user);
+            }
+        }
 
         payerGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -123,7 +154,17 @@ public class AddExpense extends RoboActivity {
             return;
         }
 
-        Expense expense = new Expense(event.getId(), payer.getId(), description, amount);
+        if (expense == null) {
+            // New expense
+            expense = new Expense(event.getId(), payer.getId(), description, amount);
+        }
+        else {
+            // Edit existing expense
+            expense.setPayerId(payer.getId());
+            expense.setDescription(description);
+            expense.setAmount(amount);
+        }
+
         expenseStore.persist(expense);
 
         attendeeStore.removeAll(expense.getId());
