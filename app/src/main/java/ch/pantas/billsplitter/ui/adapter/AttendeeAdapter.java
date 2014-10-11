@@ -42,6 +42,12 @@ public class AttendeeAdapter extends BaseAdapter {
         }
     }
 
+    public void deselectAll() {
+        for (User user : users) {
+            deselect(user);
+        }
+    }
+
     public void select(User user) {
         checkNotNull(user);
 
