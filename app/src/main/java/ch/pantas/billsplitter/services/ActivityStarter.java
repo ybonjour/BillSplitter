@@ -60,7 +60,6 @@ public class ActivityStarter {
         checkNotNull(expense);
 
         Intent intent = new Intent(context, AddExpense.class);
-        intent.putExtra(ARGUMENT_EVENT_ID, expense.getEventId());
         intent.putExtra(ARGUMENT_EXPENSE_ID, expense.getId());
         context.startActivity(intent);
     }
