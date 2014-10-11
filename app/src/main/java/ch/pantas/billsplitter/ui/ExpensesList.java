@@ -17,6 +17,7 @@ import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
+import ch.pantas.billsplitter.model.ExpensePresentation;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -24,6 +25,7 @@ import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
+import ch.pantas.billsplitter.services.ExpenseService;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -42,6 +44,9 @@ public class ExpensesList extends RoboActivity {
 
     @Inject
     private ExpenseStore expenseStore;
+
+    @Inject
+    private ExpenseService expenseService;
 
     @Inject
     private EventStore eventStore;
@@ -80,7 +85,8 @@ public class ExpensesList extends RoboActivity {
         expensesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                final Expense expense = (Expense) expensesList.getAdapter().getItem(position);
+                ExpensePresentation expensePresentation = (ExpensePresentation) expensesList.getItemAtPosition(position);
+                final Expense expense = expensePresentation.getExpense();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(adapterView.getContext());
                 builder.setTitle("Edit or delete this expense?");
@@ -93,7 +99,7 @@ public class ExpensesList extends RoboActivity {
                 });
                 builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        expenseStore.remove(expense.getId());
+                        expenseStore.removeById(expense.getId());
                         attendeeStore.removeAll(expense.getId());
                         reloadExpensesList(event);
                         reloadDebtsList(event);
@@ -111,8 +117,8 @@ public class ExpensesList extends RoboActivity {
     }
 
     private void reloadExpensesList(Event event){
-        List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
-        ArrayAdapter<Expense> adapter = new ArrayAdapter<Expense>(this, android.R.layout.simple_list_item_1, expenses);
+        List<ExpensePresentation> expenses = expenseService.getExpensePresentations(event.getId());
+        ArrayAdapter<ExpensePresentation> adapter = new ArrayAdapter<ExpensePresentation>(this, android.R.layout.simple_list_item_1, expenses);
         expensesList.setAdapter(adapter);
     }
 
@@ -128,7 +134,6 @@ public class ExpensesList extends RoboActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.expenses_list, menu);
         return super.onCreateOptionsMenu(menu);
@@ -136,18 +141,18 @@ public class ExpensesList extends RoboActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_edit_event:
                 activityStarter.startEditEvent(this, event);
                 return true;
             case R.id.action_delete_event:
-                // Delete event, participants of event, attendees of all expenses, all expenses
-                eventStore.removeAll(event.getId());
+                eventStore.removeById(event.getId());
+
                 List<Expense> expensesOfEvent = expenseStore.getExpensesOfEvent(event.getId());
-                for (Expense e : expensesOfEvent) {
-                    attendeeStore.removeAll(e.getId());
+                for (Expense expense : expensesOfEvent) {
+                    attendeeStore.removeAll(expense.getId());
                 }
+
                 expenseStore.removeAll(event.getId());
                 participantStore.removeAll(event.getId());
                 finish();

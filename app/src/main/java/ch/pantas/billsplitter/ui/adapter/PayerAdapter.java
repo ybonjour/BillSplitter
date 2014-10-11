@@ -47,11 +47,11 @@ public class PayerAdapter extends BaseAdapter{
 
         if(selectedUser == null) return result;
 
-            for(User user : users) {
-                if(!isSelected(user)){
-                    result.add(user);
-                }
+        for(User user : users) {
+            if(!isSelected(user)){
+                result.add(user);
             }
+        }
 
         return result;
     }

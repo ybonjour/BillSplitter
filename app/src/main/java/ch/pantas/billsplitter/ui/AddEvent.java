@@ -37,11 +37,9 @@ public class AddEvent extends RoboActivity {
 
         String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
         if (eventId == null) {
-            // Add Event
             setTitle(R.string.add_event);
         }
         else {
-            // Edit Event
             event = eventStore.getById(eventId);
             checkNotNull(event);
             setTitle("Edit " + event.getName());

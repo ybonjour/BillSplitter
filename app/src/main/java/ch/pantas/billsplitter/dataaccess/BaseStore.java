@@ -60,6 +60,13 @@ public abstract class BaseStore<M extends Model> {
         }
     }
 
+    public void removeById(String id){
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(ID, id);
+
+        removeAll(where);
+    }
+
     public void removeAll(Map<String, String> where) {
         BillSplitterDatabase db = dbHelper.getDatabase();
         db.removeAll(mapper.getTableName(), where);

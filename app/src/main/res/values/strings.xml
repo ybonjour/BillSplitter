@@ -26,4 +26,5 @@
     <string name="attendees">Attendees</string>
     <string name="add_event_help">Please provide a name for the new event</string>
     <string name="next">Next</string>
+    <string name="expenseText" formatted="false">%s paid %.2f for %s</string>
 </resources>

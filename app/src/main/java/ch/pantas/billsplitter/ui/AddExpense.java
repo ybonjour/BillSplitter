@@ -1,5 +1,6 @@
 package ch.pantas.billsplitter.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -82,41 +83,15 @@ public class AddExpense extends RoboActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
-        if (eventId != null) {
-            // Add expense
-            event = eventStore.getById(eventId);
-            setTitle(event.getName());
 
-            loadPayerList();
-            loadAttendeesList();
-        }
+        extractDataFromIntent(getIntent());
 
-        String expenseId = getIntent().getStringExtra(ARGUMENT_EXPENSE_ID);
-        if (expenseId != null) {
-            // Edit expense
-            expense = expenseStore.getById(expenseId);
-            eventId = expense.getEventId();
-            event = eventStore.getById(eventId);
-            setTitle(event.getName());
+        setTitle(event.getName());
 
-            // Initialize text fields
-            descriptionField.setText(expense.getDescription());
-            amountField.setText(String.valueOf(expense.getAmount()));
-
-            // Normally initialize payer and attendee list
-            loadPayerList();
-
-            // Select saved payer
-            User payer = userStore.getById(expense.getPayerId());
-            selectPayer(payer);
-
-            // Select already saved attendees
-            List<User> attendees = attendeeStore.getAttendees(expenseId);
-            attendeeAdapter.deselectAll();
-            for (User user : attendees) {
-                attendeeAdapter.select(user);
-            }
+        if (expense == null) {
+            setUpAddScreen();
+        } else {
+            setUpEditScreen();
         }
 
         payerGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -124,6 +99,7 @@ public class AddExpense extends RoboActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 User user = (User) adapterView.getItemAtPosition(i);
                 selectPayer(user);
+                selectAllAttendees();
             }
         });
 
@@ -155,11 +131,8 @@ public class AddExpense extends RoboActivity {
         }
 
         if (expense == null) {
-            // New expense
             expense = new Expense(event.getId(), payer.getId(), description, amount);
-        }
-        else {
-            // Edit existing expense
+        } else {
             expense.setPayerId(payer.getId());
             expense.setDescription(description);
             expense.setAmount(amount);
@@ -177,6 +150,52 @@ public class AddExpense extends RoboActivity {
         finish();
     }
 
+    private void extractDataFromIntent(Intent intent) {
+        checkNotNull(intent);
+
+        String eventId;
+        if (intent.hasExtra(ARGUMENT_EVENT_ID)) {
+            eventId = intent.getStringExtra(ARGUMENT_EVENT_ID);
+        } else if (intent.hasExtra(ARGUMENT_EXPENSE_ID)) {
+            String expenseId = intent.getStringExtra(ARGUMENT_EXPENSE_ID);
+            expense = expenseStore.getById(expenseId);
+            eventId = expense.getEventId();
+        } else {
+            throw new IllegalStateException("Intent must either have " + ARGUMENT_EVENT_ID + " or " + ARGUMENT_EXPENSE_ID + " set.");
+        }
+
+        checkNotNull(eventId);
+
+        event = eventStore.getById(eventId);
+    }
+
+    private void setUpEditScreen() {
+        checkNotNull(expense);
+
+        descriptionField.setText(expense.getDescription());
+        amountField.setText(String.valueOf(expense.getAmount()));
+
+        loadPayerList();
+        User payer = userStore.getById(expense.getPayerId());
+        selectPayer(payer);
+
+        loadAttendeesList();
+        List<User> attendees = attendeeStore.getAttendees(expense.getId());
+        for (User user : attendees) {
+            attendeeAdapter.select(user);
+        }
+    }
+
+    private void setUpAddScreen() {
+        loadPayerList();
+        User me = userStore.getUserWithName(sharedPreferenceService.getUserName());
+        checkNotNull(me);
+        payerAdapter.select(me);
+
+        loadAttendeesList();
+        selectAllAttendees();
+    }
+
     private void toggleAttendee(User user) {
         attendeeAdapter.toggle(user);
         attendeesGrid.invalidateViews();
@@ -188,19 +207,20 @@ public class AddExpense extends RoboActivity {
         loadAttendeesList();
     }
 
+    private void selectAllAttendees(){
+        attendeeAdapter.selectAll();
+        attendeesGrid.invalidateViews();
+    }
+
     private void loadAttendeesList() {
         List<User> attendees = participantStore.getParticipants(event.getId());
         attendees = payerAdapter.filterOutSelectedUser(attendees);
         attendeeAdapter.setUsers(attendees);
-        attendeeAdapter.selectAll();
         attendeesGrid.setAdapter(attendeeAdapter);
     }
 
     private void loadPayerList() {
         payerAdapter.setUsers(participantStore.getParticipants(event.getId()));
-        User me = userStore.getUserWithName(sharedPreferenceService.getUserName());
-        checkNotNull(me);
-        payerAdapter.select(me);
         payerGrid.setAdapter(payerAdapter);
     }
 }

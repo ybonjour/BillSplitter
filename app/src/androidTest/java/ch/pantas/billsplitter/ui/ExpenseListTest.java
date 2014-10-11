@@ -6,6 +6,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import org.mockito.Mock;
 
+import ch.pantas.billsplitter.dataaccess.AttendeeStore;
+import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
@@ -39,6 +41,12 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
 
     @Mock
     private EventStore eventStore;
+
+    @Mock
+    private ParticipantStore participantStore;
+
+    @Mock
+    private AttendeeStore attendeeStore;
 
     @Mock
     private ActivityStarter activityStarter;
@@ -106,33 +114,30 @@ public class ExpenseListTest extends BaseEspressoTest<ExpensesList> {
 
     @LargeTest
     public void testMenuEditOpensEventEdit() {
-        // When
+        // Given
         getActivity();
-
-        // Open the overflow menu OR open the options menu,
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-        // Click edit event
+        // When
         onView(withText(R.string.action_edit_event)).perform(click());
 
-        // Verify that edit event view has opened
+        // Then
         verify(activityStarter, times(1)).startEditEvent(any(Context.class), eq(event));
     }
 
     @LargeTest
     public void testMenuDeleteRemovesEvent() {
-        // When
+        // Given
         getActivity();
-
-        // Open the overflow menu OR open the options menu,
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-        // Click edit event
+        // When
         onView(withText(R.string.action_delete_event)).perform(click());
 
-        // Verify that edit event view has opened
-        verify(activityStarter, times(1)).startEventList(any(Context.class));
-        verify(eventStore, times(1)).removeAll(event.getId());
-        verify(expenseStore, times(1)).remove(event.getId());
+        // Then
+        verify(eventStore, times(1)).removeById(event.getId());
+        verify(expenseStore, times(1)).removeAll(event.getId());
+        verify(participantStore, times(1)).removeAll(event.getId());
+        verify(attendeeStore, times(1)).removeAll(expense.getId());
     }
 }
