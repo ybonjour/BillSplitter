@@ -10,12 +10,12 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.ui.AddEvent;
 import ch.pantas.billsplitter.ui.AddParticipants;
 import ch.pantas.billsplitter.ui.AddExpense;
+import ch.pantas.billsplitter.ui.EventDetails;
 import ch.pantas.billsplitter.ui.EventList;
-import ch.pantas.billsplitter.ui.ExpensesList;
 
 import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;
-import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
 import static ch.pantas.billsplitter.ui.AddExpense.ARGUMENT_EXPENSE_ID;
+import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 @Singleton
@@ -41,7 +41,7 @@ public class ActivityStarter {
         checkNotNull(context);
         checkNotNull(event);
 
-        Intent intent = new Intent(context, ExpensesList.class);
+        Intent intent = new Intent(context, EventDetails.class);
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         context.startActivity(intent);
     }

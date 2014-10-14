@@ -26,11 +26,22 @@
             android:name="ch.pantas.billsplitter.ui.AddParticipants"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ch.pantas.billsplitter.ui.ExpensesList"
-            android:screenOrientation="portrait" />
+            android:name="ch.pantas.billsplitter.ui.EventDetails"
+            android:parentActivityName="ch.pantas.billsplitter.ui.EventList"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.pantas.billsplitter.ui.EventList" />
+        </activity>
         <activity
             android:name="ch.pantas.billsplitter.ui.AddExpense"
-            android:screenOrientation="portrait" />
+            android:parentActivityName="ch.pantas.billsplitter.ui.EventDetails"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.pantas.billsplitter.ui.EventDetails" />
+        </activity>
     </application>
 
 </manifest>

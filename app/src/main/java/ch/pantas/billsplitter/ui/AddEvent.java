@@ -14,7 +14,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE;
-import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
+import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class AddEvent extends RoboActivity {

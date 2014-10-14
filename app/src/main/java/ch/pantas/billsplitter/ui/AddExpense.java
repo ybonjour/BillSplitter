@@ -27,7 +27,7 @@ import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
-import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
+import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static java.lang.Double.parseDouble;
 

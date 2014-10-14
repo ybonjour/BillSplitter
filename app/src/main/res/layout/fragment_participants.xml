@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:src="@android:drawable/ic_menu_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/user_name"
+            android:hint="@string/add_participant"
+            android:layout_weight="1"
+            android:inputType="textCapWords"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/participant_container"
+        android:background="@drawable/participants_background"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="@string/participants"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <GridView
+            android:id="@+id/participant_grid"
+            android:numColumns="auto_fit"
+            android:columnWidth="60dp"
+            android:gravity="center"
+            android:layout_margin="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <GridView
+        android:id="@+id/user_grid"
+        android:numColumns="auto_fit"
+        android:columnWidth="60dp"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
