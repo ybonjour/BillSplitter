@@ -20,6 +20,7 @@ import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
 import ch.yvu.myapplication.R;
@@ -64,6 +65,9 @@ public class AddParticipants extends RoboActivity {
 
     @Inject
     private ParticipantManager participantManager;
+
+    @Inject
+    private ActivityStarter activityStarter;
 
     private String newUserName;
 
@@ -148,6 +152,7 @@ public class AddParticipants extends RoboActivity {
             participantStore.persist(participant);
         }
 
+        activityStarter.startEventDetails(this, event);
         finish();
     }
 
