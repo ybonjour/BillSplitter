@@ -5,8 +5,10 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import org.mockito.Mock;
 
+import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
+import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.yvu.myapplication.R;
@@ -21,10 +23,10 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 public class LoginTest extends BaseEspressoTest<Login> {
@@ -36,6 +38,9 @@ public class LoginTest extends BaseEspressoTest<Login> {
 
     @Mock
     private ActivityStarter activityStarter;
+
+    @Mock
+    private EventStore eventStore;
 
     public LoginTest() {
         super(Login.class);
@@ -108,7 +113,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-    public void testEventListIsStartedWhenUsernameIsAlreadySet(){
+     public void testEventListIsStartedWhenUsernameIsAlreadySet(){
         // Given
         when(preferenceService.getUserName()).thenReturn("Joe");
 
@@ -119,4 +124,31 @@ public class LoginTest extends BaseEspressoTest<Login> {
         verify(activityStarter, times(1)).startEventList(any(Context.class));
     }
 
+    @LargeTest
+    public void testEventListIsStartedWhenNoEventIdIsAlreadySet(){
+        // Given
+        when(preferenceService.getUserName()).thenReturn("Joe");
+        when(preferenceService.getActiveEventId()).thenReturn(null);
+
+        // When
+        getActivity();
+
+        // Then
+        verify(activityStarter, times(1)).startEventList(any(Context.class));
+    }
+
+    @LargeTest
+    public void testEventDetailIsStartedWhenEventIdIsAlreadySet(){
+        // Given
+        when(preferenceService.getUserName()).thenReturn("Joe");
+        Event event = new Event("eventId", "eventName");
+        when(preferenceService.getActiveEventId()).thenReturn(event.getId());
+        when(eventStore.getById(event.getId())).thenReturn(event);
+
+        // When
+        getActivity();
+
+        // Then
+        verify(activityStarter, times(1)).startEventDetails(any(Context.class), eq(event));
+    }
 }

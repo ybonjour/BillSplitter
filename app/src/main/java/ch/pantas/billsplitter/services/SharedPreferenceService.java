@@ -12,6 +12,7 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 public class SharedPreferenceService {
 
     public static final String USER_NAME = "USER_NAME";
+    public static final String ACTIVE_EVENT_ID = "ACTIVE_EVENT_ID";
 
     @Inject
     private SharedPreferences preferences;
@@ -28,4 +29,15 @@ public class SharedPreferenceService {
     public String getUserName() {
         return preferences.getString(USER_NAME, null);
     }
+
+    public void storeActiveEventId(String eventId) {
+        checkNotNull(eventId);
+        checkArgument(!eventId.isEmpty());
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(ACTIVE_EVENT_ID, eventId);
+        editor.apply();
+    }
+
+    public String getActiveEventId() { return preferences.getString(ACTIVE_EVENT_ID, null); }
 }

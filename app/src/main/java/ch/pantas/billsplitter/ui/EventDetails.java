@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.EventDetailPagerAdapter;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboFragmentActivity;
@@ -33,6 +34,9 @@ public class EventDetails extends RoboFragmentActivity {
 
     @Inject
     private ActivityStarter activityStarter;
+
+    @Inject
+    private SharedPreferenceService sharedPreferenceService;
 
     private EventDetailPagerAdapter pagerAdapter;
 
@@ -103,6 +107,7 @@ public class EventDetails extends RoboFragmentActivity {
         super.onResume();
         pagerAdapter.notifyDataSetChanged();
 
+        sharedPreferenceService.storeActiveEventId(event.getId());
     }
 
     @Override
