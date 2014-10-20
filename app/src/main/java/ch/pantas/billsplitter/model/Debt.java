@@ -25,6 +25,6 @@ public class Debt {
     }
 
     public String toString(){
-        return from.getName() + " -> " + to.getName() + ": " + amount;
+        return from.getName() + " -> " + to.getName() + ": " + (amount/100.0);
     }
 }
