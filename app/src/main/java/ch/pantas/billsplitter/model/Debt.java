@@ -12,6 +12,18 @@ public class Debt {
         this.amount = amount;
     }
 
+    public User getFrom() {
+        return from;
+    }
+
+    public User getTo() {
+        return to;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
     public String toString(){
         return from.getName() + " -> " + to.getName() + ": " + amount;
     }

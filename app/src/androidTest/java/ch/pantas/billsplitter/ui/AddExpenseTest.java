@@ -3,14 +3,11 @@ package ch.pantas.billsplitter.ui;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.google.common.collect.Sets;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.mockito.Mock;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,10 +46,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Double.parseDouble;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -146,7 +140,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testAttendanceIsAddedIfSaveButtonIsPressed(){
+    public void testAttendanceIsAddedIfSaveButtonIsPressed() {
         // Given
         String description = "An expense";
         String amount = "25.00";
@@ -237,7 +231,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
 
     }
 
-    private static Matcher<Attendee> newAttendeeWithUserId(final String userId){
+    private static Matcher<Attendee> newAttendeeWithUserId(final String userId) {
         return new TypeSafeMatcher<Attendee>() {
             @Override
             public boolean matchesSafely(Attendee attendee) {

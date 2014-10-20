@@ -17,7 +17,7 @@ import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.yvu.myapplication.R;
 
-import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
+import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
