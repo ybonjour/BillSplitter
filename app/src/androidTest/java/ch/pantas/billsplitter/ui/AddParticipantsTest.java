@@ -15,13 +15,17 @@ import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.ui.adapter.UserAdapter;
 import ch.yvu.myapplication.R;
 
-import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
+import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
@@ -45,6 +49,9 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @Mock
     private SharedPreferenceService sharedPreferenceService;
 
+    @Mock
+    UserAdapter participantAdapter;
+
     private Event event;
 
     @Override
@@ -53,9 +60,11 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
 
         event = new Event("abcd", "An Event");
         Intent intent = new Intent();
-        intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
+        intent.putExtra(EVENT_ID, event.getId());
         setActivityIntent(intent);
         when(eventStore.getById(event.getId())).thenReturn(event);
+
+        when(participantAdapter.getViewTypeCount()).thenReturn(1);
     }
 
     @LargeTest
@@ -78,21 +87,25 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
 
     @LargeTest
     public void testEditParticipantsExistingParticipantsAreShown() {
-        // TODO: FIXME (NullPointerException)
         // Given
         List<User> participantsList = new LinkedList<User>();
         participantsList.add(new User("a", "Me"));
         participantsList.add(new User("b", "Hans"));
         participantsList.add(new User("c", "Fritz"));
+
+        List<User> otherParticipantsList = new LinkedList<User>(participantsList);
+        otherParticipantsList.remove(0);
+
+        when(participantStore.getParticipants(event.getId())).thenReturn(participantsList);
         when(participantManager.getParticipants()).thenReturn(participantsList);
         when(sharedPreferenceService.getUserName()).thenReturn("Me");
+        when(participantManager.filterOutParticipants(any(List.class))).thenReturn(otherParticipantsList);
+
         // When
         getActivity();
 
         // Then
-        onView(withText("Me")).check(matches(isDisplayed()));
-        onView(withText("Hans")).check(matches(isDisplayed()));
-        onView(withText("Fritz")).check(matches(isDisplayed()));
+        verify(participantAdapter, times(2)).setUsers(participantsList);
     }
 
     // TODO: Participants UI tests
