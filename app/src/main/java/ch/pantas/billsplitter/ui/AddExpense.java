@@ -32,7 +32,7 @@ import roboguice.inject.InjectView;
 
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
-import static java.lang.Integer.parseInt;
+import static java.lang.Double.parseDouble;
 
 public class AddExpense extends RoboActivity {
 
@@ -127,7 +127,8 @@ public class AddExpense extends RoboActivity {
 
         int amount;
         try {
-            amount = parseInt(amountField.getText().toString());
+            double displayedAmount = parseDouble(amountField.getText().toString());
+            amount = (int) (displayedAmount * 100.0);
         } catch (NumberFormatException e) {
             amountField.setBackgroundColor(getResources().getColor(R.color.error_color));
             return;
@@ -198,7 +199,9 @@ public class AddExpense extends RoboActivity {
         checkNotNull(expense);
 
         descriptionField.setText(expense.getDescription());
-        amountField.setText(String.valueOf(expense.getAmount()));
+        int amount = expense.getAmount();
+        double displayedAmount = amount / 100.0;
+        amountField.setText(String.valueOf(displayedAmount));
 
         loadPayerList();
         User payer = userStore.getById(expense.getPayerId());

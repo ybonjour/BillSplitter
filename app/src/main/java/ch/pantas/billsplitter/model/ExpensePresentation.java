@@ -34,6 +34,7 @@ public class ExpensePresentation {
     @Override
     public String toString() {
         String template = context.getString(R.string.expenseText);
-        return format(template, payer.getName(), expense.getAmount(), expense.getDescription());
+        double displayedAmount = expense.getAmount() / 100.0;
+        return format(template, payer.getName(), displayedAmount, expense.getDescription());
     }
 }

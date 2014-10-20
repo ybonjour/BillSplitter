@@ -42,7 +42,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static com.google.common.collect.Sets.newHashSet;
-import static java.lang.Integer.parseInt;
+import static java.lang.Double.parseDouble;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -126,7 +126,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     public void testExpenseIsAddedIfSaveButtonIsPressed() {
         // Given
         String description = "An expense";
-        String amount = "25";
+        String amount = "25.0";
         getActivity();
         onView(withId(R.id.expense_description)).perform(typeText(description));
         onView(withId(R.id.expense_amount)).perform(typeText(amount));
@@ -135,14 +135,15 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         onView(withText(R.string.save)).perform(click());
 
         // Then
-        verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, parseInt(amount), event.getId(), me.getId())));
+        int savedAmount = (int) parseDouble(amount)*100;
+        verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, savedAmount, event.getId(), me.getId())));
     }
 
     @LargeTest
     public void testAttendanceIsAddedIfSaveButtonIsPressed() {
         // Given
         String description = "An expense";
-        String amount = "25";
+        String amount = "25.0";
         User user = new User(UUID.randomUUID().toString(), "Joe");
         getActivity();
         onView(withId(R.id.expense_description)).perform(typeText(description));
@@ -226,7 +227,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
             verify(attendeeAdapter, times(1)).select(eq(user));
         }
         onView(withId(R.id.expense_description)).check(hasText(expense.getDescription()));
-        onView(withId(R.id.expense_amount)).check(hasText(String.valueOf(expense.getAmount())));
+        onView(withId(R.id.expense_amount)).check(hasText(String.valueOf(expense.getAmount()/100.0)));
     }
 
     private static Matcher<Attendee> newAttendeeWithUserId(final String userId) {

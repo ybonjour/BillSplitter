@@ -41,7 +41,7 @@ public class Expense extends Model {
 
     @Override
     public String toString() {
-        return getAmount() + " for " + getDescription();
+        return (getAmount()/100.0) + " for " + getDescription();
     }
 
     public String getEventId() { return eventId; }
