@@ -37,14 +37,12 @@ public class Login extends RoboActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(sharedPreferenceService.getUserName() != null){
-            String eventId = sharedPreferenceService.getActiveEventId();
-            Event event = eventStore.getById(eventId);
+        if (sharedPreferenceService.getUserName() != null) {
+            Event event = getStoredEvent();
             if (event != null) {
                 activityStarter.startEventList(this);
                 activityStarter.startEventDetails(this, event);
-            }
-            else {
+            } else {
                 activityStarter.startEventList(this);
             }
             finish();
@@ -55,9 +53,9 @@ public class Login extends RoboActivity {
         setTitle(R.string.set_user_name);
     }
 
-    public void onSave(View view){
+    public void onSave(View view) {
         String userName = nameField.getText().toString();
-        if(userName == null || userName.isEmpty()) {
+        if (userName == null || userName.isEmpty()) {
             nameField.setBackgroundColor(getResources().getColor(R.color.error_color));
             return;
         }
@@ -67,5 +65,11 @@ public class Login extends RoboActivity {
 
         activityStarter.startEventList(this);
         finish();
+    }
+
+    private Event getStoredEvent() {
+        String eventId = sharedPreferenceService.getActiveEventId();
+        if (eventId == null) return null;
+        return eventStore.getById(eventId);
     }
 }

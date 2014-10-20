@@ -21,7 +21,7 @@
     </LinearLayout>
     <LinearLayout
         android:id="@+id/participant_container"
-        android:background="@drawable/participants_background"
+        android:background="@drawable/container_background"
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">

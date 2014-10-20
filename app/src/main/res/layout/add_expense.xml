@@ -10,6 +10,22 @@
         android:inputType="textCapWords"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
+    <LinearLayout
+        android:id="@+id/tag_grid_container"
+        android:visibility="gone"
+        android:minHeight="100dp"
+        android:background="@drawable/container_background"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <GridView
+            android:id="@+id/tag_grid"
+            android:numColumns="auto_fit"
+            android:columnWidth="100dp"
+            android:layout_margin="5dp"
+            android:stretchMode="columnWidth"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <EditText
         android:id="@+id/expense_amount"
         android:hint="@string/amount"

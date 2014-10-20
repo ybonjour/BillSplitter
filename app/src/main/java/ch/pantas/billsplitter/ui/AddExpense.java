@@ -2,6 +2,8 @@ package ch.pantas.billsplitter.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -9,6 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
@@ -18,28 +22,40 @@ import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
+import ch.pantas.billsplitter.dataaccess.TagStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
+import ch.pantas.billsplitter.model.Tag;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.AttendeeAdapter;
 import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
+import ch.pantas.billsplitter.ui.adapter.TagAdapter;
+import ch.pantas.billsplitter.ui.adapter.TagDeletedListener;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static java.lang.Double.parseDouble;
 
-public class AddExpense extends RoboActivity {
+public class AddExpense extends RoboActivity implements TagDeletedListener{
 
     public static final String ARGUMENT_EXPENSE_ID = "expense_id";
 
     @InjectView(R.id.expense_description)
     private EditText descriptionField;
+
+    @InjectView(R.id.tag_grid)
+    private GridView tagGrid;
+
+    @InjectView(R.id.tag_grid_container)
+    private LinearLayout tagGridContainer;
 
     @InjectView(R.id.expense_amount)
     private EditText amountField;
@@ -66,6 +82,9 @@ public class AddExpense extends RoboActivity {
     private AttendeeStore attendeeStore;
 
     @Inject
+    private TagStore tagStore;
+
+    @Inject
     private SharedPreferenceService sharedPreferenceService;
 
     @Inject
@@ -73,6 +92,9 @@ public class AddExpense extends RoboActivity {
 
     @Inject
     private AttendeeAdapter attendeeAdapter;
+
+    @Inject
+    private TagAdapter tagAdapter;
 
     private Event event;
     private Expense expense;
@@ -97,6 +119,53 @@ public class AddExpense extends RoboActivity {
             setUpEditScreen();
         }
 
+        tagAdapter.setTagDeletedListener(this);
+
+        descriptionField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus) {
+                    String tag = descriptionField.getText().toString();
+                    loadTags(tag);
+                    tagGridContainer.setVisibility(VISIBLE);
+                } else {
+                    tagGridContainer.setVisibility(GONE);
+                }
+            }
+        });
+
+        descriptionField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                String tag = descriptionField.getText().toString();
+                loadTags(tag);
+                tagGridContainer.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        tagGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(view.getId() == R.id.tag_item_delete) {
+                    Toast.makeText(AddExpense.this, "Juhuuuu", Toast.LENGTH_LONG).show();
+                }
+                Tag tag = (Tag) adapterView.getItemAtPosition(i);
+                tagStore.persist(tag);
+                descriptionField.setText(tag.getName());
+                tagGridContainer.setVisibility(GONE);
+            }
+        });
+
         payerGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -114,6 +183,24 @@ public class AddExpense extends RoboActivity {
             }
         });
     }
+
+    private void loadTags(String tag) {
+        Tag existingTag = null;
+        List<Tag> tags;
+        if (tag == null || tag.isEmpty()) {
+            tags = tagStore.getAll();
+        } else {
+            tags = tagStore.getTagsWithNameLike(tag);
+            existingTag = tagStore.getTagWithName(tag);
+            if (existingTag == null) {
+                tags.add(new Tag(tag));
+            }
+        }
+
+        tagAdapter.setTags(tags);
+        tagGrid.setAdapter(tagAdapter);
+    }
+
 
     public void onSave(View v) {
         User payer = payerAdapter.getSelectedUser();
@@ -158,7 +245,7 @@ public class AddExpense extends RoboActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        if(expense != null){
+        if (expense != null) {
             inflater.inflate(R.menu.edit_expense, menu);
         }
         return super.onCreateOptionsMenu(menu);
@@ -167,13 +254,20 @@ public class AddExpense extends RoboActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (R.id.action_delete_expense == item.getItemId()) {
-            if(expense == null) return true;
+            if (expense == null) return true;
             attendeeStore.removeAll(expense.getId());
             expenseStore.removeById(expense.getId());
             finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onTagDelete(Tag tag) {
+        tagStore.removeById(tag.getId());
+        loadTags(descriptionField.getText().toString());
     }
 
     private void extractDataFromIntent(Intent intent) {
@@ -220,6 +314,7 @@ public class AddExpense extends RoboActivity {
         checkNotNull(me);
         payerAdapter.select(me);
 
+
         loadAttendeesList();
         selectAllAttendees();
     }
@@ -235,7 +330,7 @@ public class AddExpense extends RoboActivity {
         loadAttendeesList();
     }
 
-    private void selectAllAttendees(){
+    private void selectAllAttendees() {
         attendeeAdapter.selectAll();
         attendeesGrid.invalidateViews();
     }
