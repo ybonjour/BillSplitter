@@ -1,6 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_add"
-        android:icon="@android:drawable/ic_menu_add"
+    <item android:id="@+id/action_add_expense"
+        android:icon="@drawable/ic_action_new"
         android:title="@string/add_expense"
         android:showAsAction="always"/>
+    <item android:id="@+id/action_delete_event"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/action_delete_event"
+        android:showAsAction="never"/>
 </menu>

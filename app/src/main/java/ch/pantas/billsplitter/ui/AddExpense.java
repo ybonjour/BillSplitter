@@ -2,6 +2,9 @@ package ch.pantas.billsplitter.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -148,6 +151,28 @@ public class AddExpense extends RoboActivity {
         }
 
         finish();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        if(expense != null){
+            inflater.inflate(R.menu.edit_expense, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.action_delete_expense == item.getItemId()) {
+            if(expense == null) return true;
+            attendeeStore.removeAll(expense.getId());
+            expenseStore.removeById(expense.getId());
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void extractDataFromIntent(Intent intent) {

@@ -114,8 +114,12 @@ public class EventDetails extends RoboFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (R.id.action_add == item.getItemId()) {
+        if (R.id.action_add_expense == item.getItemId()) {
             activityStarter.startAddExpense(this, event);
+            return true;
+        } else if(R.id.action_delete_event == item.getItemId()) {
+            eventStore.removeById(event.getId());
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
