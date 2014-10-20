@@ -76,7 +76,7 @@ public class EventListTest extends BaseEspressoTest<EventList> {
         onData(anything()).atPosition(0).perform(click());
 
         // Then
-        verify(activityStarter, times(1)).startExpensesList(any(EventList.class), eq(event));
+        verify(activityStarter, times(1)).startEventDetails(any(EventList.class), eq(event));
     }
 
     @LargeTest

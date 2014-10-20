@@ -37,7 +37,7 @@ public class ActivityStarter {
         context.startActivity(intent);
     }
 
-    public void startExpensesList(Context context, Event event) {
+    public void startEventDetails(Context context, Event event) {
         checkNotNull(context);
         checkNotNull(event);
 

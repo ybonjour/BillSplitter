@@ -42,7 +42,7 @@ public class EventList extends RoboActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Event event = (Event) eventList.getAdapter().getItem(position);
-                activityStarter.startExpensesList(EventList.this, event);
+                activityStarter.startEventDetails(EventList.this, event);
             }
         });
         reloadList();

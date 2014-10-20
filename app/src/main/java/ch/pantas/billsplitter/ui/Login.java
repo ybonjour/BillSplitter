@@ -6,7 +6,9 @@ import android.widget.EditText;
 
 import javax.inject.Inject;
 
+import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
+import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
@@ -28,12 +30,23 @@ public class Login extends RoboActivity {
     @Inject
     private UserStore userStore;
 
+    @Inject
+    private EventStore eventStore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if(sharedPreferenceService.getUserName() != null){
-            activityStarter.startEventList(this);
+            String eventId = sharedPreferenceService.getActiveEventId();
+            Event event = eventStore.getById(eventId);
+            if (event != null) {
+                activityStarter.startEventList(this);
+                activityStarter.startEventDetails(this, event);
+            }
+            else {
+                activityStarter.startEventList(this);
+            }
             finish();
             return;
         }

@@ -84,4 +84,25 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
         assertEquals(userName, service.getUserName());
     }
 
+    @SmallTest
+    public void testGetActiveEventIdReturnsNullIfNoEventIdPresent() {
+        // When
+        String eventId = service.getActiveEventId();
+
+        // Then
+        assertNull(eventId);
+    }
+
+    @SmallTest
+    public void testStoreAndRetrieveActiveEventIdCorrectly(){
+        // Given
+        String eventId = "eventId";
+
+        // When
+        service.storeActiveEventId(eventId);
+
+        // Then
+        assertEquals(eventId, service.getActiveEventId());
+    }
+
 }
