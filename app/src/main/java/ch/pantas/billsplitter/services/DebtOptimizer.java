@@ -139,9 +139,9 @@ public class DebtOptimizer {
 
         for(User user : balancesBefore.keySet()) {
             if(balancesAfter.containsKey(user)){
-                checkState(balancesBefore.get(user).equals(balancesAfter.get(user)));
+                checkState(balancesBefore.get(user).equals(balancesAfter.get(user)), user.getName() + ": " + balancesBefore.get(user) + " != " + balancesAfter.get(user));
             } else {
-                checkState(balancesBefore.get(user).equals(0.0));
+                checkState(balancesBefore.get(user).equals(0.0), user.getName() + ": balance != 0");
             }
         }
     }
