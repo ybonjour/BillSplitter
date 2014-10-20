@@ -20,8 +20,8 @@
         <ImageView
             android:id="@+id/tag_item_delete"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:visibility="gone"/>
     </LinearLayout>
 </LinearLayout>
