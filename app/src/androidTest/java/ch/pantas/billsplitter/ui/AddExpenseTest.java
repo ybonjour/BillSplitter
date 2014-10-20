@@ -20,7 +20,6 @@ import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
-import ch.pantas.billsplitter.framework.CustomViewMatchers;
 import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
@@ -31,9 +30,8 @@ import ch.pantas.billsplitter.ui.adapter.AttendeeAdapter;
 import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
 import ch.yvu.myapplication.R;
 
-import ch.pantas.billsplitter.framework.CustomViewMatchers.*;
-
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
+import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasText;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static ch.pantas.billsplitter.ui.AddExpense.ARGUMENT_EXPENSE_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
@@ -227,9 +225,8 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         for (User user : attendeeList) {
             verify(attendeeAdapter, times(1)).select(eq(user));
         }
-        onView(withId(R.id.expense_description)).check(matches(CustomViewMatchers.editTextWithText(expense.getDescription())));
-        onView(withId(R.id.expense_amount)).check(matches(CustomViewMatchers.editTextWithText(String.valueOf(expense.getAmount()))));
-
+        onView(withId(R.id.expense_description)).check(hasText(expense.getDescription()));
+        onView(withId(R.id.expense_amount)).check(hasText(String.valueOf(expense.getAmount())));
     }
 
     private static Matcher<Attendee> newAttendeeWithUserId(final String userId) {
