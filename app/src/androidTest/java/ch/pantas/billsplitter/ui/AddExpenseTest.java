@@ -3,14 +3,11 @@ package ch.pantas.billsplitter.ui;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.google.common.collect.Sets;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.mockito.Mock;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
@@ -30,7 +27,7 @@ import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
-import static ch.pantas.billsplitter.ui.ExpensesList.ARGUMENT_EVENT_ID;
+import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
@@ -41,10 +38,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Double.parseDouble;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -138,7 +132,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     }
 
     @LargeTest
-    public void testAttendanceIsAddedIfSaveButtonIsPressed(){
+    public void testAttendanceIsAddedIfSaveButtonIsPressed() {
         // Given
         String description = "An expense";
         String amount = "25.00";
@@ -171,7 +165,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         onView(withId(R.id.expense_amount)).check(hasBackgroundColor(R.color.error_color));
     }
 
-    private static Matcher<Attendee> newAttendeeWithUserId(final String userId){
+    private static Matcher<Attendee> newAttendeeWithUserId(final String userId) {
         return new TypeSafeMatcher<Attendee>() {
             @Override
             public boolean matchesSafely(Attendee attendee) {

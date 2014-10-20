@@ -2,6 +2,7 @@ package ch.pantas.billsplitter.services;
 
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,9 +26,18 @@ public class DebtCalculator {
     @Inject
     private AttendeeStore attendeeStore;
 
+    @Inject
+    private DebtOptimizer debtOptimizer;
+
+
     public List<Debt> calculateDebts(Event event) {
         checkNotNull(event);
 
+        List<Debt> debts = getDebts(event);
+        return debtOptimizer.optimize(debts);
+    }
+
+    private List<Debt> getDebts(Event event){
         List<Debt> debts = new LinkedList<Debt>();
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
         for (Expense expense : expenses) {
