@@ -88,6 +88,36 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
         assertThat(result, hasItem(matchesDebt(joe, dave, 40)));
     }
 
+    @SmallTest
+    public void testCalculateDebtsWithOnePersonPayingTwoPersonsCanNotBeOptimized(){
+        // Given
+        List<Debt> debts = asList(debt(joe, dave, 10), debt(joe, mary, 10));
+
+        // When
+        List<Debt> result = debtOptimizer.optimize(debts);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertThat(result, hasItem(matchesDebt(joe, dave, 10)));
+        assertThat(result, hasItem(matchesDebt(joe, mary, 10)));
+    }
+
+    @SmallTest
+    public void testCalculateDebtsWithTwoPersonsPayingOnePersonCanNotBeOptimized(){
+        // Given
+        List<Debt> debts = asList(debt(joe, dave, 10), debt(mary, dave, 10));
+
+        // When
+        List<Debt> result = debtOptimizer.optimize(debts);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertThat(result, hasItem(matchesDebt(joe, dave, 10)));
+        assertThat(result, hasItem(matchesDebt(mary, dave, 10)));
+    }
+
     private static Debt debt(User from, User to, double amount) {
         return new Debt(from, to, amount);
     }
