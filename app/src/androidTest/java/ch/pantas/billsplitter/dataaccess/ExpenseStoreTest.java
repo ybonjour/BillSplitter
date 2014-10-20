@@ -39,7 +39,7 @@ public class ExpenseStoreTest extends BaseStoreTest {
     @SmallTest
      public void testExpensesOfEvent() {
         // Given
-        Expense e = new Expense("a", "b", "c", "d", 10.0);
+        Expense e = new Expense("a", "b", "c", "d", 10);
         String eventId = UUID.randomUUID().toString();
         expenseStore.getExpensesOfEvent(eventId);
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
@@ -56,7 +56,7 @@ public class ExpenseStoreTest extends BaseStoreTest {
     @SmallTest
     public void testExpensesOfUser() {
         // Given
-        Expense e = new Expense("a", "b", "c", "d", 10.0);
+        Expense e = new Expense("a", "b", "c", "d", 10);
         String userId = UUID.randomUUID().toString();
         expenseStore.getExpensesOfUser(userId);
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);

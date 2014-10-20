@@ -81,7 +81,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                 + EVENT + " TEXT, "
                 + USER + " TEXT, "
                 + DESCRIPTION + " TEXT, "
-                + AMOUNT + " REAL);";
+                + AMOUNT + " INTEGER);";
     }
 
     public class AttendeeTable extends Table {

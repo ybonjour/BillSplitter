@@ -42,7 +42,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static com.google.common.collect.Sets.newHashSet;
-import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -126,7 +126,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     public void testExpenseIsAddedIfSaveButtonIsPressed() {
         // Given
         String description = "An expense";
-        String amount = "25.00";
+        String amount = "25";
         getActivity();
         onView(withId(R.id.expense_description)).perform(typeText(description));
         onView(withId(R.id.expense_amount)).perform(typeText(amount));
@@ -135,14 +135,14 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         onView(withText(R.string.save)).perform(click());
 
         // Then
-        verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, parseDouble(amount), event.getId(), me.getId())));
+        verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, parseInt(amount), event.getId(), me.getId())));
     }
 
     @LargeTest
     public void testAttendanceIsAddedIfSaveButtonIsPressed() {
         // Given
         String description = "An expense";
-        String amount = "25.00";
+        String amount = "25";
         User user = new User(UUID.randomUUID().toString(), "Joe");
         getActivity();
         onView(withId(R.id.expense_description)).perform(typeText(description));
@@ -176,7 +176,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     public void testEditExpenseLoadsExistingValues() {
         // Given
         User payer = new User("payerId", "Payer");
-        Expense expense = new Expense("expenseId", event.getId(), payer.getId(), "desc", 123.0);
+        Expense expense = new Expense("expenseId", event.getId(), payer.getId(), "desc", 123);
 
         User attendee1 = new User("att1", "attendee1");
         User attendee2 = new User("att2", "attendee2");
@@ -245,7 +245,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         };
     }
 
-    private static Matcher<Expense> newExpenseWith(final String expenseDescription, final double amount, final String eventId, final String userId) {
+    private static Matcher<Expense> newExpenseWith(final String expenseDescription, final int amount, final String eventId, final String userId) {
         return new TypeSafeMatcher<Expense>() {
             @Override
             public boolean matchesSafely(Expense expense) {

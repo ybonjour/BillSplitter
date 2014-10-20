@@ -4,9 +4,9 @@ public class Debt {
 
     private final User from;
     private final User to;
-    private final double amount;
+    private final int amount;
 
-    public Debt(User from, User to, double amount){
+    public Debt(User from, User to, int amount){
         this.from = from;
         this.to = to;
         this.amount = amount;
@@ -20,7 +20,7 @@ public class Debt {
         return to;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 

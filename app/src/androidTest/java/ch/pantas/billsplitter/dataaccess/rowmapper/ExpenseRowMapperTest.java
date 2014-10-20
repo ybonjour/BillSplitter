@@ -40,7 +40,7 @@ public class ExpenseRowMapperTest extends BaseMockitoInstrumentationTest {
         String eventId = UUID.randomUUID().toString();
         String payerId = UUID.randomUUID().toString();
         String description = "test";
-        double amount = 10.0;
+        int amount = 10;
         Cursor c = createExpenseCursor(id, eventId, payerId, description, amount);
 
         // When
@@ -55,7 +55,7 @@ public class ExpenseRowMapperTest extends BaseMockitoInstrumentationTest {
         assertEquals(amount, expense.getAmount());
     }
 
-    private Cursor createExpenseCursor(String id, String eventId, String payerId, String description, double amount){
+    private Cursor createExpenseCursor(String id, String eventId, String payerId, String description, int amount){
         Cursor c = mock(Cursor.class);
         when(c.getColumnIndex(ID)).thenReturn(0);
         when(c.getString(0)).thenReturn(id);
@@ -66,7 +66,7 @@ public class ExpenseRowMapperTest extends BaseMockitoInstrumentationTest {
         when(c.getColumnIndex(DESCRIPTION)).thenReturn(3);
         when(c.getString(3)).thenReturn(description);
         when(c.getColumnIndex(AMOUNT)).thenReturn(4);
-        when(c.getDouble(4)).thenReturn(amount);
+        when(c.getInt(4)).thenReturn(amount);
         return c;
     }
 }

@@ -29,7 +29,7 @@ import roboguice.inject.InjectView;
 
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
-import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 
 public class AddExpense extends RoboActivity {
 
@@ -122,9 +122,9 @@ public class AddExpense extends RoboActivity {
             return;
         }
 
-        double amount;
+        int amount;
         try {
-            amount = parseDouble(amountField.getText().toString());
+            amount = parseInt(amountField.getText().toString());
         } catch (NumberFormatException e) {
             amountField.setBackgroundColor(getResources().getColor(R.color.error_color));
             return;

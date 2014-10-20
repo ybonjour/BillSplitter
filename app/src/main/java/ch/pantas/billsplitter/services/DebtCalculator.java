@@ -43,7 +43,7 @@ public class DebtCalculator {
         for (Expense expense : expenses) {
             User toUser = userStore.getById(expense.getPayerId());
             List<User> fromUsers = attendeeStore.getAttendees(expense.getId());
-            double amount = expense.getAmount() / (fromUsers.size() + 1);
+            int amount = expense.getAmount() / (fromUsers.size() + 1);
             for (User fromUser : fromUsers) {
                 debts.add(new Debt(fromUser, toUser, amount));
             }

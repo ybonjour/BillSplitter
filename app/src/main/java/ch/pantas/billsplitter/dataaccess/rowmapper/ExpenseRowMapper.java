@@ -28,7 +28,7 @@ public class ExpenseRowMapper implements RowMapper<Expense> {
         String eventId = cursor.getString(eventIdx);
         String userId = cursor.getString(userIdx);
         String description = cursor.getString(descriptionIdx);
-        double amount = cursor.getDouble(amountIdx);
+        int amount = cursor.getInt(amountIdx);
 
         return new Expense(id, eventId, userId, description, amount);
     }

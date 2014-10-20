@@ -23,7 +23,7 @@ public class DebtOptimizer {
     public List<Debt> optimize(List<Debt> debts) {
         checkNotNull(debts);
 
-        Map<User, Double> balances = buildBalance(debts);
+        Map<User, Integer> balances = buildBalance(debts);
 
         List<Balance> positives = extractReverseSortedPositiveBalances(balances);
         List<Balance> negatives = extractReverseSortedNegativeBalances(balances);
@@ -34,7 +34,7 @@ public class DebtOptimizer {
 
             Balance positive = pop(positives);
 
-            double debtAmount;
+            int debtAmount;
             Balance negativeStar = findBestNegativeFit(positive, negatives);
             if (negativeStar != null) {
                 debtAmount = negativeStar.getAmount();
@@ -85,10 +85,10 @@ public class DebtOptimizer {
     }
 
 
-    private List<Balance> extractReverseSortedPositiveBalances(Map<User, Double> balances) {
+    private List<Balance> extractReverseSortedPositiveBalances(Map<User, Integer> balances) {
         List<Balance> positiveBalances = new ArrayList<Balance>();
         for (User user : balances.keySet()) {
-            double amount = balances.get(user);
+            int amount = balances.get(user);
             if (amount > 0) {
                 positiveBalances.add(new Balance(user, amount));
             }
@@ -98,10 +98,10 @@ public class DebtOptimizer {
         return positiveBalances;
     }
 
-    private List<Balance> extractReverseSortedNegativeBalances(Map<User, Double> balances) {
+    private List<Balance> extractReverseSortedNegativeBalances(Map<User, Integer> balances) {
         List<Balance> negativeBalances = new ArrayList<Balance>();
         for (User user : balances.keySet()) {
-            double amount = balances.get(user);
+            int amount = balances.get(user);
             if (amount < 0) {
                 negativeBalances.add(new Balance(user, -1 * amount));
             }
@@ -111,18 +111,18 @@ public class DebtOptimizer {
         return negativeBalances;
     }
 
-    private Map<User, Double> buildBalance(List<Debt> debts) {
-        Map<User, Double> balance = new HashMap<User, Double>();
+    private Map<User, Integer> buildBalance(List<Debt> debts) {
+        Map<User, Integer> balance = new HashMap<User, Integer>();
 
         for (Debt debt : debts) {
             User from = debt.getFrom();
             if (!balance.containsKey(from)) {
-                balance.put(from, 0.0);
+                balance.put(from, 0);
             }
 
             User to = debt.getTo();
             if (!balance.containsKey(to)) {
-                balance.put(to, 0.0);
+                balance.put(to, 0);
             }
 
 
@@ -133,7 +133,7 @@ public class DebtOptimizer {
         return balance;
     }
 
-    private void assertBalancesAreEqual(Map<User, Double> balancesBefore, Map<User, Double> balancesAfter) {
+    private void assertBalancesAreEqual(Map<User, Integer> balancesBefore, Map<User, Integer> balancesAfter) {
         // balancesBefore might contain elements with balance 0. These do not exist in balanceAfter
         checkState(balancesBefore.size() >= balancesAfter.size());
 
@@ -141,16 +141,16 @@ public class DebtOptimizer {
             if(balancesAfter.containsKey(user)){
                 checkState(balancesBefore.get(user).equals(balancesAfter.get(user)), user.getName() + ": " + balancesBefore.get(user) + " != " + balancesAfter.get(user));
             } else {
-                checkState(balancesBefore.get(user).equals(0.0), user.getName() + ": balance != 0");
+                checkState(balancesBefore.get(user).equals(0), user.getName() + ": balance != 0");
             }
         }
     }
 
     private class Balance implements Comparable<Balance> {
         private final User user;
-        private Double amount = 0.0;
+        private Integer amount = 0;
 
-        private Balance(User user, double amount) {
+        private Balance(User user, int amount) {
             this.user = user;
             this.amount = amount;
         }
@@ -159,11 +159,11 @@ public class DebtOptimizer {
             return user;
         }
 
-        public double getAmount() {
+        public int getAmount() {
             return amount;
         }
 
-        public void decrease(double amount) {
+        public void decrease(int amount) {
             this.amount -= amount;
         }
 

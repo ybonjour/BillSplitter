@@ -118,7 +118,7 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
         assertThat(result, hasItem(matchesDebt(mary, dave, 10)));
     }
 
-    private static Debt debt(User from, User to, double amount) {
+    private static Debt debt(User from, User to, int amount) {
         return new Debt(from, to, amount);
     }
 }

@@ -8,16 +8,16 @@ public class Expense extends Model {
 
     private String payerId;
     private String description;
-    private double amount;
+    private int amount;
 
-    public Expense(String id, String eventId, String payerId, String description, double amount) {
+    public Expense(String id, String eventId, String payerId, String description, int amount) {
         super(id);
         checkNotNull(eventId);
         checkArgument(!eventId.isEmpty());
         checkNotNull(payerId);
         checkArgument(!payerId.isEmpty());
         checkNotNull(description);
-        checkArgument(amount > 0.0);
+        checkArgument(amount > 0);
 
         this.eventId = eventId;
         this.payerId = payerId;
@@ -25,13 +25,13 @@ public class Expense extends Model {
         this.amount = amount;
     }
 
-    public Expense(String eventId, String payerId, String description, double amount) {
+    public Expense(String eventId, String payerId, String description, int amount) {
         checkNotNull(eventId);
         checkArgument(!eventId.isEmpty());
         checkNotNull(payerId);
         checkArgument(!payerId.isEmpty());
         checkNotNull(description);
-        checkArgument(amount > 0.0);
+        checkArgument(amount > 0);
 
         this.eventId = eventId;
         this.payerId = payerId;
@@ -50,13 +50,13 @@ public class Expense extends Model {
 
     public String getDescription() { return description; }
 
-    public double getAmount() { return amount; }
+    public int getAmount() { return amount; }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
