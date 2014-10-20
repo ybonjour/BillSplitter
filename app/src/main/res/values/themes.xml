@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the theme applied to the application or activity -->
+    <style name="BillSplitterTheme"
+        parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/BillSplitter.ActionBar</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="BillSplitter.ActionBar"
+        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/actionbar_background</item>
+    </style>
+
+    <color name="error_color">#80ff0000</color>
+    <color name="light_background">#dddddd</color>
+</resources>
