@@ -9,10 +9,13 @@ import com.google.inject.Inject;
 import java.util.UUID;
 
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
+import ch.pantas.billsplitter.model.Currency;
 import ch.pantas.billsplitter.model.Event;
 
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.CURRENCY;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.ID;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.NAME;
+import static ch.pantas.billsplitter.model.Currency.CHF;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +39,8 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         // Given
         String id = UUID.randomUUID().toString();
         String name = "Event 1";
-        Cursor cursor = createEventCursor(id, name);
+        Currency currency = CHF;
+        Cursor cursor = createEventCursor(id, name, currency);
 
         // When
         Event event = mapper.map(cursor);
@@ -45,6 +49,7 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         assertNotNull(event);
         assertEquals(id, event.getId());
         assertEquals(name, event.getName());
+        assertEquals(currency, event.getCurrency());
     }
 
     @SmallTest
@@ -62,7 +67,7 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         // Given
         String id = UUID.randomUUID().toString();
         String name = "Event 1";
-        Event event = new Event(id, name);
+        Event event = new Event(id, name, CHF);
 
         // When
         ContentValues values = mapper.getValues(event);
@@ -70,13 +75,14 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         // Then
         assertEquals(id, values.getAsString(ID));
         assertEquals(name, values.getAsString(NAME));
+        assertEquals(CHF.toString(), values.getAsString(CURRENCY));
     }
 
     @SmallTest
     public void testValuesDoesNotReturnIdIfIdIsNull() {
         // Given
         String name = "Event 1";
-        Event event = new Event(name);
+        Event event = new Event(name, CHF);
 
         // When
         ContentValues values = mapper.getValues(event);
@@ -85,12 +91,14 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         assertFalse(values.containsKey(ID));
     }
 
-    private Cursor createEventCursor(String id, String name) {
+    private Cursor createEventCursor(String id, String name, Currency currency) {
         Cursor c = mock(Cursor.class);
         when(c.getColumnIndex(ID)).thenReturn(0);
         when(c.getString(0)).thenReturn(id);
         when(c.getColumnIndex(NAME)).thenReturn(1);
         when(c.getString(1)).thenReturn(name);
+        when(c.getColumnIndex(CURRENCY)).thenReturn(2);
+        when(c.getString(2)).thenReturn(currency.toString());
 
         return c;
     }

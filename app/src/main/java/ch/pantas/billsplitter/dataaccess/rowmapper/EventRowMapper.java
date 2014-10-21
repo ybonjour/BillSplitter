@@ -3,8 +3,10 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import ch.pantas.billsplitter.model.Currency;
 import ch.pantas.billsplitter.model.Event;
 
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.CURRENCY;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.ID;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.NAME;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.TABLE;
@@ -17,11 +19,13 @@ public class EventRowMapper implements RowMapper<Event> {
 
         int idIdx = cursor.getColumnIndex(ID);
         int nameIdx = cursor.getColumnIndex(NAME);
+        int currencyIdx = cursor.getColumnIndex(CURRENCY);
 
         String id = cursor.getString(idIdx);
         String name = cursor.getString(nameIdx);
+        Currency currency = Currency.valueOf(cursor.getString(currencyIdx));
 
-        return new Event(id, name);
+        return new Event(id, name, currency);
     }
 
     @Override
@@ -32,6 +36,7 @@ public class EventRowMapper implements RowMapper<Event> {
 
         if (event.getId() != null) values.put(ID, event.getId());
         values.put(NAME, event.getName());
+        values.put(CURRENCY, event.getCurrency().toString());
 
         return values;
     }

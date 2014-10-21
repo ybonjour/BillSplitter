@@ -16,6 +16,7 @@ import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
+import static ch.pantas.billsplitter.model.Currency.EUR;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
@@ -106,7 +107,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     @LargeTest
     public void testEditEventCurrentEventNameDisplayed() {
         // Given
-        Event event = new Event("abc", "testname");
+        Event event = new Event("abc", "testname", EUR);
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);
@@ -123,7 +124,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     @LargeTest
     public void testEditParticipantsIsStartedIfNextButtonIsPressed() {
         // Given
-        Event event = new Event("abc", "testname");
+        Event event = new Event("abc", "testname", EUR);
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);

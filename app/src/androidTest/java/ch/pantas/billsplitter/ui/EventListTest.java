@@ -14,6 +14,7 @@ import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.model.Currency.EUR;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
@@ -53,7 +54,7 @@ public class EventListTest extends BaseEspressoTest<EventList> {
         String eventName = "Event 1";
         String uuid = UUID.randomUUID().toString();
         List<Event> events = new ArrayList<Event>();
-        events.add(new Event(uuid, eventName));
+        events.add(new Event(uuid, eventName, EUR));
         when(store.getAll()).thenReturn(events);
 
         // When
@@ -66,7 +67,7 @@ public class EventListTest extends BaseEspressoTest<EventList> {
     @LargeTest
     public void testExpensesListActivityIsStartedWhenClickingOnEvent() {
         // Given
-        Event event = new Event("12345", "Event 1");
+        Event event = new Event("12345", "Event 1", EUR);
         List<Event> events = new ArrayList<Event>();
         events.add(event);
         when(store.getAll()).thenReturn(events);

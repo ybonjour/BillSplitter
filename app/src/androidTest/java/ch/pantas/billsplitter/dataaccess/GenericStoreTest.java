@@ -12,6 +12,7 @@ import java.util.List;
 import ch.pantas.billsplitter.dataaccess.rowmapper.EventRowMapper;
 import ch.pantas.billsplitter.model.Event;
 
+import static ch.pantas.billsplitter.model.Currency.EUR;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
@@ -85,7 +86,7 @@ public class GenericStoreTest extends BaseStoreTest {
     @SmallTest
     public void testPersistWithNewModel() {
         // Given
-        final Event event = new Event("Lissabon Trip");
+        final Event event = new Event("Lissabon Trip", EUR);
 
         // When
         store.persist(event);
@@ -99,7 +100,7 @@ public class GenericStoreTest extends BaseStoreTest {
     public void testPersistWithExistingModel() {
         // Given
         String id = "abc";
-        Event event = new Event(id, "Lissabon Trip");
+        Event event = new Event(id, "Lissabon Trip", EUR);
 
         // When
         store.persist(event);

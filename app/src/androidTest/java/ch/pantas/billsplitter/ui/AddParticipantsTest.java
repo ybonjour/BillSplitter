@@ -18,12 +18,14 @@ import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.model.Currency.EUR;
 import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,7 +60,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     public void setUp() throws Exception {
         super.setUp();
 
-        event = new Event("abcd", "An Event");
+        event = new Event("abcd", "An Event", EUR);
         Intent intent = new Intent();
         intent.putExtra(EVENT_ID, event.getId());
         setActivityIntent(intent);
@@ -99,7 +101,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         when(participantStore.getParticipants(event.getId())).thenReturn(participantsList);
         when(participantManager.getParticipants()).thenReturn(participantsList);
         when(sharedPreferenceService.getUserName()).thenReturn("Me");
-        when(participantManager.filterOutParticipants(any(List.class))).thenReturn(otherParticipantsList);
+        when(participantManager.filterOutParticipants(anyList())).thenReturn(otherParticipantsList);
 
         // When
         getActivity();

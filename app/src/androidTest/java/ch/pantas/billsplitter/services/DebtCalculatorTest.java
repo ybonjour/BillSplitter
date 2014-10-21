@@ -21,6 +21,7 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.framework.CustomMatchers.matchesDebt;
+import static ch.pantas.billsplitter.model.Currency.EUR;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasItem;
@@ -53,7 +54,7 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        event = new Event(randomUUID().toString(), "My Event");
+        event = new Event(randomUUID().toString(), "My Event", EUR);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {

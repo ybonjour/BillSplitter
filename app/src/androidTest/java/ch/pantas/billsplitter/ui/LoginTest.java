@@ -14,6 +14,7 @@ import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
+import static ch.pantas.billsplitter.model.Currency.EUR;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
@@ -141,7 +142,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     public void testEventDetailIsStartedWhenEventIdIsAlreadySet(){
         // Given
         when(preferenceService.getUserName()).thenReturn("Joe");
-        Event event = new Event("eventId", "eventName");
+        Event event = new Event("eventId", "eventName", EUR);
         when(preferenceService.getActiveEventId()).thenReturn(event.getId());
         when(eventStore.getById(event.getId())).thenReturn(event);
 

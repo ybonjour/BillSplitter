@@ -13,7 +13,7 @@ import static roboguice.RoboGuice.getInjector;
 public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "BillSplitter";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private final Context context;
 
@@ -25,51 +25,79 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(EventTable.CREATE);
-        db.execSQL(UserTable.CREATE);
-        db.execSQL(ExpenseTable.CREATE);
-        db.execSQL(ParticipantTable.CREATE);
-        db.execSQL(AttendeeTable.CREATE);
-        db.execSQL(TagTable.CREATE);
+        EventTable.onCreate(db);
+        UserTable.onCreate(db);
+        ExpenseTable.onCreate(db);
+        ParticipantTable.onCreate(db);
+        AttendeeTable.onCreate(db);
+        TagTable.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(TagTable.CREATE);
+        if (oldVersion >= newVersion) return;
+
+        EventTable.onUpgrade(db, oldVersion);
+        UserTable.onUpgrade(db, oldVersion);
+        ExpenseTable.onUpgrade(db, oldVersion);
+        ParticipantTable.onUpgrade(db, oldVersion);
+        AttendeeTable.onUpgrade(db, oldVersion);
+        TagTable.onUpgrade(db, oldVersion);
     }
 
-    public BillSplitterDatabase getDatabase(){
+    public BillSplitterDatabase getDatabase() {
         BillSplitterDatabase db = getInjector(context).getInstance(BillSplitterDatabase.class);
         return db.init(getReadableDatabase());
     }
 
-    public class Table {
+    public static class Table {
         public static final String ID = "_id";
     }
 
-    public class EventTable extends Table {
+    public static class EventTable extends Table {
         public static final String TABLE = "Event";
 
 
         public static final String NAME = "Name";
+        public static final String CURRENCY = "currency";
 
-        static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " TEXT PRIMARY KEY, "
-                + NAME + " TEXT);";
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL(
+                    "CREATE TABLE " + TABLE + "("
+                            + ID + " TEXT PRIMARY KEY, "
+                            + CURRENCY + " TEXT, "
+                            + NAME + " TEXT);"
+            );
+        }
+
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+            if (oldVersion < 3) {
+                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + CURRENCY + " TEXT;");
+                db.execSQL("UPDATE " + TABLE + " SET " + CURRENCY + "='EUR';");
+            }
+        }
     }
 
-    public class UserTable {
+    public static class UserTable {
         public static final String TABLE = "User";
 
         public static final String ID = "_id";
         public static final String NAME = "Name";
 
-        static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " TEXT PRIMARY KEY, "
-                + NAME + " TEXT);";
+
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL(
+                    "CREATE TABLE " + TABLE + "("
+                            + ID + " TEXT PRIMARY KEY, "
+                            + NAME + " TEXT);"
+            );
+        }
+
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+        }
     }
 
-    public class ExpenseTable extends Table {
+    public static class ExpenseTable extends Table {
         public static final String TABLE = "Expense";
 
         public static final String EVENT = "event";
@@ -77,46 +105,77 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         public static final String DESCRIPTION = "description";
         public static final String AMOUNT = "amount";
 
-        static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " TEXT PRIMARY KEY, "
-                + EVENT + " TEXT, "
-                + USER + " TEXT, "
-                + DESCRIPTION + " TEXT, "
-                + AMOUNT + " INTEGER);";
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL(
+                    "CREATE TABLE " + TABLE + "("
+                            + ID + " TEXT PRIMARY KEY, "
+                            + EVENT + " TEXT, "
+                            + USER + " TEXT, "
+                            + DESCRIPTION + " TEXT, "
+                            + AMOUNT + " INTEGER);"
+            );
+        }
+
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+        }
     }
 
-    public class AttendeeTable extends Table {
+    public static class AttendeeTable extends Table {
         public static final String TABLE = "Attendee";
 
         public static final String EXPENSE = "expense";
         public static final String USER = "user";
 
-        static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " TEXT PRIMARY KEY, "
-                + EXPENSE + " TEXT,"
-                + USER + " TEXT);";
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL(
+                    "CREATE TABLE " + TABLE + "("
+                            + ID + " TEXT PRIMARY KEY, "
+                            + EXPENSE + " TEXT,"
+                            + USER + " TEXT);"
+            );
+        }
+
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+        }
     }
 
-    public class ParticipantTable extends Table {
+    public static class ParticipantTable extends Table {
         public static final String TABLE = "Participant";
 
         public static final String EVENT = "event";
         public static final String USER = "user";
 
-        static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " TEXT PRIMARY KEY, "
-                + EVENT + " TEXT,"
-                + USER + " TEXT);";
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL(
+                    "CREATE TABLE " + TABLE + "("
+                            + ID + " TEXT PRIMARY KEY, "
+                            + EVENT + " TEXT,"
+                            + USER + " TEXT);"
+            );
+        }
+
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+        }
     }
 
-    public class TagTable extends Table {
+    public static class TagTable extends Table {
         public static final String TABLE = "Tag";
 
         public static final String ID = "_id";
         public static final String NAME = "Name";
 
-        static final String CREATE = "CREATE TABLE " + TABLE + "("
-                + ID + " TEXT PRIMARY KEY, "
-                + NAME + " TEXT);";
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL(
+                    "CREATE TABLE " + TABLE + "("
+                            + ID + " TEXT PRIMARY KEY, "
+                            + NAME + " TEXT);"
+            );
+        }
+
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+            if (oldVersion < 2) {
+                onCreate(db);
+            }
+        }
     }
 }

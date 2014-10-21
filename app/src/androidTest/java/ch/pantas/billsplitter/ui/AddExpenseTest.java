@@ -32,8 +32,9 @@ import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasText;
-import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
+import static ch.pantas.billsplitter.model.Currency.EUR;
 import static ch.pantas.billsplitter.ui.AddExpense.ARGUMENT_EXPENSE_ID;
+import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
@@ -44,6 +45,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Double.parseDouble;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -90,7 +92,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     public void setUp() throws Exception {
         super.setUp();
 
-        event = new Event("abcd", "An Event");
+        event = new Event("abcd", "An Event", EUR);
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);
@@ -135,7 +137,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         onView(withText(R.string.save)).perform(click());
 
         // Then
-        int savedAmount = (int) parseDouble(amount)*100;
+        int savedAmount = (int) parseDouble(amount) * 100;
         verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, savedAmount, event.getId(), me.getId())));
     }
 
@@ -211,7 +213,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         when(participantStore.getParticipants(event.getId())).thenReturn(allUsers);
         when(attendeeStore.getAttendees(expense.getId())).thenReturn(attendeeList);
         when(payerAdapter.getSelectedUser()).thenReturn(payer);
-        when(payerAdapter.filterOutSelectedUser(any(List.class))).thenReturn(nonPayerList);
+        when(payerAdapter.filterOutSelectedUser(anyList())).thenReturn(nonPayerList);
         when(attendeeAdapter.getSelectedUsers()).thenReturn(attendeeSet);
 
         Intent intent = new Intent();
@@ -227,7 +229,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
             verify(attendeeAdapter, times(1)).select(eq(user));
         }
         onView(withId(R.id.expense_description)).check(hasText(expense.getDescription()));
-        onView(withId(R.id.expense_amount)).check(hasText(String.valueOf(expense.getAmount()/100.0)));
+        onView(withId(R.id.expense_amount)).check(hasText(String.valueOf(expense.getAmount() / 100.0)));
     }
 
     private static Matcher<Attendee> newAttendeeWithUserId(final String userId) {

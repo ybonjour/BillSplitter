@@ -7,6 +7,7 @@ import android.widget.EditText;
 import com.google.inject.Inject;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
+import ch.pantas.billsplitter.model.Currency;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.yvu.myapplication.R;
@@ -59,7 +60,8 @@ public class AddEvent extends RoboActivity {
             eventNameField.setBackgroundColor(getResources().getColor(R.color.error_color));
         } else {
             if (event == null) {
-                event = new Event(eventName);
+                // TODO: yb make currency selectable
+                event = new Event(eventName, Currency.EUR);
             }
             else {
                 event.setName(eventName);
