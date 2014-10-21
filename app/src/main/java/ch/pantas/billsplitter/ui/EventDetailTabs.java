@@ -33,7 +33,9 @@ public class EventDetailTabs {
         return this;
     }
 
-
+    public Event getEvent() {
+        return event;
+    }
 
     public String getLabel(int position) {
         return labels[position];
@@ -43,11 +45,11 @@ public class EventDetailTabs {
         checkNotNull(event);
         switch (position) {
             case 0:
-                return getInjector(context).getInstance(DebtsFragment.class);
+                return getInjector(context).getInstance(DebtsFragment.class).init(event);
             case 1:
-                return getInjector(context).getInstance(ExpensesFragment.class);
+                return getInjector(context).getInstance(ExpensesFragment.class).init(event);
             case 2:
-                return getInjector(context).getInstance(ParticipantsFragment.class);
+                return getInjector(context).getInstance(ParticipantsFragment.class).init(event);
             default:
                 throw new IllegalArgumentException("position");
         }

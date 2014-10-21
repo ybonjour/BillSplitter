@@ -6,25 +6,41 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.google.inject.Inject;
 
+import java.util.List;
+
 import ch.pantas.billsplitter.ui.EventDetailTabs;
+import ch.pantas.billsplitter.ui.fragment.BaseEventDetailsFragment;
 
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class EventDetailPagerAdapter extends FragmentPagerAdapter {
 
     private EventDetailTabs tabs;
+    private FragmentManager fragmentManager;
+
+    @Inject
+    public EventDetailPagerAdapter(FragmentManager fm) {
+        super(fm);
+        fragmentManager = fm;
+    }
 
     public EventDetailPagerAdapter init(EventDetailTabs tabs){
         checkNotNull(tabs);
 
         this.tabs = tabs;
 
-        return this;
-    }
+        if(fragmentManager != null) {
+            List<Fragment> fragments = fragmentManager.getFragments();
+            if(fragments != null) {
+                for (Fragment fragment : fragments) {
+                    if (!(fragment instanceof BaseEventDetailsFragment)) continue;
+                    BaseEventDetailsFragment eventFragment = (BaseEventDetailsFragment) fragment;
+                    eventFragment.setCurrentEvent(tabs.getEvent());
+                }
+            }
+        }
 
-    @Inject
-    public EventDetailPagerAdapter(FragmentManager fm) {
-        super(fm);
+        return this;
     }
 
     @Override
