@@ -19,8 +19,9 @@
             android:layout_gravity="top"
             android:background="#000"
             android:textColor="#fff"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"/>
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
 
     </android.support.v4.view.ViewPager>
 
@@ -39,8 +40,8 @@
             android:id="@+id/nav_drawer_username"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="10dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="7dp"
             android:textColor="#33B5E5"
             android:textStyle="bold"
             />
