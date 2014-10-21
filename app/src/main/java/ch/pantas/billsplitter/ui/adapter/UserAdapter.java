@@ -4,12 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.inject.Inject;
-
-import org.w3c.dom.Text;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,9 +14,8 @@ import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;
-import static java.lang.String.valueOf;
 
-public class UserAdapter extends BaseAdapter{
+public class UserAdapter extends BaseAdapter {
     @Inject
     private LayoutInflater layoutInflater;
 
@@ -32,7 +27,7 @@ public class UserAdapter extends BaseAdapter{
         this.users = users;
     }
 
-    public void setResBackgroundDrawable(int resColor){
+    public void setResBackgroundDrawable(int resColor) {
         this.resBackgroundDrawable = resColor;
     }
 
@@ -53,7 +48,7 @@ public class UserAdapter extends BaseAdapter{
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view == null) {
+        if (view == null) {
             view = layoutInflater.inflate(R.layout.user_item, null);
         }
 

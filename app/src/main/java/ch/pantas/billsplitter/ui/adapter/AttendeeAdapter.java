@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -18,7 +17,6 @@ import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
-import static java.lang.String.valueOf;
 
 public class AttendeeAdapter extends BaseAdapter {
     @Inject

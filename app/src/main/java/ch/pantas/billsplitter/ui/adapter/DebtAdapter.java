@@ -12,11 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.pantas.billsplitter.model.Debt;
-import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;
-import static java.lang.String.valueOf;
 
 public class DebtAdapter extends BaseAdapter {
     @Inject
@@ -24,7 +22,7 @@ public class DebtAdapter extends BaseAdapter {
 
     private List<Debt> debts = new LinkedList<Debt>();
 
-    public void setDebts(List<Debt> debts){
+    public void setDebts(List<Debt> debts) {
         this.debts = debts;
     }
 
@@ -45,7 +43,7 @@ public class DebtAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view == null){
+        if (view == null) {
             view = inflater.inflate(R.layout.debt_item, null);
         }
 
