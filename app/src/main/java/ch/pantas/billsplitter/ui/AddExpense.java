@@ -102,6 +102,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
     private Event event;
     private Expense expense;
     private int amountCents = 0;
+    private TextWatcher descriptionTextWatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +157,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
             }
         });
 
-        descriptionField.addTextChangedListener(new TextWatcher() {
+        descriptionTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
@@ -173,7 +174,9 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
             public void afterTextChanged(Editable editable) {
 
             }
-        });
+        };
+
+        descriptionField.addTextChangedListener(descriptionTextWatcher);
 
         tagGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -204,6 +207,17 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
                 toggleAttendee(user);
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        amountField.setOnFocusChangeListener(null);
+        descriptionField.setOnFocusChangeListener(null);
+        descriptionField.removeTextChangedListener(descriptionTextWatcher);
+        tagGrid.setOnItemClickListener(null);
+        payerGrid.setOnItemClickListener(null);
+        attendeesGrid.setOnItemClickListener(null);
     }
 
     private void loadTags(String tag) {
