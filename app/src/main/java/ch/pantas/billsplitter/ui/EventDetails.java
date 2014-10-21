@@ -124,6 +124,9 @@ public class EventDetails extends RoboFragmentActivity {
             eventStore.removeById(event.getId());
             finish();
             return true;
+        } else if(R.id.action_edit_event == item.getItemId()) {
+            activityStarter.startEditEvent(this, event);
+            return true;
         } else  if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -137,6 +140,7 @@ public class EventDetails extends RoboFragmentActivity {
 
         menu.findItem(R.id.action_add_expense).setVisible(!drawerOpen);
         menu.findItem(R.id.action_delete_event).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
 
         return super.onPrepareOptionsMenu(menu);
     }

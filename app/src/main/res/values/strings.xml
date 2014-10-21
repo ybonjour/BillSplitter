@@ -26,8 +26,9 @@
     <string name="attendees">Attendees</string>
     <string name="add_event_help">Please provide a name for the new event</string>
     <string name="next">Next</string>
-    <string name="expense_text_with_description" formatted="false">%s paid %s for %s</string>
-    <string name="expense_text_without_description" formatted="false">%s paid %s</string>
+    <string name="expense_text_with_description" formatted="false">%s for %s</string>
+    <string name="expense_text_without_description" formatted="false">%s</string>
+    <string name="expense_attendees" formatted="false">Attendees: %s</string>
     <string name="remove_expense">Remove Expense</string>
     <string name="navigation_drawer_title">Choose Group</string>
     <string name="nav_drawer_open_desc">Open group list</string>

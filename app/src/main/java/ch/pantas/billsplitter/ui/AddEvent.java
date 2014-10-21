@@ -2,7 +2,9 @@ package ch.pantas.billsplitter.ui;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.google.inject.Inject;
 
@@ -22,6 +24,8 @@ public class AddEvent extends RoboActivity {
 
     @InjectView(R.id.event_name)
     private EditText eventNameField;
+    @InjectView(R.id.event_currency)
+    private Spinner currencySpinner;
 
     @Inject
     private EventStore eventStore;
@@ -36,6 +40,10 @@ public class AddEvent extends RoboActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_event);
 
+        ArrayAdapter<CharSequence> currencyAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, Currency.getValuesAsString());
+        currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        currencySpinner.setAdapter(currencyAdapter);
+
         String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
         if (eventId == null) {
             setTitle(R.string.add_event);
@@ -45,6 +53,7 @@ public class AddEvent extends RoboActivity {
             checkNotNull(event);
             setTitle("Edit " + event.getName());
             eventNameField.setText(event.getName());
+            currencySpinner.setSelection(currencyAdapter.getPosition(event.getCurrency().toString()));
         }
     }
 
@@ -58,17 +67,25 @@ public class AddEvent extends RoboActivity {
         String eventName = eventNameField.getText().toString();
         if (eventName.isEmpty()) {
             eventNameField.setBackgroundColor(getResources().getColor(R.color.error_color));
-        } else {
-            if (event == null) {
-                // TODO: yb make currency selectable
-                event = new Event(eventName, Currency.EUR);
-            }
-            else {
-                event.setName(eventName);
-            }
+            return;
+        }
+
+        Currency currency = Currency.valueOf(currencySpinner.getSelectedItem().toString());
+        if (event == null) {
+            event = new Event(eventName, currency);
+        }
+        else {
+            event.setName(eventName);
+            event.setCurrency(currency);
+        }
+
+        if(event.isNew()){
             eventStore.persist(event);
             activityStarter.startAddParticipants(this, event);
-            finish();
+        } else {
+            eventStore.persist(event);
         }
+
+        finish();
     }
 }
