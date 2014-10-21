@@ -2,12 +2,11 @@ package ch.pantas.billsplitter.services;
 
 import com.google.inject.Inject;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
+import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
@@ -34,10 +33,10 @@ public class DebtCalculator {
         checkNotNull(event);
 
         List<Debt> debts = getDebts(event);
-        return debtOptimizer.optimize(debts);
+        return debtOptimizer.optimize(debts, event.getCurrency());
     }
 
-    private List<Debt> getDebts(Event event){
+    private List<Debt> getDebts(Event event) {
         List<Debt> debts = new LinkedList<Debt>();
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
         for (Expense expense : expenses) {
@@ -45,7 +44,7 @@ public class DebtCalculator {
             List<User> fromUsers = attendeeStore.getAttendees(expense.getId());
             int amount = expense.getAmount() / (fromUsers.size() + 1);
             for (User fromUser : fromUsers) {
-                debts.add(new Debt(fromUser, toUser, amount));
+                debts.add(new Debt(fromUser, toUser, amount, event.getCurrency()));
             }
         }
 

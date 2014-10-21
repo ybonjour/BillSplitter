@@ -17,6 +17,7 @@ import java.util.List;
 import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;
 import static java.lang.String.valueOf;
 
 public class UserAdapter extends BaseAdapter{
@@ -56,23 +57,7 @@ public class UserAdapter extends BaseAdapter{
             view = layoutInflater.inflate(R.layout.user_item, null);
         }
 
-        String userName = users.get(i).getName();
-        TextView nameView = (TextView) view.findViewById(R.id.user_item_name);
-        nameView.setText(userName);
-
-        View pictogramView = view.findViewById(R.id.user_item_pictogram);
-        if(resBackgroundDrawable != null) {
-            pictogramView.setBackground(view.getResources().getDrawable(resBackgroundDrawable));
-        }
-
-        String pictogram = "";
-        if(userName != null && !userName.isEmpty()) {
-            pictogram = valueOf(userName.toUpperCase().charAt(0));
-        }
-
-        TextView pictogramTextView = (TextView) view.findViewById(R.id.user_item_pictogram_text);
-        pictogramTextView.setTextSize(22);
-        pictogramTextView.setText(pictogram);
+        setupUserItem(view, users.get(i), resBackgroundDrawable);
 
         return view;
     }

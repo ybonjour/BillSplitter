@@ -3,7 +3,7 @@ package ch.pantas.billsplitter.model;
 import static ch.pantas.billsplitter.services.AmountCalculator.convertToString;
 
 public enum Currency {
-    CHF("CHF", "%s CHF"), EUR("EUR", "%s EUR"), USD("$", "$ %s");
+    CHF("CHF", "%s CHF"), EUR("€", "%s €"), USD("$", "$ %s");
 
     private final String symbol;
     private final String formatTemplate;

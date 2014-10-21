@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import ch.pantas.billsplitter.model.Currency;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.User;
 
@@ -20,7 +21,7 @@ import static java.util.Collections.sort;
 public class DebtOptimizer {
 
 
-    public List<Debt> optimize(List<Debt> debts) {
+    public List<Debt> optimize(List<Debt> debts, Currency currency) {
         checkNotNull(debts);
 
         Map<User, Integer> balances = buildBalance(debts);
@@ -50,7 +51,7 @@ public class DebtOptimizer {
                 addIfNeeded(negatives, negativeStar);
             }
 
-            result.add(new Debt(negativeStar.getUser(), positive.getUser(), debtAmount));
+            result.add(new Debt(negativeStar.getUser(), positive.getUser(), debtAmount, currency));
         }
 
         // Verify that the optimization di not change the balances of the users
@@ -59,15 +60,15 @@ public class DebtOptimizer {
         return result;
     }
 
-    private static Balance pop(List<Balance> balances){
+    private static Balance pop(List<Balance> balances) {
         Balance balance = balances.get(0);
         balances.remove(0);
 
         return balance;
     }
 
-    private static void addIfNeeded(List<Balance> balances, Balance balance){
-        if(balance.getAmount() > 0) {
+    private static void addIfNeeded(List<Balance> balances, Balance balance) {
+        if (balance.getAmount() > 0) {
             balances.add(balance);
             sort(balances, reverseOrder());
         }
@@ -137,8 +138,8 @@ public class DebtOptimizer {
         // balancesBefore might contain elements with balance 0. These do not exist in balanceAfter
         checkState(balancesBefore.size() >= balancesAfter.size());
 
-        for(User user : balancesBefore.keySet()) {
-            if(balancesAfter.containsKey(user)){
+        for (User user : balancesBefore.keySet()) {
+            if (balancesAfter.containsKey(user)) {
                 checkState(balancesBefore.get(user).equals(balancesAfter.get(user)), user.getName() + ": " + balancesBefore.get(user) + " != " + balancesAfter.get(user));
             } else {
                 checkState(balancesBefore.get(user).equals(0), user.getName() + ": balance != 0");
