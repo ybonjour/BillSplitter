@@ -30,7 +30,6 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Tag;
 import ch.pantas.billsplitter.model.User;
-import ch.pantas.billsplitter.services.AmountCalculator;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.AttendeeAdapter;
 import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
@@ -44,7 +43,6 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static ch.pantas.billsplitter.services.AmountCalculator.convertToCents;
 import static ch.pantas.billsplitter.services.AmountCalculator.convertToString;
-import static ch.pantas.billsplitter.services.AmountCalculator.isValidAmount;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -136,12 +134,11 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
             public void onFocusChange(View view, boolean hasFocus) {
                 if (!hasFocus) {
                     String amountInput = amountField.getText().toString();
-                    amountCents = isValidAmount(amountInput) ? convertToCents(amountInput) : 0;
+                    amountCents = convertToCents(amountInput);
                     Currency currency = event.getCurrency();
                     amountField.setText(currency.format(amountCents));
                 } else {
-                    String amountText = amountCents == 0 ? "" : convertToString(amountCents);
-                    amountField.setText(amountText);
+                    amountField.setText(convertToString(amountCents));
                 }
             }
         });
@@ -235,7 +232,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
 
         // Make sure we take the value of the amount field if it still has focus
         // (in that case, the amountCents variable has not yet been updated)
-        if(amountField.hasFocus()){
+        if (amountField.hasFocus()) {
             amountCents = convertToCents(amountField.getText().toString());
         }
 
@@ -284,7 +281,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
             expenseStore.removeById(expense.getId());
             finish();
             return true;
-        } else if(R.id.action_save_expense == item.getItemId()){
+        } else if (R.id.action_save_expense == item.getItemId()) {
             onSave();
         }
         return super.onOptionsItemSelected(item);

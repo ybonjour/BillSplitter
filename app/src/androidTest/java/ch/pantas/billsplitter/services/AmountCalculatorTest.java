@@ -57,13 +57,15 @@ public class AmountCalculatorTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testConvertToCentsThrowsIllegalArgumentExceptionIfNoValidAmountIsProvided(){
-        try {
-            convertToCents("a");
-            fail("No excetpion has been thrown");
-        } catch(IllegalArgumentException e){
-            assertNotNull(e);
-        }
+    public void testConvertToCentsReturns0IfNoValidAmountIsProvided(){
+        // Given
+        String input = "a";
+
+        // When
+        int amountCents = convertToCents(input);
+
+        // Then
+        assertEquals(0, amountCents);
     }
 
     @SmallTest
@@ -139,5 +141,17 @@ public class AmountCalculatorTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertEquals("32.35", output);
+    }
+
+    @SmallTest
+    public void testConvertToStringReturnsEmptyStringIfAmountCentsIs0(){
+        // Given
+        int amountCents = 0;
+
+        // When
+        String output = convertToString(amountCents);
+
+        // Then
+        assertEquals("", output);
     }
 }

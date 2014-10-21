@@ -2,14 +2,10 @@ package ch.pantas.billsplitter.services;
 
 import java.math.BigDecimal;
 
-import ch.pantas.billsplitter.model.Currency;
-
-import static com.google.inject.internal.util.$Preconditions.checkArgument;
-
 public class AmountCalculator {
 
     public static int convertToCents(String input) {
-        checkArgument(isValidAmount(input));
+        if (!isValidAmount(input)) return 0;
 
         BigDecimal amount = new BigDecimal(input);
         return amount.multiply(new BigDecimal(100)).intValue();
@@ -25,7 +21,8 @@ public class AmountCalculator {
         }
     }
 
-    public static String convertToString(int amountCents){
+    public static String convertToString(int amountCents) {
+        if(amountCents == 0) return "";
         BigDecimal amount = new BigDecimal(amountCents).divide(new BigDecimal(100));
         return amount.toPlainString();
     }
