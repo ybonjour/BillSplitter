@@ -25,6 +25,7 @@ import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.TagStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Attendee;
+import ch.pantas.billsplitter.model.Currency;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Tag;
@@ -40,11 +41,14 @@ import roboguice.inject.InjectView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static ch.pantas.billsplitter.services.AmountCalculator.convertToCents;
+import static ch.pantas.billsplitter.services.AmountCalculator.convertToString;
+import static ch.pantas.billsplitter.services.AmountCalculator.isValidAmount;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
-import static java.lang.Double.parseDouble;
+import static java.lang.String.format;
 
-public class AddExpense extends RoboActivity implements TagDeletedListener{
+public class AddExpense extends RoboActivity implements TagDeletedListener {
 
     public static final String ARGUMENT_EXPENSE_ID = "expense_id";
 
@@ -98,6 +102,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener{
 
     private Event event;
     private Expense expense;
+    private int amountCents = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +126,29 @@ public class AddExpense extends RoboActivity implements TagDeletedListener{
 
         tagAdapter.setTagDeletedListener(this);
 
+        String hintAmount = format(getString(R.string.amount_hint, event.getCurrency().getSymbol()));
+        amountField.setHint(hintAmount);
+
+
+        amountField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus) {
+                    String amountInput = amountField.getText().toString();
+                    amountCents = isValidAmount(amountInput) ? convertToCents(amountInput) : 0;
+                    Currency currency = event.getCurrency();
+                    amountField.setText(currency.format(amountCents));
+                } else {
+                    String amountText = amountCents == 0 ? "" : convertToString(amountCents);
+                    amountField.setText(amountText);
+                }
+            }
+        });
+
         descriptionField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus) {
+                if (hasFocus) {
                     String tag = descriptionField.getText().toString();
                     loadTags(tag);
                     tagGridContainer.setVisibility(VISIBLE);
@@ -156,7 +180,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener{
         tagGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(view.getId() == R.id.tag_item_delete) {
+                if (view.getId() == R.id.tag_item_delete) {
                     Toast.makeText(AddExpense.this, "Juhuuuu", Toast.LENGTH_LONG).show();
                 }
                 Tag tag = (Tag) adapterView.getItemAtPosition(i);
@@ -185,7 +209,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener{
     }
 
     private void loadTags(String tag) {
-        Tag existingTag = null;
+        Tag existingTag;
         List<Tag> tags;
         if (tag == null || tag.isEmpty()) {
             tags = tagStore.getAll();
@@ -207,26 +231,18 @@ public class AddExpense extends RoboActivity implements TagDeletedListener{
         checkNotNull(payer);
 
         String description = descriptionField.getText().toString();
-        if (description == null || description.isEmpty()) {
-            descriptionField.setBackgroundColor(getResources().getColor(R.color.error_color));
-            return;
-        }
 
-        int amount;
-        try {
-            double displayedAmount = parseDouble(amountField.getText().toString());
-            amount = (int) (displayedAmount * 100.0);
-        } catch (NumberFormatException e) {
+        if (amountCents == 0) {
             amountField.setBackgroundColor(getResources().getColor(R.color.error_color));
             return;
         }
 
         if (expense == null) {
-            expense = new Expense(event.getId(), payer.getId(), description, amount);
+            expense = new Expense(event.getId(), payer.getId(), description, amountCents);
         } else {
             expense.setPayerId(payer.getId());
             expense.setDescription(description);
-            expense.setAmount(amount);
+            expense.setAmount(amountCents);
         }
 
         expenseStore.persist(expense);
@@ -293,9 +309,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener{
         checkNotNull(expense);
 
         descriptionField.setText(expense.getDescription());
-        int amount = expense.getAmount();
-        double displayedAmount = amount / 100.0;
-        amountField.setText(String.valueOf(displayedAmount));
+        amountCents = expense.getAmount();
 
         loadPayerList();
         User payer = userStore.getById(expense.getPayerId());

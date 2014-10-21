@@ -3,25 +3,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <EditText
+        android:id="@+id/expense_amount"
+        android:inputType="numberDecimal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/expense_amount"
-            android:hint="@string/amount"
-            android:inputType="numberDecimal"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:text="CHF"
-            android:layout_marginRight="20dp"
-            android:id="@+id/expense_currency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/expense_description"
         android:hint="@string/description"

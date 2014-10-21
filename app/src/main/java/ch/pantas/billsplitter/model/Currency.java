@@ -1,17 +1,23 @@
 package ch.pantas.billsplitter.model;
 
-public enum Currency {
-    CHF("%.2f CHF"), EUR("%.2f EUR"), USD("$ %.2f");
+import static ch.pantas.billsplitter.services.AmountCalculator.convertToString;
 
+public enum Currency {
+    CHF("CHF", "%s CHF"), EUR("EUR", "%s EUR"), USD("$", "$ %s");
+
+    private final String symbol;
     private final String formatTemplate;
 
-    Currency(String formatTemplate) {
+    Currency(String symbol, String formatTemplate) {
+        this.symbol = symbol;
         this.formatTemplate = formatTemplate;
     }
 
-    public String format(int amountCents){
-        double amount = amountCents / 100;
+    public String format(int amountCents) {
+        return String.format(formatTemplate, convertToString(amountCents));
+    }
 
-        return String.format(formatTemplate, amount);
+    public String getSymbol() {
+        return symbol;
     }
 }
