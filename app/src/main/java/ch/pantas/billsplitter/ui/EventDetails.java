@@ -124,6 +124,7 @@ public class EventDetails extends RoboFragmentActivity {
 
 
         viewPager.setAdapter(pagerAdapter);
+        viewPagerTabStrip.setTabIndicatorColorResource(R.color.tab_indicator);
 
         pagerAdapter.notifyDataSetChanged();
     }
@@ -208,15 +209,14 @@ public class EventDetails extends RoboFragmentActivity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+
+        drawerLayout.closeDrawer(drawerView);
     }
 
     private void selectItem(int position) {
         Event newEvent = eventStore.getAll().get(position);
 
         drawerList.setItemChecked(position, true);
-        drawerLayout.closeDrawer(drawerView);
-
-        //finish();
         activityStarter.startEventDetails(this, newEvent, false);
     }
 }
