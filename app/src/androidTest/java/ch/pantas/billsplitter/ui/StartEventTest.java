@@ -28,9 +28,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class EventListTest extends BaseEspressoTest<EventList> {
-    public EventListTest() {
-        super(EventList.class);
+public class StartEventTest extends BaseEspressoTest<StartEvent> {
+    public StartEventTest() {
+        super(StartEvent.class);
     }
 
     @Mock
@@ -77,7 +77,7 @@ public class EventListTest extends BaseEspressoTest<EventList> {
         onData(anything()).atPosition(0).perform(click());
 
         // Then
-        verify(activityStarter, times(1)).startEventDetails(any(EventList.class), eq(event));
+        verify(activityStarter, times(1)).startEventDetails(any(StartEvent.class), eq(event));
     }
 
     @LargeTest
@@ -98,6 +98,6 @@ public class EventListTest extends BaseEspressoTest<EventList> {
         onView(withText(R.string.add_event)).perform(click());
 
         // Then
-        verify(activityStarter, times(1)).startAddEvent(any(EventList.class));
+        verify(activityStarter, times(1)).startAddEvent(any(StartEvent.class));
     }
 }

@@ -33,4 +33,5 @@
     <string name="navigation_drawer_title">Choose Group</string>
     <string name="nav_drawer_open_desc">Open group list</string>
     <string name="nav_drawer_close_desc">Close group list</string>
+    <string name="start">Start</string>
 </resources>

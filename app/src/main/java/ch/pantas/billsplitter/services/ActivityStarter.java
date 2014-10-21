@@ -11,8 +11,10 @@ import ch.pantas.billsplitter.ui.AddEvent;
 import ch.pantas.billsplitter.ui.AddParticipants;
 import ch.pantas.billsplitter.ui.AddExpense;
 import ch.pantas.billsplitter.ui.EventDetails;
-import ch.pantas.billsplitter.ui.EventList;
+import ch.pantas.billsplitter.ui.StartEvent;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;
 import static ch.pantas.billsplitter.ui.AddExpense.ARGUMENT_EXPENSE_ID;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
@@ -43,6 +45,7 @@ public class ActivityStarter {
 
         Intent intent = new Intent(context, EventDetails.class);
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -64,10 +67,10 @@ public class ActivityStarter {
         context.startActivity(intent);
     }
 
-    public void startEventList(Context context) {
+    public void startStartEvent(Context context) {
         checkNotNull(context);
 
-        Intent intent = new Intent(context, EventList.class);
+        Intent intent = new Intent(context, StartEvent.class);
         context.startActivity(intent);
     }
 

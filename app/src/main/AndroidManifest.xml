@@ -17,22 +17,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ch.pantas.billsplitter.ui.EventList"
+            android:name="ch.pantas.billsplitter.ui.StartEvent"
             android:screenOrientation="portrait" />
         <activity
             android:name="ch.pantas.billsplitter.ui.AddEvent"
-            android:screenOrientation="portrait" />.
+            android:screenOrientation="portrait" />
         <activity
             android:name="ch.pantas.billsplitter.ui.AddParticipants"
             android:screenOrientation="portrait" />
         <activity
             android:name="ch.pantas.billsplitter.ui.EventDetails"
-            android:parentActivityName="ch.pantas.billsplitter.ui.EventList"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ch.pantas.billsplitter.ui.EventList" />
         </activity>
         <activity
             android:name="ch.pantas.billsplitter.ui.AddExpense"

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
@@ -40,10 +40,9 @@ public class Login extends RoboActivity {
         if (sharedPreferenceService.getUserName() != null) {
             Event event = getStoredEvent();
             if (event != null) {
-                activityStarter.startEventList(this);
                 activityStarter.startEventDetails(this, event);
             } else {
-                activityStarter.startEventList(this);
+                activityStarter.startStartEvent(this);
             }
             finish();
             return;
@@ -63,7 +62,7 @@ public class Login extends RoboActivity {
         userStore.persist(new User(userName));
         sharedPreferenceService.storeUserName(userName);
 
-        activityStarter.startEventList(this);
+        activityStarter.startStartEvent(this);
         finish();
     }
 

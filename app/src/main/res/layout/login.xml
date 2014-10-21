@@ -14,7 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
     <Button
-        android:text="@string/save"
+        android:text="@string/start"
         android:onClick="onSave"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
