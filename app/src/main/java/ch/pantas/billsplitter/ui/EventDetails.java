@@ -13,7 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -36,6 +39,9 @@ public class EventDetails extends RoboFragmentActivity {
 
     @InjectView(R.id.drawer_layout)
     private DrawerLayout drawerLayout;
+
+    @InjectView(R.id.drawer_view)
+    private LinearLayout drawerView;
 
     @InjectView(R.id.left_drawer)
     private ListView drawerList;
@@ -127,7 +133,7 @@ public class EventDetails extends RoboFragmentActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
+        boolean drawerOpen = drawerLayout.isDrawerOpen(drawerView);
 
         menu.findItem(R.id.action_add_expense).setVisible(!drawerOpen);
         menu.findItem(R.id.action_delete_event).setVisible(!drawerOpen);
@@ -150,6 +156,15 @@ public class EventDetails extends RoboFragmentActivity {
             }
         });
 
+        ImageView addGroupButton = (ImageView) findViewById(R.id.add_group_button);
+        addGroupButton.setClickable(true);
+        addGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityStarter.startAddEvent(EventDetails.this);
+            }
+        });
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
@@ -167,6 +182,8 @@ public class EventDetails extends RoboFragmentActivity {
 
             public void onDrawerOpened(View drawerView) {
                 getActionBar().setTitle(R.string.navigation_drawer_title);
+                final TextView usernameView = (TextView) findViewById(R.id.nav_drawer_username);
+                usernameView.setText(sharedPreferenceService.getUserName());
                 invalidateOptionsMenu();
             }
         };
@@ -177,7 +194,7 @@ public class EventDetails extends RoboFragmentActivity {
         Event newEvent = eventStore.getAll().get(position);
 
         drawerList.setItemChecked(position, true);
-        drawerLayout.closeDrawer(drawerList);
+        drawerLayout.closeDrawer(drawerView);
 
         finish();
         activityStarter.startEventDetails(this, newEvent);
