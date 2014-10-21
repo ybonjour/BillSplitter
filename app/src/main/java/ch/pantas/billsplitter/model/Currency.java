@@ -16,7 +16,9 @@ public enum Currency {
     }
 
     public String format(int amountCents) {
-        return String.format(formatTemplate, convertToString(amountCents));
+        String amount = convertToString(amountCents);
+        if(amount.isEmpty()) return "";
+        return String.format(formatTemplate, amount);
     }
 
     public String getSymbol() {
