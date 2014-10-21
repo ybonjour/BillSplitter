@@ -4,4 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="debt_amount_textsize">8sp</dimen>
     <dimen name="title_textsize">10sp</dimen>
+    <dimen name="event_name_textsize">10sp</dimen>
+    <dimen name="expense_item_title">8sp</dimen>
+    <dimen name="expense_item_text">5sp</dimen>
 </resources>

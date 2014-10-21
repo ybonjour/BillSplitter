@@ -8,6 +8,7 @@ import com.google.inject.Singleton;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
@@ -29,6 +30,8 @@ public class ExpenseService {
     @Inject
     private EventStore eventStore;
     @Inject
+    private AttendeeStore attendeeStore;
+    @Inject
     private Context context;
 
 
@@ -42,7 +45,8 @@ public class ExpenseService {
         List<ExpensePresentation> result = new LinkedList<ExpensePresentation>();
         for (Expense expense : expenses) {
             User payer = userStore.getById(expense.getPayerId());
-            result.add(new ExpensePresentation(payer, expense, event.getCurrency(), context));
+            List<User> attendees = attendeeStore.getAttendees(expense.getId());
+            result.add(new ExpensePresentation(payer, expense, event.getCurrency(), attendees, context));
         }
 
         return result;

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -43,13 +44,15 @@ public class DebtsFragment extends RoboFragment {
         checkNotNull(event);
 
         View rootView = inflater.inflate(R.layout.fragment_debts_list, container, false);
-        ListView list = (ListView) rootView.findViewById(R.id.debts_list);
+        setUpDebtsList(rootView);
+        return rootView;
+    }
 
+    private void setUpDebtsList(View rootView){
+        ListView list = (ListView) rootView.findViewById(R.id.debts_list);
         List<Debt> debts = debtCalculator.calculateDebts(event);
         DebtAdapter adapter = getInjector(context).getInstance(DebtAdapter.class);
         adapter.setDebts(debts);
         list.setAdapter(adapter);
-
-        return rootView;
     }
 }

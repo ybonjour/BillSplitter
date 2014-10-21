@@ -1,13 +1,11 @@
 package ch.pantas.billsplitter.ui.fragment;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
@@ -18,10 +16,12 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.ExpensePresentation;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.ExpenseService;
+import ch.pantas.billsplitter.ui.adapter.ExpenseAdapter;
 import ch.yvu.myapplication.R;
 import roboguice.fragment.RoboFragment;
 
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
+import static roboguice.RoboGuice.getInjector;
 
 public class ExpensesFragment extends RoboFragment {
 
@@ -57,7 +57,8 @@ public class ExpensesFragment extends RoboFragment {
         expensesList = (ListView) rootView.findViewById(R.id.expenses_list);
 
         List<ExpensePresentation> expenses = expenseService.getExpensePresentations(event.getId());
-        ArrayAdapter<ExpensePresentation> adapter = new ArrayAdapter<ExpensePresentation>(rootView.getContext(), android.R.layout.simple_list_item_1, expenses);
+        ExpenseAdapter adapter = getInjector(context).getInstance(ExpenseAdapter.class);
+        adapter.setExpenses(expenses);
         expensesList.setAdapter(adapter);
 
         expensesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

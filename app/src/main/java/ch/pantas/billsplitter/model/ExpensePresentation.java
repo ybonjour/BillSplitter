@@ -3,10 +3,9 @@ package ch.pantas.billsplitter.model;
 
 import android.content.Context;
 
-import ch.yvu.myapplication.R;
+import java.util.List;
 
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
-import static java.lang.String.format;
 
 public class ExpensePresentation {
 
@@ -14,32 +13,45 @@ public class ExpensePresentation {
     private final User payer;
     private final Expense expense;
     private final Currency currency;
+    private final List<User> attendees;
 
-    public ExpensePresentation(User payer, Expense expense, Currency currency, Context context){
+    public ExpensePresentation(User payer, Expense expense, Currency currency, List<User> attendees, Context context) {
         checkNotNull(payer);
         checkNotNull(expense);
+        checkNotNull(attendees);
         checkNotNull(context);
 
         this.payer = payer;
         this.expense = expense;
         this.currency = currency;
         this.context = context;
+        this.attendees = attendees;
     }
 
     public Expense getExpense() {
         return expense;
     }
 
-    @Override
-    public String toString() {
-        String amount = currency.format(expense.getAmount());
-        String description = expense.getDescription();
-        if(description != null && !description.isEmpty()){
-            String template = context.getString(R.string.expense_text_with_description);
-            return format(template, payer.getName(), amount, description);
-        } else {
-            String template = context.getString(R.string.expense_text_without_description);
-            return format(template, payer.getName(), amount);
+    public User getPayer() {
+        return payer;
+    }
+
+    public String getFormattedAmount() {
+        return currency.format(expense.getAmount());
+    }
+
+    public String getAttendeesCommaSeparated() {
+        StringBuffer attendeeString = new StringBuffer();
+        boolean first = true;
+        for (User user : attendees) {
+            if (!first) {
+                attendeeString.append(", ");
+            }
+
+            attendeeString.append(user.getName());
+            first = false;
         }
+
+        return attendeeString.toString();
     }
 }
