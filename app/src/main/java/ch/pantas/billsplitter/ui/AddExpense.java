@@ -30,6 +30,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Tag;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.services.AmountCalculator;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.AttendeeAdapter;
 import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
@@ -226,11 +227,17 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
     }
 
 
-    public void onSave(View v) {
+    public void onSave() {
         User payer = payerAdapter.getSelectedUser();
         checkNotNull(payer);
 
         String description = descriptionField.getText().toString();
+
+        // Make sure we take the value of the amount field if it still has focus
+        // (in that case, the amountCents variable has not yet been updated)
+        if(amountField.hasFocus()){
+            amountCents = convertToCents(amountField.getText().toString());
+        }
 
         if (amountCents == 0) {
             amountField.setBackgroundColor(getResources().getColor(R.color.error_color));
@@ -263,6 +270,8 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
         MenuInflater inflater = getMenuInflater();
         if (expense != null) {
             inflater.inflate(R.menu.edit_expense, menu);
+        } else {
+            inflater.inflate(R.menu.add_expense, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -275,10 +284,11 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
             expenseStore.removeById(expense.getId());
             finish();
             return true;
+        } else if(R.id.action_save_expense == item.getItemId()){
+            onSave();
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onTagDelete(Tag tag) {
