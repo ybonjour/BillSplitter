@@ -1,5 +1,7 @@
 package ch.pantas.billsplitter.model;
 
+import java.util.ArrayList;
+
 import static ch.pantas.billsplitter.services.AmountCalculator.convertToString;
 
 public enum Currency {
@@ -19,5 +21,14 @@ public enum Currency {
 
     public String getSymbol() {
         return symbol;
+    }
+
+    public static String[] getValuesAsString(){
+        ArrayList<String> symbols = new ArrayList<String>();
+        for(Currency c : values()){
+            symbols.add(c.toString());
+        }
+        String[] buffer = new String[symbols.size()];
+        return symbols.toArray(buffer);
     }
 }

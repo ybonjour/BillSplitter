@@ -3,6 +3,10 @@
         android:icon="@drawable/ic_action_new"
         android:title="@string/add_expense"
         android:showAsAction="always"/>
+    <item android:id="@+id/action_edit_event"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/action_edit_event"
+        android:showAsAction="never"/>
     <item android:id="@+id/action_delete_event"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/action_delete_event"
