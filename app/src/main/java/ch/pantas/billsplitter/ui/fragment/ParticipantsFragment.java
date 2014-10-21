@@ -31,7 +31,7 @@ import static android.view.View.GONE;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
-public class ParticipantsFragment extends RoboFragment {
+public class ParticipantsFragment extends BaseEventDetailsFragment {
 
     @Inject
     private UserStore userStore;
@@ -44,8 +44,6 @@ public class ParticipantsFragment extends RoboFragment {
     @Inject
     private Context context;
 
-    private Event event;
-
     private EditText userField;
     private GridView participantGrid;
     private GridView userGrid;
@@ -53,19 +51,10 @@ public class ParticipantsFragment extends RoboFragment {
 
     private String newUserName;
 
-
-    public ParticipantsFragment init(Event event) {
-        checkNotNull(event);
-
-        this.event = event;
-
-        return this;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        setupParticipantManager();
+        final Event event = getCurrentEvent();
+        setupParticipantManager(event);
 
         View rootView = inflater.inflate(R.layout.fragment_participants, container, false);
         loadFields(rootView);
@@ -80,7 +69,7 @@ public class ParticipantsFragment extends RoboFragment {
                 }
                 participantManager.addParticipant(user);
 
-                storeParticipants();
+                storeParticipants(event);
                 reloadLists();
                 clearNewUserName();
             }
@@ -116,7 +105,8 @@ public class ParticipantsFragment extends RoboFragment {
         return rootView;
     }
 
-    private void setupParticipantManager() {
+    private void setupParticipantManager(Event event) {
+        participantManager.clear();
         User me = userStore.getUserWithName(sharedPreferenceService.getUserName());
         participantManager.addFixedParticipant(me);
 
@@ -138,7 +128,7 @@ public class ParticipantsFragment extends RoboFragment {
         userField.setText("");
     }
 
-    private void storeParticipants() {
+    private void storeParticipants(Event event) {
         participantStore.removeAll(event.getId());
         for (User user : participantManager.getParticipants()) {
             Participant participant = new Participant(user.getId(), event.getId());

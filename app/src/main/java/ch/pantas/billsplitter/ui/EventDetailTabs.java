@@ -43,11 +43,11 @@ public class EventDetailTabs {
         checkNotNull(event);
         switch (position) {
             case 0:
-                return getInjector(context).getInstance(DebtsFragment.class).init(event);
+                return getInjector(context).getInstance(DebtsFragment.class);
             case 1:
-                return getInjector(context).getInstance(ExpensesFragment.class).init(event);
+                return getInjector(context).getInstance(ExpensesFragment.class);
             case 2:
-                return getInjector(context).getInstance(ParticipantsFragment.class).init(event);
+                return getInjector(context).getInstance(ParticipantsFragment.class);
             default:
                 throw new IllegalArgumentException("position");
         }

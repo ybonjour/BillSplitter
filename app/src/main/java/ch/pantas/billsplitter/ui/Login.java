@@ -40,7 +40,7 @@ public class Login extends RoboActivity {
         if (sharedPreferenceService.getUserName() != null) {
             Event event = getStoredEvent();
             if (event != null) {
-                activityStarter.startEventDetails(this, event);
+                activityStarter.startEventDetails(this, event, true);
             } else {
                 activityStarter.startStartEvent(this);
             }

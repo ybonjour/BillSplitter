@@ -1,5 +1,6 @@
 package ch.pantas.billsplitter.ui;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -73,7 +74,43 @@ public class EventDetails extends RoboFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_details);
+        drawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                R.drawable.ic_drawer,
+                R.string.nav_drawer_open_desc,
+                R.string.nav_drawer_close_desc
+        ) {
+            public void onDrawerClosed(View view) {
+                setTitle(event.getName());
+                invalidateOptionsMenu();
+            }
 
+            public void onDrawerOpened(View drawerView) {
+                setTitle(R.string.navigation_drawer_title);
+                final TextView usernameView = (TextView) findViewById(R.id.nav_drawer_username);
+                usernameView.setText(sharedPreferenceService.getUserName());
+                invalidateOptionsMenu();
+            }
+        };
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        init();
+
+        sharedPreferenceService.storeActiveEventId(event.getId());
+    }
+
+    void init() {
         if (getIntent().hasExtra(ARGUMENT_EVENT_ID)) {
             String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
             event = eventStore.getById(eventId);
@@ -83,17 +120,12 @@ public class EventDetails extends RoboFragmentActivity {
         setUpNavigationDrawer();
 
         tabs = getInjector(this).getInstance(EventDetailTabs.class).init(event);
-
         pagerAdapter = getInjector(this).getInstance(EventDetailPagerAdapter.class).init(tabs);
+
+
         viewPager.setAdapter(pagerAdapter);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
         pagerAdapter.notifyDataSetChanged();
-
-        sharedPreferenceService.storeActiveEventId(event.getId());
     }
 
     @Override
@@ -153,6 +185,9 @@ public class EventDetails extends RoboFragmentActivity {
         drawerList.setAdapter(new ArrayAdapter<Event>(this,
                 R.layout.drawer_list_item, events));
 
+        int position = events.indexOf(event);
+        drawerList.setItemChecked(position, true);
+
         drawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -169,29 +204,10 @@ public class EventDetails extends RoboFragmentActivity {
             }
         });
 
+        drawerLayout.setDrawerListener(drawerToggle);
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-
-        drawerToggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                R.drawable.ic_drawer,
-                R.string.nav_drawer_open_desc,
-                R.string.nav_drawer_close_desc
-        ) {
-            public void onDrawerClosed(View view) {
-                setTitle(event.getName());
-                invalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(R.string.navigation_drawer_title);
-                final TextView usernameView = (TextView) findViewById(R.id.nav_drawer_username);
-                usernameView.setText(sharedPreferenceService.getUserName());
-                invalidateOptionsMenu();
-            }
-        };
-        drawerLayout.setDrawerListener(drawerToggle);
     }
 
     private void selectItem(int position) {
@@ -200,7 +216,7 @@ public class EventDetails extends RoboFragmentActivity {
         drawerList.setItemChecked(position, true);
         drawerLayout.closeDrawer(drawerView);
 
-        finish();
-        activityStarter.startEventDetails(this, newEvent);
+        //finish();
+        activityStarter.startEventDetails(this, newEvent, false);
     }
 }

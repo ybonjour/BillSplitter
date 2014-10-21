@@ -152,7 +152,7 @@ public class AddParticipants extends RoboActivity {
             participantStore.persist(participant);
         }
 
-        activityStarter.startEventDetails(this, event);
+        activityStarter.startEventDetails(this, event, true);
         finish();
     }
 

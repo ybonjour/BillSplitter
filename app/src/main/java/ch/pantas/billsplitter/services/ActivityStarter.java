@@ -39,13 +39,15 @@ public class ActivityStarter {
         context.startActivity(intent);
     }
 
-    public void startEventDetails(Context context, Event event) {
+    public void startEventDetails(Context context, Event event, boolean clearBackStack) {
         checkNotNull(context);
         checkNotNull(event);
 
         Intent intent = new Intent(context, EventDetails.class);
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
-        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_NEW_TASK);
+        if(clearBackStack){
+            intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_NEW_TASK);
+        }
         context.startActivity(intent);
     }
 

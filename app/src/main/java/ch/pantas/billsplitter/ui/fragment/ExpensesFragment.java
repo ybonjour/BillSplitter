@@ -23,10 +23,7 @@ import roboguice.fragment.RoboFragment;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
-public class ExpensesFragment extends RoboFragment {
-
-    private Event event;
-
+public class ExpensesFragment extends BaseEventDetailsFragment {
     @Inject
     private ActivityStarter activityStarter;
     @Inject
@@ -34,15 +31,7 @@ public class ExpensesFragment extends RoboFragment {
     @Inject
     private Context context;
 
-
     private ListView expensesList;
-
-    public ExpensesFragment init(Event event) {
-        checkNotNull(event);
-        this.event = event;
-
-        return this;
-    }
 
     @Override
     public void onResume() {
@@ -53,6 +42,7 @@ public class ExpensesFragment extends RoboFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        Event event = getCurrentEvent();
         View rootView = inflater.inflate(R.layout.fragment_expenses_list, container, false);
         expensesList = (ListView) rootView.findViewById(R.id.expenses_list);
 

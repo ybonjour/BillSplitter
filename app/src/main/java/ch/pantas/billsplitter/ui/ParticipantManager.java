@@ -71,4 +71,9 @@ public class ParticipantManager {
 
         return participants.contains(user);
     }
+
+    public void clear() {
+        participants.clear();
+        fixedParticipants.clear();
+    }
 }
