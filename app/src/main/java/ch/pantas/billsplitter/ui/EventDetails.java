@@ -91,12 +91,10 @@ public class EventDetails extends RoboFragmentActivity {
                 R.string.nav_drawer_close_desc
         ) {
             public void onDrawerClosed(View view) {
-                setTitle(event.getName());
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                setTitle(R.string.navigation_drawer_title);
                 final TextView usernameView = (TextView) findViewById(R.id.nav_drawer_username);
                 usernameView.setText(sharedPreferenceService.getUserName());
                 invalidateOptionsMenu();
