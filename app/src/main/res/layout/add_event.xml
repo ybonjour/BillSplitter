@@ -2,12 +2,15 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="20dp">
 
     <TextView
         android:text="@string/add_event_help"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginBottom="5dp"/>
 
     <EditText
         android:id="@+id/event_name"
@@ -18,15 +21,25 @@
         android:layout_height="wrap_content">
         <requestFocus />
     </EditText>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#DADADC"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/add_event_currency_help"
+        android:id="@+id/textView"
+        android:layout_marginBottom="5dp"/>
+
     <Spinner
         android:id="@+id/event_currency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
     />
-
-    <Button
-        android:text="@string/next"
-        android:onClick="onNext"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
 </LinearLayout>

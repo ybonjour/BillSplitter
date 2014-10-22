@@ -2,11 +2,22 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <TextView
+        android:text="@string/add_participants_help"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginBottom="5dp"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
+
         <ImageView
             android:src="@android:drawable/ic_menu_search"
             android:layout_width="wrap_content"
@@ -25,10 +36,15 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:text="@string/participants"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="0dp"/>
         <GridView
             android:id="@+id/participant_grid"
             android:numColumns="auto_fit"
@@ -44,12 +60,6 @@
         android:columnWidth="60dp"
         android:gravity="center"
         android:layout_margin="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/save_button"
-        android:text="@string/save"
-        android:onClick="onSave"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
