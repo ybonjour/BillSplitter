@@ -16,7 +16,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.model.Currency.EUR;
 import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;

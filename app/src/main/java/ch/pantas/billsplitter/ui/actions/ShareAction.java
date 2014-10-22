@@ -11,7 +11,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.EventDetails;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 public class ShareAction implements EventDetailsAction {
 
@@ -45,7 +45,7 @@ public class ShareAction implements EventDetailsAction {
     }
 
     private String createText(List<Debt> debts, String shareTemplate) {
-        StringBuffer debtsText = new StringBuffer();
+        StringBuilder debtsText = new StringBuilder();
         boolean first = true;
         for (Debt debt : debts) {
             if (!first) {

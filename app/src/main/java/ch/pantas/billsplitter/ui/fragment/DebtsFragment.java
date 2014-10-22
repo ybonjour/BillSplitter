@@ -15,7 +15,7 @@ import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.ui.adapter.DebtAdapter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static roboguice.RoboGuice.getInjector;
 

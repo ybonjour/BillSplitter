@@ -13,7 +13,7 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
 import static ch.pantas.billsplitter.model.Currency.EUR;

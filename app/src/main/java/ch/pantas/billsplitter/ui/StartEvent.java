@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import com.google.inject.Inject;
 
 import ch.pantas.billsplitter.services.ActivityStarter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
 
 public class StartEvent extends RoboActivity {

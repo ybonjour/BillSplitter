@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import ch.pantas.billsplitter.model.User;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static java.lang.String.valueOf;
 

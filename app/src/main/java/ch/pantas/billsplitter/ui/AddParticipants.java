@@ -25,7 +25,7 @@ import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 

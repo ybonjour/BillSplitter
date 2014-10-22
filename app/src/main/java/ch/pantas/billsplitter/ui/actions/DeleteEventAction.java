@@ -9,7 +9,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.EventService;
 import ch.pantas.billsplitter.ui.EventDetails;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 public class DeleteEventAction implements EventDetailsAction {
 

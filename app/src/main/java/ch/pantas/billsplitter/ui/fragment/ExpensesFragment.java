@@ -17,10 +17,8 @@ import ch.pantas.billsplitter.model.ExpensePresentation;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.ExpenseService;
 import ch.pantas.billsplitter.ui.adapter.ExpenseAdapter;
-import ch.yvu.myapplication.R;
-import roboguice.fragment.RoboFragment;
+import ch.pantas.splitty.R;
 
-import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
 public class ExpensesFragment extends BaseEventDetailsFragment {

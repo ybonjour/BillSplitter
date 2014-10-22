@@ -3,20 +3,17 @@ package ch.pantas.billsplitter.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.pantas.billsplitter.dataaccess.TagStore;
 import ch.pantas.billsplitter.model.Tag;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -36,6 +33,7 @@ public class TagAdapter extends BaseAdapter {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
+
     @Override
     public int getCount() {
         return tags.size();
@@ -53,7 +51,7 @@ public class TagAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view == null){
+        if (view == null) {
             view = inflater.inflate(R.layout.tag_item, null);
         }
 
@@ -68,7 +66,7 @@ public class TagAdapter extends BaseAdapter {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(tagDeletedListener != null) {
+                if (tagDeletedListener != null) {
                     tagDeletedListener.onTagDelete(tag);
                 }
             }

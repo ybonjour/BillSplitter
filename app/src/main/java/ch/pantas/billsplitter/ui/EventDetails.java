@@ -37,7 +37,7 @@ import ch.pantas.billsplitter.ui.actions.EditEventAction;
 import ch.pantas.billsplitter.ui.actions.EventDetailsAction;
 import ch.pantas.billsplitter.ui.actions.ShareAction;
 import ch.pantas.billsplitter.ui.adapter.EventDetailPagerAdapter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.InjectView;
 

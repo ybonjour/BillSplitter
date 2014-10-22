@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,7 +14,7 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.model.Currency;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -50,8 +49,7 @@ public class AddEvent extends RoboActivity {
         String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
         if (eventId == null) {
             setTitle(R.string.add_event);
-        }
-        else {
+        } else {
             event = eventStore.getById(eventId);
             checkNotNull(event);
             setTitle("Edit " + event.getName());
@@ -76,13 +74,12 @@ public class AddEvent extends RoboActivity {
         Currency currency = Currency.valueOf(currencySpinner.getSelectedItem().toString());
         if (event == null) {
             event = new Event(eventName, currency);
-        }
-        else {
+        } else {
             event.setName(eventName);
             event.setCurrency(currency);
         }
 
-        if(event.isNew()){
+        if (event.isNew()) {
             eventStore.persist(event);
             activityStarter.startAddParticipants(this, event);
         } else {

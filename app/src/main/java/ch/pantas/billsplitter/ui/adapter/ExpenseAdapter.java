@@ -13,7 +13,7 @@ import java.util.List;
 
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.ExpensePresentation;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.NORMAL;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;

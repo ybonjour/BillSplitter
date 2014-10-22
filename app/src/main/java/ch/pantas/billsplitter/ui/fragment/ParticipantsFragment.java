@@ -27,7 +27,7 @@ import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.ParticipantManager;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_LONG;

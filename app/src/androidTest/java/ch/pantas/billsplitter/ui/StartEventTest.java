@@ -6,7 +6,7 @@ import org.mockito.Mock;
 
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.services.ActivityStarter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;

@@ -28,7 +28,7 @@ import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.AttendeeAdapter;
 import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasText;

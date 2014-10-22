@@ -11,7 +11,7 @@ import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
 import static ch.pantas.billsplitter.model.Currency.EUR;
@@ -48,25 +48,16 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-    public void testCorrectTitleIsDisplayed(){
+    public void testCorrectTitleIsDisplayed() {
         // When
         getActivity();
 
         // Then
-        onView(withText(R.string.set_user_name)).check(matches(isDisplayed()));
+        onView(withText(R.string.app_name)).check(matches(isDisplayed()));
     }
 
     @LargeTest
-    public void testCorrectDescriptionIsDisplayed(){
-        // When
-        getActivity();
-
-        // Then
-        onView(withText(R.string.set_user_name_description));
-    }
-
-    @LargeTest
-    public void testSaveButtonIsShown(){
+    public void testSaveButtonIsShown() {
         // When
         getActivity();
 
@@ -75,7 +66,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-    public void testUserNameIsNotStoredIfNoUserNameEntered(){
+    public void testUserNameIsNotStoredIfNoUserNameEntered() {
         // Given
         getActivity();
 
@@ -99,7 +90,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-    public void testUserNameIsWrittenToSharedPreferencesWhenSaved(){
+    public void testUserNameIsWrittenToSharedPreferencesWhenSaved() {
         // Given
         String userName = "Joe";
         getActivity();
@@ -114,7 +105,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-     public void testEventListIsStartedWhenUsernameIsAlreadySet(){
+    public void testEventListIsStartedWhenUsernameIsAlreadySet() {
         // Given
         when(preferenceService.getUserName()).thenReturn("Joe");
 
@@ -126,7 +117,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-    public void testEventListIsStartedWhenNoEventIdIsAlreadySet(){
+    public void testEventListIsStartedWhenNoEventIdIsAlreadySet() {
         // Given
         when(preferenceService.getUserName()).thenReturn("Joe");
         when(preferenceService.getActiveEventId()).thenReturn(null);
@@ -139,7 +130,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-    public void testEventDetailIsStartedWhenEventIdIsAlreadySet(){
+    public void testEventDetailIsStartedWhenEventIdIsAlreadySet() {
         // Given
         when(preferenceService.getUserName()).thenReturn("Joe");
         Event event = new Event("eventId", "eventName", EUR);

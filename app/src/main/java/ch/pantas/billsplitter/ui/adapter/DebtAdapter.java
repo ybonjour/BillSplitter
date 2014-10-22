@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.pantas.billsplitter.model.Debt;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.NORMAL;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;

@@ -35,7 +35,7 @@ import ch.pantas.billsplitter.ui.adapter.AttendeeAdapter;
 import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
 import ch.pantas.billsplitter.ui.adapter.TagAdapter;
 import ch.pantas.billsplitter.ui.adapter.TagDeletedListener;
-import ch.yvu.myapplication.R;
+import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
