@@ -25,7 +25,7 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
-import ch.pantas.billsplitter.model.Debt;
+import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.DebtCalculator;
@@ -64,6 +64,9 @@ public class EventDetails extends RoboFragmentActivity {
 
     @Inject
     private EventStore eventStore;
+
+    @Inject
+    private ExpenseStore expenseStore;
 
     @Inject
     private ActivityStarter activityStarter;
@@ -130,6 +133,8 @@ public class EventDetails extends RoboFragmentActivity {
         init();
 
         sharedPreferenceService.storeActiveEventId(event.getId());
+
+        updateHelpText(0, 0.0f);
     }
 
     void init() {
@@ -141,14 +146,29 @@ public class EventDetails extends RoboFragmentActivity {
         setTitle(event.getName());
         setUpNavigationDrawer();
 
-        //setUpShareActionProvider();
-
         tabs = getInjector(this).getInstance(EventDetailTabs.class).init(event);
         pagerAdapter = getInjector(this).getInstance(EventDetailPagerAdapter.class).init(tabs);
 
 
         viewPager.setAdapter(pagerAdapter);
         viewPagerTabs.setViewPager(viewPager);
+
+        viewPagerTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+                updateHelpText(i, v);
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
 
         pagerAdapter.notifyDataSetChanged();
     }
@@ -246,5 +266,27 @@ public class EventDetails extends RoboFragmentActivity {
 
         drawerList.setItemChecked(position, true);
         activityStarter.startEventDetails(this, newEvent, false);
+    }
+
+    private void updateHelpText(int i, float v) {
+        if (expenseStore.getExpensesOfEvent(event.getId()).size() == 0) {
+
+            View helpView = findViewById(R.id.event_details_help_view);
+
+            if (i < 1) {
+                helpView.setVisibility(View.VISIBLE);
+                if (i == 0 && v > 0.0) {
+                    int width = helpView.getWidth();
+                    helpView.setX(0.0f - width*v);
+                }
+            }
+            else {
+                helpView.setVisibility(View.INVISIBLE);
+            }
+        }
+        else {
+            View helpView = findViewById(R.id.event_details_help_view);
+            helpView.setVisibility(View.INVISIBLE);
+        }
     }
 }

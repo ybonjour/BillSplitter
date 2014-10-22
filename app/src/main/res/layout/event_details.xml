@@ -5,25 +5,66 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <LinearLayout
-        android:id="@+id/event_details_content"
-        android:orientation="vertical"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ch.pantas.billsplitter.ui.FixedTabsView
-            android:id="@+id/event_details_tabs"
+        <LinearLayout
+            android:id="@+id/event_details_content"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:background="#000"/>
+            android:layout_height="match_parent">
 
-        <android.support.v4.view.ViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/event_details_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+            <ch.pantas.billsplitter.ui.FixedTabsView
+                android:id="@+id/event_details_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="#000"/>
+
+            <android.support.v4.view.ViewPager
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/event_details_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <RelativeLayout
+                android:id="@+id/tutorialView"
+                android:background="#D0000000"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/event_details_help_view"
+            android:layout_gravity="left">
+
+            <ImageView
+                android:src="@drawable/ic_tutorial_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:layout_gravity="right"
+                android:layout_marginRight="80dp"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/event_details_help_text"
+                android:id="@+id/textView"
+                android:layout_weight="0.5"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:typeface="normal" />
+        </LinearLayout>
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/drawer_view"
@@ -127,3 +168,4 @@
 
 
 </android.support.v4.widget.DrawerLayout>
+
