@@ -60,6 +60,6 @@ public class EventDetailPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle (int position) {
-        return tabs.getLabel(position).toUpperCase();
+        return tabs.getLabel(position);
     }
 }

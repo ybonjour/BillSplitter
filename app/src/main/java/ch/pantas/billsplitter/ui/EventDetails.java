@@ -56,8 +56,8 @@ public class EventDetails extends RoboFragmentActivity {
     @InjectView(R.id.event_details_pager)
     private ViewPager viewPager;
 
-    @InjectView(R.id.event_details_pager_tab_strip)
-    private PagerTabStrip viewPagerTabStrip;
+    @InjectView(R.id.event_details_tabs)
+    private FixedTabsView viewPagerTabs;
 
     @Inject
     private EventStore eventStore;
@@ -138,7 +138,7 @@ public class EventDetails extends RoboFragmentActivity {
 
 
         viewPager.setAdapter(pagerAdapter);
-        viewPagerTabStrip.setTabIndicatorColorResource(R.color.tab_indicator);
+        viewPagerTabs.setViewPager(viewPager);
 
         pagerAdapter.notifyDataSetChanged();
     }
