@@ -60,7 +60,7 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return invocation.getArguments()[0];
             }
-        }).when(debtOptimizer).optimize(anyList());
+        }).when(debtOptimizer).optimize(anyList(), EUR);
     }
 
     @SmallTest
@@ -129,6 +129,6 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
         List<Debt> result = debtCalculator.calculateDebts(event);
 
         // Then
-        verify(debtOptimizer, times(1)).optimize(result);
+        verify(debtOptimizer, times(1)).optimize(result, EUR);
     }
 }

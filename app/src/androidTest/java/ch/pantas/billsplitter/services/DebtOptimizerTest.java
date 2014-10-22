@@ -11,6 +11,7 @@ import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.framework.CustomMatchers.matchesDebt;
+import static ch.pantas.billsplitter.model.Currency.EUR;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasItem;
@@ -39,7 +40,7 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
         List<Debt> debts = asList(debt(joe, dave, 20), debt(dave, joe, 20));
 
         // When
-        List<Debt> result = debtOptimizer.optimize(debts);
+        List<Debt> result = debtOptimizer.optimize(debts, EUR);
 
         // Then
         assertNotNull(result);
@@ -52,7 +53,7 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
         List<Debt> debts = asList(debt(joe, dave, 20), debt(dave, joe, 10));
 
         // When
-        List<Debt> result = debtOptimizer.optimize(debts);
+        List<Debt> result = debtOptimizer.optimize(debts, EUR);
 
         // Then
         assertNotNull(result);
@@ -66,7 +67,7 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
         List<Debt> debts = asList(debt(joe, dave, 20), debt(dave, mary, 20));
 
         // When
-        List<Debt> result = debtOptimizer.optimize(debts);
+        List<Debt> result = debtOptimizer.optimize(debts, EUR);
 
         // Then
         assertNotNull(result);
@@ -80,7 +81,7 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
         List<Debt> debts = asList(debt(joe, dave, 20), debt(joe, mary, 20), debt(mary, dave, 20));
 
         // When
-        List<Debt> result = debtOptimizer.optimize(debts);
+        List<Debt> result = debtOptimizer.optimize(debts, EUR);
 
         // Then
         assertNotNull(result);
@@ -89,12 +90,12 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testCalculateDebtsWithOnePersonPayingTwoPersonsCanNotBeOptimized(){
+    public void testCalculateDebtsWithOnePersonPayingTwoPersonsCanNotBeOptimized() {
         // Given
         List<Debt> debts = asList(debt(joe, dave, 10), debt(joe, mary, 10));
 
         // When
-        List<Debt> result = debtOptimizer.optimize(debts);
+        List<Debt> result = debtOptimizer.optimize(debts, EUR);
 
         // Then
         assertNotNull(result);
@@ -104,12 +105,12 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testCalculateDebtsWithTwoPersonsPayingOnePersonCanNotBeOptimized(){
+    public void testCalculateDebtsWithTwoPersonsPayingOnePersonCanNotBeOptimized() {
         // Given
         List<Debt> debts = asList(debt(joe, dave, 10), debt(mary, dave, 10));
 
         // When
-        List<Debt> result = debtOptimizer.optimize(debts);
+        List<Debt> result = debtOptimizer.optimize(debts, EUR);
 
         // Then
         assertNotNull(result);
@@ -119,6 +120,6 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
     }
 
     private static Debt debt(User from, User to, int amount) {
-        return new Debt(from, to, amount);
+        return new Debt(from, to, amount, EUR);
     }
 }

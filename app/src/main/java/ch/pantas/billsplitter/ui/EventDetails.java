@@ -26,7 +26,13 @@ import java.util.List;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.EventService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.ui.actions.ActionProvider;
+import ch.pantas.billsplitter.ui.actions.AddExpenseAction;
+import ch.pantas.billsplitter.ui.actions.DeleteEventAction;
+import ch.pantas.billsplitter.ui.actions.EditEventAction;
+import ch.pantas.billsplitter.ui.actions.EventDetailsAction;
 import ch.pantas.billsplitter.ui.adapter.EventDetailPagerAdapter;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboFragmentActivity;
@@ -62,6 +68,9 @@ public class EventDetails extends RoboFragmentActivity {
     @Inject
     private SharedPreferenceService sharedPreferenceService;
 
+    @Inject
+    private ActionProvider actionProvider;
+
     private EventDetailPagerAdapter pagerAdapter;
 
     private Event event;
@@ -93,6 +102,11 @@ public class EventDetails extends RoboFragmentActivity {
                 invalidateOptionsMenu();
             }
         };
+
+        actionProvider.addEventDetailsAction(R.id.add_expense, getInjector(this).getInstance(AddExpenseAction.class));
+        actionProvider.addEventDetailsAction(R.id.action_delete_event, getInjector(this).getInstance(DeleteEventAction.class));
+        actionProvider.addEventDetailsAction(R.id.action_edit_event, getInjector(this).getInstance(EditEventAction.class));
+
     }
 
     @Override
@@ -150,19 +164,15 @@ public class EventDetails extends RoboFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (R.id.action_add_expense == item.getItemId()) {
-            activityStarter.startAddExpense(this, event);
-            return true;
-        } else if(R.id.action_delete_event == item.getItemId()) {
-            eventStore.removeById(event.getId());
-            finish();
-            return true;
-        } else if(R.id.action_edit_event == item.getItemId()) {
-            activityStarter.startEditEvent(this, event);
-            return true;
-        } else  if (drawerToggle.onOptionsItemSelected(item)) {
+        if(drawerToggle.onOptionsItemSelected(item)){
             return true;
         }
+
+        EventDetailsAction action = actionProvider.getEventDetailsAction(item.getItemId());
+        if(action != null){
+            return action.execute(this);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -211,6 +221,10 @@ public class EventDetails extends RoboFragmentActivity {
         getActionBar().setHomeButtonEnabled(true);
 
         drawerLayout.closeDrawer(drawerView);
+    }
+
+    public Event getEvent(){
+        return event;
     }
 
     private void selectItem(int position) {

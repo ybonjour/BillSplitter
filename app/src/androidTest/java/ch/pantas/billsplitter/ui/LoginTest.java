@@ -150,6 +150,6 @@ public class LoginTest extends BaseEspressoTest<Login> {
         getActivity();
 
         // Then
-        verify(activityStarter, times(1)).startEventDetails(any(Context.class), eq(event));
+        verify(activityStarter, times(1)).startEventDetails(any(Context.class), eq(event), true);
     }
 }
