@@ -36,7 +36,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:background="#000">
             <ImageView
                 android:src="@drawable/ic_user"
