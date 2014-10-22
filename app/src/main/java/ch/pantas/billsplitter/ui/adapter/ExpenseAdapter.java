@@ -15,6 +15,7 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.ExpensePresentation;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.NORMAL;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;
 import static java.lang.String.format;
 
@@ -54,7 +55,7 @@ public class ExpenseAdapter extends BaseAdapter {
         Expense expense = expensePresentation.getExpense();
 
         View userView = view.findViewById(R.id.expense_item_user);
-        setupUserItem(userView, expensePresentation.getPayer(), R.drawable.background_user_item_selected);
+        setupUserItem(userView, expensePresentation.getPayer(), NORMAL);
 
 
         String title;

@@ -13,6 +13,7 @@ import java.util.List;
 import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;
 
 public class UserAdapter extends BaseAdapter {
@@ -21,14 +22,14 @@ public class UserAdapter extends BaseAdapter {
 
     private List<User> users = new LinkedList<User>();
 
-    private Integer resBackgroundDrawable;
+    private UserItemMode userItemMode;
 
     public void setUsers(List<User> users) {
         this.users = users;
     }
 
-    public void setResBackgroundDrawable(int resColor) {
-        this.resBackgroundDrawable = resColor;
+    public void setUserItemMode(UserItemMode userItemMode) {
+        this.userItemMode = userItemMode;
     }
 
     @Override
@@ -52,7 +53,7 @@ public class UserAdapter extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.user_item, null);
         }
 
-        setupUserItem(view, users.get(i), resBackgroundDrawable);
+        setupUserItem(view, users.get(i), userItemMode);
 
         return view;
     }

@@ -15,6 +15,9 @@ import java.util.List;
 import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode;
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.SELECTED;
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.UNSELECTED;
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static java.lang.String.valueOf;
@@ -84,24 +87,8 @@ public class PayerAdapter extends BaseAdapter{
 
         User user = users.get(i);
 
-        TextView nameView = (TextView) view.findViewById(R.id.user_item_name);
-        nameView.setText(user.getName());
-
-        int backgroundDrawable = isSelected(user)
-                ? R.drawable.background_user_item_selected
-                : R.drawable.background_user_item;
-
-        View pictogramView = view.findViewById(R.id.user_item_pictogram);
-        pictogramView.setBackground(view.getResources().getDrawable(backgroundDrawable));
-
-        String pictogram = "";
-        if(user.getName() != null && !user.getName().isEmpty()) {
-            pictogram = valueOf(user.getName().toUpperCase().charAt(0));
-        }
-
-        TextView pictogramTextView = (TextView) view.findViewById(R.id.user_item_pictogram_text);
-        pictogramTextView.setTextSize(22);
-        pictogramTextView.setText(pictogram);
+        UserItemMode mode = isSelected(user) ? SELECTED : UNSELECTED;
+        UserItemFormatter.setupUserItem(view, user, mode);
 
         return view;
     }

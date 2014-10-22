@@ -8,8 +8,9 @@
     android:layout_height="match_parent"
     android:minWidth="50dp">
     <LinearLayout
+        android:id="@+id/user_item_container"
         android:orientation="vertical"
-        android:background="@drawable/background_user_item_neutral"
+        android:background="@drawable/background_user_item_container"
         android:layout_margin="2dp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -31,6 +32,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"/>
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="2dp"/>
     </LinearLayout>
 </LinearLayout>

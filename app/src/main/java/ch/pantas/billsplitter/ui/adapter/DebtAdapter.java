@@ -14,6 +14,7 @@ import java.util.List;
 import ch.pantas.billsplitter.model.Debt;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.NORMAL;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;
 
 public class DebtAdapter extends BaseAdapter {
@@ -50,15 +51,14 @@ public class DebtAdapter extends BaseAdapter {
         Debt debt = debts.get(i);
 
         View userFromRootView = view.findViewById(R.id.debt_item_user_from);
-        setupUserItem(userFromRootView, debt.getFrom(), R.drawable.background_user_item_selected);
+        setupUserItem(userFromRootView, debt.getFrom(), NORMAL);
 
         View userToRootView = view.findViewById(R.id.debt_item_user_to);
-        setupUserItem(userToRootView, debt.getTo(), R.drawable.background_user_item_selected);
+        setupUserItem(userToRootView, debt.getTo(), NORMAL);
 
         TextView text = (TextView) view.findViewById(R.id.debt_item_amount);
         text.setText(debt.getFormattedAmount());
         text.setTextSize(view.getResources().getDimension(R.dimen.debt_amount_textsize));
-
 
         return view;
     }

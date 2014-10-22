@@ -15,6 +15,9 @@ import java.util.Set;
 import ch.pantas.billsplitter.model.User;
 import ch.yvu.myapplication.R;
 
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode;
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.SELECTED;
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.UNSELECTED;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.setupUserItem;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
@@ -87,11 +90,8 @@ public class AttendeeAdapter extends BaseAdapter {
         }
 
         User user = users.get(i);
-        int backgroundDrawable = isSelected(user)
-                ? R.drawable.background_user_item_selected
-                : R.drawable.background_user_item;
-
-        setupUserItem(view, user, backgroundDrawable);
+        UserItemMode mode = isSelected(user) ? SELECTED : UNSELECTED;
+        setupUserItem(view, user, mode);
 
         return view;
     }

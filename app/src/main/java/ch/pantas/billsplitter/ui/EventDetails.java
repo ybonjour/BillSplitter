@@ -103,7 +103,7 @@ public class EventDetails extends RoboFragmentActivity {
             }
         };
 
-        actionProvider.addEventDetailsAction(R.id.add_expense, getInjector(this).getInstance(AddExpenseAction.class));
+        actionProvider.addEventDetailsAction(R.id.action_add_expense, getInjector(this).getInstance(AddExpenseAction.class));
         actionProvider.addEventDetailsAction(R.id.action_delete_event, getInjector(this).getInstance(DeleteEventAction.class));
         actionProvider.addEventDetailsAction(R.id.action_edit_event, getInjector(this).getInstance(EditEventAction.class));
 
@@ -164,13 +164,14 @@ public class EventDetails extends RoboFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(drawerToggle.onOptionsItemSelected(item)){
-            return true;
-        }
 
         EventDetailsAction action = actionProvider.getEventDetailsAction(item.getItemId());
         if(action != null){
             return action.execute(this);
+        }
+
+        if(drawerToggle.onOptionsItemSelected(item)){
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

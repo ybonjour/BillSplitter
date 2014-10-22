@@ -24,10 +24,12 @@ import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.ParticipantManager;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
+import ch.pantas.billsplitter.ui.adapter.UserItemFormatter;
 import ch.yvu.myapplication.R;
-import roboguice.fragment.RoboFragment;
 
 import static android.view.View.GONE;
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.SELECTED;
+import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.UNSELECTED;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
@@ -147,7 +149,7 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
     private void reloadParticipantList() {
         List<User> participants = participantManager.getParticipants();
         UserAdapter participantAdapter = getInjector(context).getInstance(UserAdapter.class);
-        participantAdapter.setResBackgroundDrawable(R.drawable.background_user_item_selected);
+        participantAdapter.setUserItemMode(SELECTED);
         participantAdapter.setUsers(participants);
         participantGrid.setAdapter(participantAdapter);
     }
@@ -169,7 +171,7 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
         List<User> nonParticipants = participantManager.filterOutParticipants(users);
 
         UserAdapter nonParticipantAdapter = getInjector(context).getInstance(UserAdapter.class);
-        nonParticipantAdapter.setResBackgroundDrawable(R.drawable.background_user_item);
+        nonParticipantAdapter.setUserItemMode(UNSELECTED);
         nonParticipantAdapter.setUsers(nonParticipants);
         userGrid.setAdapter(nonParticipantAdapter);
     }
