@@ -6,7 +6,6 @@ import android.widget.EditText;
 
 import com.google.inject.Inject;
 
-import java.util.Arrays;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -77,7 +76,7 @@ public class Login extends RoboActivity {
         finish();
     }
 
-    private void createStandardTags(){
+    private void createStandardTags() {
         List<Integer> tags = asList(
                 R.string.tag_food,
                 R.string.tag_drinks,
@@ -87,9 +86,9 @@ public class Login extends RoboActivity {
                 R.string.tag_flight,
                 R.string.tag_museum);
 
-        for(int tag : tags){
+        for (int tag : tags) {
             String name = getString(tag);
-            if(tagStore.getTagWithName(name) == null){
+            if (tagStore.getTagWithName(name) == null) {
                 tagStore.persist(new Tag(name));
             }
         }
