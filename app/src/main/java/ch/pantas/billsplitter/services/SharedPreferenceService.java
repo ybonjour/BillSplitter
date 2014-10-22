@@ -31,9 +31,6 @@ public class SharedPreferenceService {
     }
 
     public void storeActiveEventId(String eventId) {
-        checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
-
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(ACTIVE_EVENT_ID, eventId);
         editor.apply();

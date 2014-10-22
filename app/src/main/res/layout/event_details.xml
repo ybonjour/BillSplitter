@@ -6,23 +6,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/event_details_pager"
+    <LinearLayout
+        android:id="@+id/event_details_content"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.view.PagerTabStrip
-            android:id="@+id/event_details_pager_tab_strip"
+        <ch.pantas.billsplitter.ui.FixedTabsView
+            android:id="@+id/event_details_tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:background="#000"
-            android:textColor="#fff"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"/>
+            android:layout_height="52dp"
+            android:background="#000"/>
 
-    </android.support.v4.view.ViewPager>
+        <android.support.v4.view.ViewPager
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/event_details_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/drawer_view"
