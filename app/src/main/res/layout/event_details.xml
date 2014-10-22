@@ -35,20 +35,20 @@
 
         <LinearLayout
             android:orientation="horizontal"
+            android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:layout_height="70dp"
             android:background="#000">
             <ImageView
                 android:src="@drawable/ic_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingTop="9dp"
                 android:paddingBottom="8dp"/>
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/nav_drawer_username"
@@ -56,7 +56,8 @@
                 android:paddingRight="8dp"
                 android:layout_gravity="center_vertical"
                 android:textColor="#33B5E5"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <View

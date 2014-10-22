@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BillSplitter</string>
+    <string name="app_name">Splitty</string>
     <string name="events_title">Events</string>
     <string name="action_edit_event">Edit Event</string>
     <string name="action_delete_event">Delete Event</string>
@@ -15,8 +15,6 @@
     <string name="add">Add</string>
     <string name="finish">Finish</string>
     <string name="debts">Debts</string>
-    <string name="set_user_name">Set your Username</string>
-    <string name="set_user_name_description">Please provide your name:</string>
     <string name="name">Name</string>
     <string name="participants">Participants</string>
     <string name="add_participant">Add participant</string>
@@ -33,6 +31,8 @@
     <string name="navigation_drawer_title">Choose Group</string>
     <string name="nav_drawer_open_desc">Open group list</string>
     <string name="nav_drawer_close_desc">Close group list</string>
-    <string name="start">Start</string>
+    <string name="start">Start ></string>
     <string name="groups_header">GROUPS</string>
+    <string name="welcome_message">Welcome to Splitty!</string>
+    <string name="your_name">Your name</string>
 </resources>

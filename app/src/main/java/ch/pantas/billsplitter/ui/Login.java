@@ -1,7 +1,9 @@
 package ch.pantas.billsplitter.ui;
 
 import android.os.Bundle;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.google.inject.Inject;
@@ -58,10 +60,10 @@ public class Login extends RoboActivity {
         }
 
         setContentView(R.layout.login);
-        setTitle(R.string.set_user_name);
+        setTitle(R.string.app_name);
     }
 
-    public void onStart(View view) {
+    public void onStarted() {
         String userName = nameField.getText().toString();
         if (userName == null || userName.isEmpty()) {
             nameField.setBackgroundColor(getResources().getColor(R.color.error_color));
@@ -74,6 +76,22 @@ public class Login extends RoboActivity {
 
         activityStarter.startStartEvent(this);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.login, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.action_login_start == item.getItemId()) {
+            onStarted();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void createStandardTags() {

@@ -275,7 +275,6 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
         finish();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

@@ -12,7 +12,7 @@
         <item name="android:background">@drawable/actionbar_background</item>
     </style>
 
-    <color name="error_color">#80ff0000</color>
+    <color name="error_color">#FFBB33</color>
     <color name="light_background">#dddddd</color>
     <color name="tab_indicator">#33B5E5</color>
 </resources>
