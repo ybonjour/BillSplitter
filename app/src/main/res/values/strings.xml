@@ -37,4 +37,8 @@
     <string name="your_name">Your name</string>
     <string name="share">Share</string>
     <string name="share_template" formatted="false">Hi,\nThe following debts have been calculated by Splitty:\n\n %s \n\n Regards,\n %s</string>
+    <string name="add_event_help_text">Welcome to Splitty! Start by creating a new group.</string>
+    <string name="delete_event_alert_message">"You will lose all expenses assigned to this group!"</string>
+    <string name="delete_event_alert_title">"Delete this group?"</string>
+    <string name="delete">Delete</string>
 </resources>

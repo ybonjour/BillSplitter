@@ -4,11 +4,29 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
-    <Button
-        android:id="@+id/add_event"
-        android:text="@string/add_event"
-        android:onClick="onAddEvent"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+    android:gravity="top"
+    android:weightSum="1">
+
+
+    <ImageView
+        android:src="@drawable/ic_tutorial_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/add_event_help_text"
+        android:id="@+id/textView"
+        android:layout_weight="0.5"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:textAlignment="textEnd"
+        android:typeface="normal" />
 </LinearLayout>
