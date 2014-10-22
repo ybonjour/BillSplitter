@@ -2,15 +2,17 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp">
+    android:layout_height="match_parent">
 
     <TextView
         android:text="@string/add_participants_help"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -21,14 +23,16 @@
         <ImageView
             android:src="@android:drawable/ic_menu_search"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"/>
         <EditText
             android:id="@+id/user_name"
             android:hint="@string/add_participant"
             android:layout_weight="1"
             android:inputType="textCapWords"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/participant_container"

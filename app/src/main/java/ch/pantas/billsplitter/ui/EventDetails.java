@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import java.util.List;
@@ -85,6 +86,8 @@ public class EventDetails extends RoboFragmentActivity {
     private EventDetailTabs tabs;
 
     private ShareActionProvider shareActionProvider;
+
+    List<Event> navEventsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,12 +204,12 @@ public class EventDetails extends RoboFragmentActivity {
     public void setUpNavigationDrawer() {
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        final List<Event> events = eventStore.getAll();
+        navEventsList = Lists.reverse(eventStore.getAll());
 
         drawerList.setAdapter(new ArrayAdapter<Event>(this,
-                R.layout.drawer_list_item, events));
+                R.layout.drawer_list_item, navEventsList));
 
-        int position = events.indexOf(event);
+        int position = navEventsList.indexOf(event);
         drawerList.setItemChecked(position, true);
 
         drawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
@@ -239,7 +242,7 @@ public class EventDetails extends RoboFragmentActivity {
 
 
     private void selectItem(int position) {
-        Event newEvent = eventStore.getAll().get(position);
+        Event newEvent = navEventsList.get(position);
 
         drawerList.setItemChecked(position, true);
         activityStarter.startEventDetails(this, newEvent, false);

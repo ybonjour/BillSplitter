@@ -44,6 +44,6 @@ public class EventService {
 
         if(events.size() == 0) return null;
 
-        return events.get(0);
+        return events.get(events.size()-1);
     }
 }
