@@ -35,4 +35,6 @@
     <string name="groups_header">GROUPS</string>
     <string name="welcome_message">Welcome to Splitty!</string>
     <string name="your_name">Your name</string>
+    <string name="share">Share</string>
+    <string name="share_template" formatted="false">Hi,\nThe following debts have been calculated by Splitty:\n\n %s \n\n Regards,\n %s</string>
 </resources>

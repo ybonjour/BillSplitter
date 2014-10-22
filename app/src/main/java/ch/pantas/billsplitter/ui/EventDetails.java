@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -17,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
@@ -24,15 +24,17 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
+import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
-import ch.pantas.billsplitter.services.EventService;
+import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.actions.ActionProvider;
 import ch.pantas.billsplitter.ui.actions.AddExpenseAction;
 import ch.pantas.billsplitter.ui.actions.DeleteEventAction;
 import ch.pantas.billsplitter.ui.actions.EditEventAction;
 import ch.pantas.billsplitter.ui.actions.EventDetailsAction;
+import ch.pantas.billsplitter.ui.actions.ShareAction;
 import ch.pantas.billsplitter.ui.adapter.EventDetailPagerAdapter;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboFragmentActivity;
@@ -71,6 +73,9 @@ public class EventDetails extends RoboFragmentActivity {
     @Inject
     private ActionProvider actionProvider;
 
+    @Inject
+    private DebtCalculator debtCalculator;
+
     private EventDetailPagerAdapter pagerAdapter;
 
     private Event event;
@@ -78,6 +83,8 @@ public class EventDetails extends RoboFragmentActivity {
     private ActionBarDrawerToggle drawerToggle;
 
     private EventDetailTabs tabs;
+
+    private ShareActionProvider shareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +113,7 @@ public class EventDetails extends RoboFragmentActivity {
         actionProvider.addEventDetailsAction(R.id.action_add_expense, getInjector(this).getInstance(AddExpenseAction.class));
         actionProvider.addEventDetailsAction(R.id.action_delete_event, getInjector(this).getInstance(DeleteEventAction.class));
         actionProvider.addEventDetailsAction(R.id.action_edit_event, getInjector(this).getInstance(EditEventAction.class));
-
+        actionProvider.addEventDetailsAction(R.id.action_share, getInjector(this).getInstance(ShareAction.class));
     }
 
     @Override
@@ -132,6 +139,8 @@ public class EventDetails extends RoboFragmentActivity {
 
         setTitle(event.getName());
         setUpNavigationDrawer();
+
+        //setUpShareActionProvider();
 
         tabs = getInjector(this).getInstance(EventDetailTabs.class).init(event);
         pagerAdapter = getInjector(this).getInstance(EventDetailPagerAdapter.class).init(tabs);
@@ -159,18 +168,19 @@ public class EventDetails extends RoboFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.event_details, menu);
-        return super.onCreateOptionsMenu(menu);
+
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         EventDetailsAction action = actionProvider.getEventDetailsAction(item.getItemId());
-        if(action != null){
+        if (action != null) {
             return action.execute(this);
         }
 
-        if(drawerToggle.onOptionsItemSelected(item)){
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
@@ -185,6 +195,7 @@ public class EventDetails extends RoboFragmentActivity {
         menu.findItem(R.id.action_add_expense).setVisible(!drawerOpen);
         menu.findItem(R.id.action_delete_event).setVisible(!drawerOpen);
         menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_share).setVisible(!drawerOpen);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -224,9 +235,10 @@ public class EventDetails extends RoboFragmentActivity {
         drawerLayout.closeDrawer(drawerView);
     }
 
-    public Event getEvent(){
+    public Event getEvent() {
         return event;
     }
+
 
     private void selectItem(int position) {
         Event newEvent = eventStore.getAll().get(position);
