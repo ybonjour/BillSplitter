@@ -7,11 +7,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
 import ch.pantas.billsplitter.dataaccess.rowmapper.ParticipantRowMapper;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.EVENT;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ParticipantTable.USER;
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
@@ -45,6 +47,13 @@ public class ParticipantStore extends BaseStore<Participant> {
     public void removeAll(String eventId) {
         Map<String, String> where = new HashMap<String, String>();
         where.put(EVENT, eventId);
+        removeAll(where);
+    }
+
+    public void removeBy(String eventId, String userId){
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(EVENT, eventId);
+        where.put(USER, userId);
         removeAll(where);
     }
 }

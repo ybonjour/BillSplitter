@@ -16,27 +16,34 @@ import com.google.inject.Inject;
 
 import java.util.List;
 
+import ch.pantas.billsplitter.dataaccess.AttendeeStore;
+import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.ParticipantManager;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
-import ch.pantas.billsplitter.ui.adapter.UserItemFormatter;
 import ch.yvu.myapplication.R;
 
 import static android.view.View.GONE;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.makeText;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.SELECTED;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.UNSELECTED;
-import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
 public class ParticipantsFragment extends BaseEventDetailsFragment {
 
     @Inject
     private UserStore userStore;
+    @Inject
+    private ExpenseStore expenseStore;
+    @Inject
+    private AttendeeStore attendeeStore;
     @Inject
     private SharedPreferenceService sharedPreferenceService;
     @Inject
@@ -80,7 +87,12 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 User user = (User) adapterView.getItemAtPosition(i);
-                participantManager.removeParticipant(user);
+                if (canBeRemoved(user)) {
+                    participantManager.removeParticipant(user);
+                    participantStore.removeBy(event.getId(), user.getId());
+                } else {
+                    makeText(context, getString(R.string.error_remove_user), LENGTH_LONG).show();
+                }
                 reloadLists();
             }
         });
@@ -105,6 +117,31 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
 
 
         return rootView;
+    }
+
+    private boolean isUserInvolvedInExpense(Expense expense, User user) {
+        if (user.isNew()) return false;
+        if (expense.getPayerId().equals(user.getId())) return true;
+        List<User> attendees = attendeeStore.getAttendees(expense.getId());
+        return attendees.contains(user);
+    }
+
+    private boolean isUserInvolvedInExpensesOfEvent(Event event, User user) {
+        List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
+        for (Expense expense : expenses) {
+            if (isUserInvolvedInExpense(expense, user)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean canBeRemoved(User user) {
+        if (user.isNew()) return true;
+
+        return !participantManager.isFixedParticipant(user) && !isUserInvolvedInExpensesOfEvent(getCurrentEvent(), user);
+
     }
 
     private void setupParticipantManager(Event event) {

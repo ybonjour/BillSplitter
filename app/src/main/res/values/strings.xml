@@ -41,4 +41,5 @@
     <string name="delete_event_alert_message">"You will lose all expenses assigned to this group!"</string>
     <string name="delete_event_alert_title">"Delete this group?"</string>
     <string name="delete">Delete</string>
+    <string name="error_remove_user">User can not be removed</string>
 </resources>

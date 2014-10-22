@@ -23,7 +23,7 @@ public class ParticipantManager {
     public void addFixedParticipant(User user) {
         checkNotNull(user);
 
-        if (isAlreadyFixedParticipant(user)) return;
+        if (isFixedParticipant(user)) return;
 
         participants.remove(user);
         fixedParticipants.add(user);
@@ -62,12 +62,12 @@ public class ParticipantManager {
 
     }
 
-    private boolean isAlreadyFixedParticipant(User user) {
+    public boolean isFixedParticipant(User user) {
         return fixedParticipants.contains(user);
     }
 
     private boolean isAlreadyParticipant(User user) {
-        if (isAlreadyFixedParticipant(user)) return true;
+        if (isFixedParticipant(user)) return true;
 
         return participants.contains(user);
     }
