@@ -2,10 +2,10 @@
 <resources>
 
     <string name="app_name">BillSplitter</string>
-    <string name="events_title">Events</string>
-    <string name="action_edit_event">Edit Event</string>
-    <string name="action_delete_event">Delete Event</string>
-    <string name="add_event">Add Event</string>
+    <string name="events_title">Groups</string>
+    <string name="action_edit_event">Edit Group</string>
+    <string name="action_delete_event">Delete Group</string>
+    <string name="add_event">Add Group</string>
     <string name="save">Save</string>
     <string name="description">Description</string>
     <string name="add_expense">Add Expense</string>
@@ -24,7 +24,7 @@
     <string name="cancel">Cancel</string>
     <string name="recently_used">Recently Used</string>
     <string name="attendees">Attendees</string>
-    <string name="add_event_help">Please provide a name for the new event</string>
+    <string name="add_event_help">Please provide a name for the new group</string>
     <string name="next">Next</string>
     <string name="expense_text_with_description" formatted="false">%s for %s</string>
     <string name="expense_text_without_description" formatted="false">%s</string>
