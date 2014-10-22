@@ -1,6 +1,9 @@
 package ch.pantas.billsplitter.ui;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -63,7 +66,7 @@ public class AddEvent extends RoboActivity {
         getWindow().setSoftInputMode(SOFT_INPUT_STATE_VISIBLE);
     }
 
-    public void onNext(View v) {
+    public void onNext() {
         String eventName = eventNameField.getText().toString();
         if (eventName.isEmpty()) {
             eventNameField.setBackgroundColor(getResources().getColor(R.color.error_color));
@@ -87,5 +90,21 @@ public class AddEvent extends RoboActivity {
         }
 
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add_event, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.action_add_event_next == item.getItemId()) {
+            onNext();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

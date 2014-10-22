@@ -3,9 +3,11 @@ package ch.pantas.billsplitter.ui;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -23,7 +25,6 @@ import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
-import ch.pantas.billsplitter.ui.adapter.UserItemFormatter;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -50,9 +51,6 @@ public class AddParticipants extends RoboActivity {
 
     @InjectView(R.id.participant_container)
     private LinearLayout participantContainer;
-
-    @InjectView(R.id.save_button)
-    private Button saveButton;
 
     @Inject
     private EventStore eventStore;
@@ -147,7 +145,7 @@ public class AddParticipants extends RoboActivity {
         super.onPause();
     }
 
-    public void onSave(View v) {
+    public void onSave() {
 
         participantStore.removeAll(event.getId());
         for (User user : participantManager.getParticipants()) {
@@ -166,12 +164,10 @@ public class AddParticipants extends RoboActivity {
 
     private void enableSearchMode() {
         participantContainer.setVisibility(GONE);
-        saveButton.setVisibility(GONE);
     }
 
     private void disableSearchMode() {
         participantContainer.setVisibility(View.VISIBLE);
-        saveButton.setVisibility(View.VISIBLE);
     }
 
     private void reloadParticipantList() {
@@ -207,5 +203,21 @@ public class AddParticipants extends RoboActivity {
     private void reloadLists() {
         reloadParticipantList();
         reloadNonParticipantList();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add_participants, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.action_save_event == item.getItemId()) {
+            onSave();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
