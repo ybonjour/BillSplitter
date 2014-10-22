@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tag_food">Food</string>
+    <string name="tag_drinks">Drinks</string>
+    <string name="tag_shopping">Shopping</string>
+    <string name="tag_museum">Museum</string>
+    <string name="tag_party">Party</string>
+    <string name="tag_hotel">Hotel</string>
+    <string name="tag_flight">Flight</string>
+</resources>

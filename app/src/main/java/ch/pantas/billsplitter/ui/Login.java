@@ -6,15 +6,22 @@ import android.widget.EditText;
 
 import com.google.inject.Inject;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ch.pantas.billsplitter.dataaccess.EventStore;
+import ch.pantas.billsplitter.dataaccess.TagStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.Tag;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.yvu.myapplication.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
+
+import static java.util.Arrays.asList;
 
 public class Login extends RoboActivity {
 
@@ -32,6 +39,9 @@ public class Login extends RoboActivity {
 
     @Inject
     private EventStore eventStore;
+
+    @Inject
+    private TagStore tagStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +62,7 @@ public class Login extends RoboActivity {
         setTitle(R.string.set_user_name);
     }
 
-    public void onSave(View view) {
+    public void onStart(View view) {
         String userName = nameField.getText().toString();
         if (userName == null || userName.isEmpty()) {
             nameField.setBackgroundColor(getResources().getColor(R.color.error_color));
@@ -61,9 +71,28 @@ public class Login extends RoboActivity {
 
         userStore.persist(new User(userName));
         sharedPreferenceService.storeUserName(userName);
+        createStandardTags();
 
         activityStarter.startStartEvent(this);
         finish();
+    }
+
+    private void createStandardTags(){
+        List<Integer> tags = asList(
+                R.string.tag_food,
+                R.string.tag_drinks,
+                R.string.tag_shopping,
+                R.string.tag_party,
+                R.string.tag_hotel,
+                R.string.tag_flight,
+                R.string.tag_museum);
+
+        for(int tag : tags){
+            String name = getString(tag);
+            if(tagStore.getTagWithName(name) == null){
+                tagStore.persist(new Tag(name));
+            }
+        }
     }
 
     private Event getStoredEvent() {
