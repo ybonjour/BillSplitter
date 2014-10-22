@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1024"
+   height="500"
+   id="svg2988"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="functional_image.svg"
+   inkscape:export-filename="C:\Users\dgiger\Documents\GitHub\BillSplitter\app\src\main\res\functional_image.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs2990" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="510.6053"
+     inkscape:cy="155.87797"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3047"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1278"
+     inkscape:window-height="766"
+     inkscape:window-x="627"
+     inkscape:window-y="92"
+     inkscape:window-maximized="0">
+    <sodipodi:guide
+       orientation="1,0"
+       position="0,359.61431"
+       id="guide3080" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="1024.2947,165.66502"
+       id="guide3082" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata2993">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-552.36218)">
+    <g
+       id="g3047">
+      <rect
+         style="fill:#33b5e5;fill-opacity:1;stroke:none"
+         id="rect3078"
+         width="1024.2947"
+         height="157.5838"
+         x="-3.7493446e-014"
+         y="896.79865" />
+      <g
+         id="g3057"
+         transform="translate(-1.9415711,-4.408169)">
+        <g
+           id="g3069"
+           transform="translate(3,0)">
+          <path
+             transform="matrix(0.46551086,0,0,0.46551086,255.555,527.17727)"
+             d="m 214.28148,432.82962 c 0,134.8393 -109.30885,244.14815 -244.148147,244.14815 -134.839303,0 -244.148143,-109.30885 -244.148143,-244.14815 0,-134.8393 109.30884,-244.14815 244.148143,-244.14815 134.839297,0 244.148147,109.30885 244.148147,244.14815 z"
+             sodipodi:ry="244.14815"
+             sodipodi:rx="244.14815"
+             sodipodi:cy="432.82962"
+             sodipodi:cx="-29.866667"
+             id="path2991"
+             style="fill:#33b5e5;fill-opacity:1;stroke:none"
+             sodipodi:type="arc" />
+          <text
+             sodipodi:linespacing="125%"
+             id="text3795"
+             y="813.29626"
+             x="172.45802"
+             style="font-size:253.95834351px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;font-family:Franklin Gothic Medium;-inkscape-font-specification:Franklin Gothic Medium"
+               y="813.29626"
+               x="172.45802"
+               id="tspan3797"
+               sodipodi:role="line">S</tspan></text>
+          <text
+             sodipodi:linespacing="125%"
+             id="text3795-1"
+             y="813.51703"
+             x="358.81165"
+             style="font-size:253.95834351px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#33b5e5;fill-opacity:1;stroke:none;font-family:Sans"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#33b5e5;fill-opacity:1;font-family:Franklin Gothic Medium;-inkscape-font-specification:Franklin Gothic Medium"
+               y="813.51703"
+               x="358.81165"
+               id="tspan3797-7"
+               sodipodi:role="line">plitty</tspan></text>
+        </g>
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Segoe Print;-inkscape-font-specification:Segoe Print"
+         x="154.78906"
+         y="985.90308"
+         id="text3065"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3067"
+           x="154.78906"
+           y="985.90308"
+           style="font-size:48px;font-weight:bold;-inkscape-font-specification:Segoe Print Bold">Split expenses among friends!</tspan></text>
+    </g>
+  </g>
+</svg>
