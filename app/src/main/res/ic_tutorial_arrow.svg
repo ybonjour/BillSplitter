@@ -17,7 +17,7 @@
    inkscape:export-filename="C:\Users\dgiger\Documents\GitHub\BillSplitter\app\src\main\res\drawable-xxhdpi\ic_tutorial_arrow.png"
    inkscape:export-xdpi="480.40448"
    inkscape:export-ydpi="480.40448"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="ic_tutorial_arrow.svg">
   <defs
      id="defs4">
     <marker
@@ -57,7 +57,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="134.50661"
+     inkscape:cx="23.078039"
      inkscape:cy="-57.95665"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -69,8 +69,8 @@
      units="cm"
      inkscape:window-width="994"
      inkscape:window-height="706"
-     inkscape:window-x="710"
-     inkscape:window-y="190"
+     inkscape:window-x="905"
+     inkscape:window-y="194"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -90,15 +90,21 @@
      id="layer1"
      transform="translate(-78.880291,-210.71457)">
     <path
-       style="fill:none;stroke:#000000;stroke-width:3.25819039;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+       style="fill:none;stroke:#ffbb33;stroke-width:3.25819039000000020;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
        d="m 110.14395,214.85623 c -5.39565,25.0513 -10.469845,48.0799 -27.646666,66.48363"
        id="path2999"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\dgiger\Documents\GitHub\BillSplitter\app\src\main\res\drawable-xxhdpi\ic_tutorial_arrow.png"
+       inkscape:export-xdpi="480"
+       inkscape:export-ydpi="480" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:3.25819039;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+       style="fill:none;stroke:#ffbb33;stroke-width:3.25819039000000020;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
        d="m 80.522524,247.11066 c 33.620076,-34.57495 35.421096,-59.39312 29.950556,6.25341"
        id="path3003"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\dgiger\Documents\GitHub\BillSplitter\app\src\main\res\drawable-xxhdpi\ic_tutorial_arrow.png"
+       inkscape:export-xdpi="480"
+       inkscape:export-ydpi="480" />
   </g>
 </svg>
