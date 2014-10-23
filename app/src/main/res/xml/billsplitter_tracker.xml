@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="ga_sessionTimeout">300</integer>
+
+    <!-- Enable automatic Activity measurement -->
+    <bool name="ga_autoActivityTracking">true</bool>
+
+    <screenName name="ch.pantas.billsplitter.ui.StartEvent">
+        Start Event
+    </screenName>
+    <screenName name="ch.pantas.billsplitter.ui.AddEvent">
+        Add Event
+    </screenName>
+    <screenName name="ch.pantas.billsplitter.ui.AddExpense">
+        Add Expense
+    </screenName>
+    <string name="ga_trackingId">UA-56026625-1</string>
+</resources>

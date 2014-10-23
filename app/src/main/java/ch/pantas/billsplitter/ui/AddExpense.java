@@ -14,10 +14,13 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.inject.Inject;
 
 import java.util.List;
 
+import ch.pantas.billsplitter.BillSplitterApplication;
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
@@ -108,6 +111,12 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_expense);
+        Tracker t = ((BillSplitterApplication) getApplication()).getTracker(
+                BillSplitterApplication.TrackerName.APP_TRACKER);
+
+        t.setScreenName("ch.pantas.billsplitter.ui.AddExpense");
+
+        t.send(new HitBuilders.AppViewBuilder().build());
     }
 
     @Override

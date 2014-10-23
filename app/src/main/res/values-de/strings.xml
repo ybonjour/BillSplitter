@@ -48,4 +48,7 @@
 	<string name="overview">Übersicht</string>
     <string name="expenses">Ausgaben</string>
     <string name="edit_template">Bearbeiten: %s</string>
+    <string name="settings_google_analytics">Google Analytics</string>
+    <string name="settings_google_analytics_description">Schalten Sie Google Analytics ein um uns dabei zu helfen Splitty zu verbesseren.</string>
+    <string name="settings">Einstellungen</string>
 </resources>

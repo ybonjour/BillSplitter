@@ -10,6 +10,7 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.ui.AddEvent;
 import ch.pantas.billsplitter.ui.AddParticipants;
 import ch.pantas.billsplitter.ui.AddExpense;
+import ch.pantas.billsplitter.ui.BillSplitterSettings;
 import ch.pantas.billsplitter.ui.EventDetails;
 import ch.pantas.billsplitter.ui.StartEvent;
 
@@ -82,6 +83,13 @@ public class ActivityStarter {
 
         Intent intent = new Intent(context, AddParticipants.class);
         intent.putExtra(EVENT_ID, event.getId());
+        context.startActivity(intent);
+    }
+
+    public void startSettings(Context context){
+        checkNotNull(context);
+
+        Intent intent = new Intent(context, BillSplitterSettings.class);
         context.startActivity(intent);
     }
 }

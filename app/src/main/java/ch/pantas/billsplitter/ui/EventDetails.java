@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -35,6 +36,7 @@ import ch.pantas.billsplitter.ui.actions.AddExpenseAction;
 import ch.pantas.billsplitter.ui.actions.DeleteEventAction;
 import ch.pantas.billsplitter.ui.actions.EditEventAction;
 import ch.pantas.billsplitter.ui.actions.EventDetailsAction;
+import ch.pantas.billsplitter.ui.actions.SettingsAction;
 import ch.pantas.billsplitter.ui.actions.ShareAction;
 import ch.pantas.billsplitter.ui.adapter.EventDetailPagerAdapter;
 import ch.pantas.splitty.R;
@@ -116,10 +118,7 @@ public class EventDetails extends RoboFragmentActivity {
             }
         };
 
-        actionProvider.addEventDetailsAction(R.id.action_add_expense, getInjector(this).getInstance(AddExpenseAction.class));
-        actionProvider.addEventDetailsAction(R.id.action_delete_event, getInjector(this).getInstance(DeleteEventAction.class));
-        actionProvider.addEventDetailsAction(R.id.action_edit_event, getInjector(this).getInstance(EditEventAction.class));
-        actionProvider.addEventDetailsAction(R.id.action_share, getInjector(this).getInstance(ShareAction.class));
+        setupMenuActions();
     }
 
     @Override
@@ -270,6 +269,14 @@ public class EventDetails extends RoboFragmentActivity {
 
     public int getTabPosition(String label){
         return tabs.getTabPosition(label);
+    }
+
+    private void setupMenuActions() {
+        actionProvider.addEventDetailsAction(R.id.action_add_expense, getInjector(this).getInstance(AddExpenseAction.class));
+        actionProvider.addEventDetailsAction(R.id.action_delete_event, getInjector(this).getInstance(DeleteEventAction.class));
+        actionProvider.addEventDetailsAction(R.id.action_edit_event, getInjector(this).getInstance(EditEventAction.class));
+        actionProvider.addEventDetailsAction(R.id.action_share, getInjector(this).getInstance(ShareAction.class));
+        actionProvider.addEventDetailsAction(R.id.action_settings, getInjector(this).getInstance(SettingsAction.class));
     }
 
     private void selectDrawerItem(int position) {
