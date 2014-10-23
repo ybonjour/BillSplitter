@@ -67,7 +67,8 @@ public class AddEvent extends RoboActivity {
         } else {
             event = eventStore.getById(eventId);
             checkNotNull(event);
-            setTitle("Edit " + event.getName());
+            String editTemplate = getString(R.string.edit_template);
+            setTitle(String.format(editTemplate, event.getName()));
             eventNameField.setText(event.getName());
             currencySpinner.setSelection(currencyAdapter.getPosition(event.getCurrency().toString()));
         }

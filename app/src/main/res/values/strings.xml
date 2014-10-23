@@ -47,4 +47,5 @@
     <string name="event_details_help_text">Congratulations! Now you can start adding expenses. The expense amount will be split equally among the attendants.</string>
     <string name="overview">Overview</string>
     <string name="expenses">Expenses</string>
+    <string name="edit_template">Edit: %s</string>
 </resources>
