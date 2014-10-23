@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NFC" />
 
     <application
         android:allowBackup="true"
@@ -49,7 +50,29 @@
         </activity>
         <activity
             android:name="ch.pantas.billsplitter.ui.BillSplitterSettings"
-            android:screenOrientation="portrait" />
+            android:parentActivityName="ch.pantas.billsplitter.ui.EventDetails"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.pantas.billsplitter.ui.EventDetails" />
+        </activity>
+        <activity
+            android:name="ch.pantas.billsplitter.ui.BeamEvent"
+            android:parentActivityName="ch.pantas.billsplitter.ui.EventDetails"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.pantas.billsplitter.ui.EventDetails" />
+        </activity>
+        <activity
+            android:name="ch.pantas.billsplitter.ui.BeamEventReceiver"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="application/vnd.com.example.android.beam"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

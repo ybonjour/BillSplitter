@@ -4,14 +4,12 @@ import android.app.Application;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
-import com.google.inject.Inject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.splitty.R;
-import roboguice.RoboGuice;
 
 import static roboguice.RoboGuice.getInjector;
 

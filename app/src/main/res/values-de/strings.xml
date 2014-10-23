@@ -51,4 +51,7 @@
     <string name="settings_google_analytics">Google Analytics</string>
     <string name="settings_google_analytics_description">Schalten Sie Google Analytics ein um uns dabei zu helfen Splitty zu verbesseren.</string>
     <string name="settings">Einstellungen</string>
+    <string name="beam_event">Gruppe beamen</string>
+    <string name="beam_event_message">Tappe dein Telefon gegen ein anderes Telefon um die Gruppe zu beamen.</string>
+    <string name="beam_event_error">NFC ist nicht verfügbar. Die Gruppe kann nicht gebeamt werden.</string>
 </resources>
