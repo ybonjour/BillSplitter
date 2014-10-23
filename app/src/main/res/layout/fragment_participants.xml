@@ -3,21 +3,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp">
+
         <ImageView
             android:src="@android:drawable/ic_menu_search"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            />
         <EditText
             android:id="@+id/user_name"
             android:hint="@string/add_participant"
             android:layout_weight="1"
             android:inputType="textCapWords"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/participant_container"
@@ -28,7 +37,12 @@
         <TextView
             android:text="@string/participants"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="0dp"/>
+
         <GridView
             android:id="@+id/participant_grid"
             android:numColumns="auto_fit"
