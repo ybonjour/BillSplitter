@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -94,7 +93,7 @@ public class EventDetails extends RoboFragmentActivity {
 
     private List<Event> navEventsList;
 
-    private int currentTabPosition = 0;
+    private int currentTabPosition = -1;
 
     private Event newEvent = null;
 
@@ -164,7 +163,11 @@ public class EventDetails extends RoboFragmentActivity {
         viewPager.setAdapter(pagerAdapter);
         viewPagerTabs.setViewPager(viewPager);
 
-        viewPager.setCurrentItem(currentTabPosition);
+        if(currentTabPosition != -1){
+            viewPager.setCurrentItem(currentTabPosition);
+            currentTabPosition = -1;
+        }
+
 
         viewPagerTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -273,11 +276,11 @@ public class EventDetails extends RoboFragmentActivity {
         return event;
     }
 
-    public void setCurrentTab(int position){
+    public void setCurrentTab(int position) {
         currentTabPosition = position;
     }
 
-    public int getTabPosition(String label){
+    public int getTabPosition(String label) {
         return tabs.getTabPosition(label);
     }
 
@@ -295,8 +298,7 @@ public class EventDetails extends RoboFragmentActivity {
             setTitle(newEvent.getName());
             View contentView = findViewById(R.id.event_details_pager);
             contentView.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             newEvent = null;
         }
 
@@ -313,14 +315,12 @@ public class EventDetails extends RoboFragmentActivity {
                 helpView.setVisibility(View.VISIBLE);
                 if (i == 0 && v > 0.0) {
                     int width = helpView.getWidth();
-                    helpView.setX(0.0f - width*v);
+                    helpView.setX(0.0f - width * v);
                 }
-            }
-            else {
+            } else {
                 helpView.setVisibility(View.INVISIBLE);
             }
-        }
-        else {
+        } else {
             View helpView = findViewById(R.id.event_details_help_view);
             helpView.setVisibility(View.INVISIBLE);
         }
