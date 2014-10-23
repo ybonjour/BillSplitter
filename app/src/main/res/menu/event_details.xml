@@ -21,6 +21,10 @@
         android:icon="@android:drawable/ic_menu_send"
         android:title="@string/beam_event"
         android:showAsAction="never"/>
+    <item android:id="@+id/action_beam_bluetooth"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="@string/beam_event_bluetooth"
+        android:showAsAction="never"/>
     <item android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings"

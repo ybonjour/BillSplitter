@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:allowBackup="true"
@@ -72,6 +73,14 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="application/vnd.com.example.android.beam"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name="ch.pantas.billsplitter.ui.BluetoothDeviceSelector"
+            android:parentActivityName="ch.pantas.billsplitter.ui.EventDetails"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.pantas.billsplitter.ui.EventDetails" />
         </activity>
     </application>
 
