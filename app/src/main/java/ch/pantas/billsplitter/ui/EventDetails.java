@@ -94,6 +94,8 @@ public class EventDetails extends RoboFragmentActivity {
 
     private int currentTabPosition = 0;
 
+    private Event newEvent = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +108,11 @@ public class EventDetails extends RoboFragmentActivity {
                 R.string.nav_drawer_close_desc
         ) {
             public void onDrawerClosed(View view) {
+                if (newEvent != null) {
+                    activityStarter.startEventDetails(EventDetails.this, newEvent, false);
+                    newEvent = null;
+                }
+
                 invalidateOptionsMenu();
             }
 
@@ -133,6 +140,9 @@ public class EventDetails extends RoboFragmentActivity {
         super.onResume();
 
         init();
+
+        View contentView = findViewById(R.id.event_details_pager);
+        contentView.setVisibility(View.VISIBLE);
 
         sharedPreferenceService.storeActiveEventId(event.getId());
 
@@ -273,10 +283,18 @@ public class EventDetails extends RoboFragmentActivity {
     }
 
     private void selectDrawerItem(int position) {
-        Event newEvent = navEventsList.get(position);
+        newEvent = navEventsList.get(position);
+        if (!newEvent.equals(event)) {
+            setTitle(newEvent.getName());
+            View contentView = findViewById(R.id.event_details_pager);
+            contentView.setVisibility(View.INVISIBLE);
+        }
+        else {
+            newEvent = null;
+        }
 
         drawerList.setItemChecked(position, true);
-        activityStarter.startEventDetails(this, newEvent, false);
+        drawerLayout.closeDrawers();
     }
 
     private void updateHelpText(int i, float v) {
