@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Splitty</string>
+    <string name="events_title">Gruppen</string>
+    <string name="action_edit_event">Gruppe editieren</string>
+    <string name="action_delete_event">Gruppe löschen</string>
+    <string name="add_event">Gruppe hinzufügen</string>
+    <string name="save">Speichern</string>
+    <string name="description">Beschreibung</string>
+    <string name="add_expense">Ausgabe hinzufügen</string>
+    <string name="amount_hint">Betrag in %s</string>
+    <string name="paid_by">Bezahlt von</string>
+    <string name="me">Ich</string>
+    <string name="add">Hinzufügen</string>
+    <string name="finish">Beenden</string>
+    <string name="debts">Schulden</string>
+    <string name="name">Name</string>
+    <string name="participants">Teilnehmer</string>
+    <string name="add_participant">Teilnehmer hinzufügen</string>
+    <string name="enter_username">Bitte gib einen Benutzernamen ein</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="recently_used">Kürzlich benutzt</string>
+    <string name="attendees">Beteiligte personen</string>
+    <string name="add_event_help">Wähle einen Namen für die neue Gruppe</string>
+    <string name="add_event_currency_help">Wähle eine Währung für die Gruppe</string>
+    <string name="add_participants_help">Füge alle Personen hinzu, mit denen du eine Rechnung teilen willst</string>
+    <string name="next">Weiter &gt;</string>
+    <string name="expense_text_with_description" formatted="false">%s für %s</string>
+    <string name="expense_text_without_description" formatted="false">%s</string>
+    <string name="expense_attendees" formatted="false">Beteiligt: %s</string>
+    <string name="remove_expense">Ausgabe entfernen</string>
+    <string name="navigation_drawer_title">Gruppe wählen</string>
+    <string name="nav_drawer_open_desc">Gruppenliste öffnen</string>
+    <string name="nav_drawer_close_desc">Gruppenliste schliessen</string>
+    <string name="start">Start &gt;</string>
+    <string name="groups_header">GRUPPEN</string>
+    <string name="welcome_message">Willkommen bei Splitty!</string>
+    <string name="your_name">Dein Name</string>
+    <string name="share">Teilen</string>
+    <string name="share_template" formatted="false">Hallo,\nDie folgenden Schulden wurden von Splitty berechnet:\n\n %s \n\n Gruss,\n %s</string>
+    <string name="add_event_help_text">Willkommen bei Splitty! Beginne mit dem erstellen einer Gruppe.</string>
+    <string name="delete_event_alert_message">Es werden alle Ausgaben in dieser Gruppe gelöscht!</string>
+    <string name="delete_event_alert_title">Gruppe löschen?</string>
+    <string name="delete">Löschen</string>
+    <string name="error_remove_user">Benutzer kann nicht entfernt werden!</string>
+    <string name="event_details_help_text">Glückwunsch! Jetzt kannst du damit beginnen, Ausgaben einzutragen. Die Beträge werden gleichmässig zwischen allen Beteiligten aufgeteilt.</string>
+	<string name="overview">Übersicht</string>
+    <string name="expenses">Ausgaben</string>
+    <string name="edit_template">Bearbeiten: %s</string>
+</resources>

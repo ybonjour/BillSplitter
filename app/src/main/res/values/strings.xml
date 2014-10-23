@@ -25,7 +25,7 @@
     <string name="add_event_help">Choose a name for your new group:</string>
     <string name="add_event_currency_help">Choose a default currency:</string>
     <string name="add_participants_help">Add all the people you want to split a bill with here</string>
-    <string name="next">Next</string>
+    <string name="next">Next &gt;</string>
     <string name="expense_text_with_description" formatted="false">%s for %s</string>
     <string name="expense_text_without_description" formatted="false">%s</string>
     <string name="expense_attendees" formatted="false">Attendees: %s</string>
@@ -33,7 +33,7 @@
     <string name="navigation_drawer_title">Choose Group</string>
     <string name="nav_drawer_open_desc">Open group list</string>
     <string name="nav_drawer_close_desc">Close group list</string>
-    <string name="start">Start ></string>
+    <string name="start">Start &gt;</string>
     <string name="groups_header">GROUPS</string>
     <string name="welcome_message">Welcome to Splitty!</string>
     <string name="your_name">Your name</string>
