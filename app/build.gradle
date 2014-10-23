@@ -30,6 +30,7 @@ dependencies {
     compile 'com.google.guava:guava:17.0'
     compile 'org.roboguice:roboguice:2.0'
     compile 'com.android.support:support-v4:21.0.0'
+    compile 'com.google.android.gms:play-services:6.1.+'
 
     androidTestCompile(files('libs/espresso-1.1.jar',
             'libs/testrunner-1.1.jar',
