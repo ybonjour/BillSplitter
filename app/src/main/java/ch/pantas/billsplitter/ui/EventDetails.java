@@ -32,6 +32,7 @@ import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.actions.ActionProvider;
 import ch.pantas.billsplitter.ui.actions.AddExpenseAction;
+import ch.pantas.billsplitter.ui.actions.BeamAction;
 import ch.pantas.billsplitter.ui.actions.DeleteEventAction;
 import ch.pantas.billsplitter.ui.actions.EditEventAction;
 import ch.pantas.billsplitter.ui.actions.EventDetailsAction;
@@ -163,7 +164,7 @@ public class EventDetails extends RoboFragmentActivity {
         viewPager.setAdapter(pagerAdapter);
         viewPagerTabs.setViewPager(viewPager);
 
-        if(currentTabPosition != -1){
+        if (currentTabPosition != -1) {
             viewPager.setCurrentItem(currentTabPosition);
             currentTabPosition = -1;
         }
@@ -290,6 +291,7 @@ public class EventDetails extends RoboFragmentActivity {
         actionProvider.addEventDetailsAction(R.id.action_edit_event, getInjector(this).getInstance(EditEventAction.class));
         actionProvider.addEventDetailsAction(R.id.action_share, getInjector(this).getInstance(ShareAction.class));
         actionProvider.addEventDetailsAction(R.id.action_settings, getInjector(this).getInstance(SettingsAction.class));
+        actionProvider.addEventDetailsAction(R.id.action_beam, getInjector(this).getInstance(BeamAction.class));
     }
 
     private void selectDrawerItem(int position) {
