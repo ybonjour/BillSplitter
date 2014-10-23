@@ -1,22 +1,16 @@
 package ch.pantas.billsplitter.services;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
 
-import org.mockito.Mock;
-
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 
+import static ch.pantas.billsplitter.services.SharedPreferenceService.ACTIVE_EVENT_ID;
+import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_ID;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_NAME;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static java.util.UUID.randomUUID;
 
 public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest {
 
@@ -27,19 +21,33 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     private SharedPreferences sharedPreferences;
 
     private String cachedUsername;
+    private String cachedUserId;
+    private String cachedActiveEventId;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         cachedUsername = sharedPreferences.getString(USER_NAME, null);
+        cachedUserId = sharedPreferences.getString(USER_ID, null);
+        cachedActiveEventId = sharedPreferences.getString(ACTIVE_EVENT_ID, null);
         sharedPreferences.edit().remove(USER_NAME).commit();
+        sharedPreferences.edit().remove(USER_ID).commit();
+        sharedPreferences.edit().remove(ACTIVE_EVENT_ID).commit();
     }
 
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
-        if(cachedUsername != null){
+        if (cachedUsername != null) {
             sharedPreferences.edit().putString(USER_NAME, cachedUsername).commit();
+        }
+
+        if (cachedUserId != null) {
+            sharedPreferences.edit().putString(USER_ID, cachedUserId).commit();
+        }
+
+        if (cachedActiveEventId != null) {
+            sharedPreferences.edit().putString(ACTIVE_EVENT_ID, cachedActiveEventId).commit();
         }
     }
 
@@ -73,7 +81,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testStoreAndRetrieveUserNameCorrectly(){
+    public void testStoreAndRetrieveUserNameCorrectly() {
         // Given
         String userName = "Joe";
 
@@ -82,6 +90,47 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
 
         // Then
         assertEquals(userName, service.getUserName());
+    }
+
+    @SmallTest
+    public void testStoreUserIdThrowsNullPointerExceptionIfNoUserIdProvided() {
+        try {
+            service.storeUserId(null);
+            fail("No exception has been thrown");
+        } catch (NullPointerException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testStoreUserIdThrowsIllegalArgumentExceptionIfEmptyUserIdProvided() {
+        try {
+            service.storeUserId("");
+            fail("No exception has been thrown");
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testGetUserIdReturnsNullIfNoUserIdPresent() {
+        // When
+        String userName = service.getUserId();
+
+        // Then
+        assertNull(userName);
+    }
+
+    @SmallTest
+    public void testStoreAndRetrieveUserIdCorrectly() {
+        // Given
+        String userId = randomUUID().toString();
+
+        // When
+        service.storeUserId(userId);
+
+        // Then
+        assertEquals(userId, service.getUserId());
     }
 
     @SmallTest
@@ -94,7 +143,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testStoreAndRetrieveActiveEventIdCorrectly(){
+    public void testStoreAndRetrieveActiveEventIdCorrectly() {
         // Given
         String eventId = "eventId";
 

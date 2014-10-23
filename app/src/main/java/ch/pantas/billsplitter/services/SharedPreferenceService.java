@@ -12,6 +12,7 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 public class SharedPreferenceService {
 
     public static final String USER_NAME = "USER_NAME";
+    public static final String USER_ID = "USE_ID";
     public static final String ACTIVE_EVENT_ID = "ACTIVE_EVENT_ID";
     public static final String TRACKING_ENABLED = "TRACKING_ENABLED";
 
@@ -33,15 +34,30 @@ public class SharedPreferenceService {
         return preferences.getString(USER_NAME, null);
     }
 
+    public String getUserId() {
+        return preferences.getString(USER_ID, null);
+    }
+
+    public void storeUserId(String userId) {
+        checkNotNull(userId);
+        checkArgument(!userId.isEmpty());
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(USER_ID, userId);
+        editor.apply();
+    }
+
     public void storeActiveEventId(String eventId) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(ACTIVE_EVENT_ID, eventId);
         editor.apply();
     }
 
-    public String getActiveEventId() { return preferences.getString(ACTIVE_EVENT_ID, null); }
+    public String getActiveEventId() {
+        return preferences.getString(ACTIVE_EVENT_ID, null);
+    }
 
-    public void registerTrackingEnabledListener(final TrackingEnabledListener trackingEnabledListener){
+    public void registerTrackingEnabledListener(final TrackingEnabledListener trackingEnabledListener) {
         sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -54,18 +70,18 @@ public class SharedPreferenceService {
         preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
     }
 
-    public void unregisterTrackingEnabledListener(){
-        if(sharedPreferenceChangeListener != null){
+    public void unregisterTrackingEnabledListener() {
+        if (sharedPreferenceChangeListener != null) {
             preferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
             sharedPreferenceChangeListener = null;
         }
     }
 
-    public boolean getTrackingEnabled(){
+    public boolean getTrackingEnabled() {
         return preferences.getBoolean(TRACKING_ENABLED, false);
     }
 
-    public interface TrackingEnabledListener{
+    public interface TrackingEnabledListener {
         void onTrackingEnabledChanged(boolean trackingEnabled);
     }
 }

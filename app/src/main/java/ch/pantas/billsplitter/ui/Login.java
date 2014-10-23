@@ -18,6 +18,7 @@ import ch.pantas.billsplitter.model.Tag;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -39,6 +40,9 @@ public class Login extends RoboActivity {
     private UserStore userStore;
 
     @Inject
+    private UserService userService;
+
+    @Inject
     private EventStore eventStore;
 
     @Inject
@@ -48,19 +52,31 @@ public class Login extends RoboActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (sharedPreferenceService.getUserName() != null) {
-            Event event = getStoredEvent();
-            if (event != null) {
-                activityStarter.startEventDetails(this, event, true);
-            } else {
-                activityStarter.startStartEvent(this);
-            }
-            finish();
+        if(userService.getMe() != null) {
+            handleUserLoggedIn();
             return;
+        } else if(sharedPreferenceService.getUserName() != null){
+            // TODO: Remove once all have 0.2 Migration code to migrate from username to userid
+            User me = userStore.getUserWithName(sharedPreferenceService.getUserName());
+            if(me != null){
+                sharedPreferenceService.storeUserId(me.getId());
+                handleUserLoggedIn();
+                return;
+            }
         }
 
         setContentView(R.layout.login);
         setTitle(R.string.app_name);
+    }
+
+    private void handleUserLoggedIn(){
+        Event event = getStoredEvent();
+        if (event != null) {
+            activityStarter.startEventDetails(this, event, true);
+        } else {
+            activityStarter.startStartEvent(this);
+        }
+        finish();
     }
 
     public void onStarted() {

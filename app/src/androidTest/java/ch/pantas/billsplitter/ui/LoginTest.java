@@ -9,8 +9,10 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
@@ -42,6 +44,9 @@ public class LoginTest extends BaseEspressoTest<Login> {
 
     @Mock
     private EventStore eventStore;
+
+    @Mock
+    private UserService userService;
 
     public LoginTest() {
         super(Login.class);
@@ -107,7 +112,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     @LargeTest
     public void testEventListIsStartedWhenUsernameIsAlreadySet() {
         // Given
-        when(preferenceService.getUserName()).thenReturn("Joe");
+        when(userService.getMe()).thenReturn(new User("a", "Joe"));
 
         // When
         getActivity();
@@ -119,7 +124,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     @LargeTest
     public void testEventListIsStartedWhenNoEventIdIsAlreadySet() {
         // Given
-        when(preferenceService.getUserName()).thenReturn("Joe");
+        when(userService.getMe()).thenReturn(new User("a", "joe"));
         when(preferenceService.getActiveEventId()).thenReturn(null);
 
         // When
@@ -132,7 +137,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     @LargeTest
     public void testEventDetailIsStartedWhenEventIdIsAlreadySet() {
         // Given
-        when(preferenceService.getUserName()).thenReturn("Joe");
+        when(userService.getMe()).thenReturn(new User("a", "joe"));
         Event event = new Event("eventId", "eventName", EUR);
         when(preferenceService.getActiveEventId()).thenReturn(event.getId());
         when(eventStore.getById(event.getId())).thenReturn(event);
@@ -141,6 +146,6 @@ public class LoginTest extends BaseEspressoTest<Login> {
         getActivity();
 
         // Then
-        verify(activityStarter, times(1)).startEventDetails(any(Context.class), eq(event), true);
+        verify(activityStarter, times(1)).startEventDetails(any(Context.class), eq(event), eq(true));
     }
 }

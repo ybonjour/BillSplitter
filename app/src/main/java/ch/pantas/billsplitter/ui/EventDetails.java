@@ -27,9 +27,11 @@ import java.util.List;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.actions.ActionProvider;
 import ch.pantas.billsplitter.ui.actions.AddExpenseAction;
 import ch.pantas.billsplitter.ui.actions.BeamAction;
@@ -77,6 +79,9 @@ public class EventDetails extends RoboFragmentActivity {
     private SharedPreferenceService sharedPreferenceService;
 
     @Inject
+    private UserService userService;
+
+    @Inject
     private ActionProvider actionProvider;
 
     @Inject
@@ -120,7 +125,8 @@ public class EventDetails extends RoboFragmentActivity {
 
             public void onDrawerOpened(View drawerView) {
                 final TextView usernameView = (TextView) findViewById(R.id.nav_drawer_username);
-                usernameView.setText(sharedPreferenceService.getUserName());
+                User me = userService.getMe();
+                usernameView.setText(me.getName());
                 invalidateOptionsMenu();
             }
         };

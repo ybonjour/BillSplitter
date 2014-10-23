@@ -26,6 +26,7 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.adapter.AttendeeAdapter;
 import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
 import ch.pantas.splitty.R;
@@ -67,6 +68,9 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     private UserStore userStore;
 
     @Mock
+    private UserService userService;
+
+    @Mock
     private ParticipantStore participantStore;
 
     @Mock
@@ -98,7 +102,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         setActivityIntent(intent);
         when(eventStore.getById(event.getId())).thenReturn(event);
         me = new User(UUID.randomUUID().toString(), "Me");
-        when(sharedPreferenceService.getUserName()).thenReturn(me.getName());
+        when(userService.getMe()).thenReturn(me);
         when(userStore.getUserWithName(me.getName())).thenReturn(me);
         when(payerAdapter.getSelectedUser()).thenReturn(me);
 

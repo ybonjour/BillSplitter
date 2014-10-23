@@ -14,7 +14,7 @@ import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
-import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
 import ch.pantas.splitty.R;
 
@@ -24,7 +24,6 @@ import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,13 +42,13 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     private UserStore userStore;
 
     @Mock
+    private UserService userService;
+
+    @Mock
     private ParticipantStore participantStore;
 
     @Mock
     private ParticipantManager participantManager;
-
-    @Mock
-    private SharedPreferenceService sharedPreferenceService;
 
     @Mock
     UserAdapter participantAdapter;
@@ -90,8 +89,9 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @LargeTest
     public void testEditParticipantsExistingParticipantsAreShown() {
         // Given
+        User me = new User("a", "Me");
         List<User> participantsList = new LinkedList<User>();
-        participantsList.add(new User("a", "Me"));
+        participantsList.add(me);
         participantsList.add(new User("b", "Hans"));
         participantsList.add(new User("c", "Fritz"));
 
@@ -100,7 +100,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
 
         when(participantStore.getParticipants(event.getId())).thenReturn(participantsList);
         when(participantManager.getParticipants()).thenReturn(participantsList);
-        when(sharedPreferenceService.getUserName()).thenReturn("Me");
+        when(userService.getMe()).thenReturn(me);
         when(participantManager.filterOutParticipants(anyList())).thenReturn(otherParticipantsList);
 
         // When

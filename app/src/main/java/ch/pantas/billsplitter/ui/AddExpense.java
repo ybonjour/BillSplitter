@@ -34,6 +34,7 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Tag;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.adapter.AttendeeAdapter;
 import ch.pantas.billsplitter.ui.adapter.PayerAdapter;
 import ch.pantas.billsplitter.ui.adapter.TagAdapter;
@@ -80,6 +81,9 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
 
     @Inject
     private UserStore userStore;
+
+    @Inject
+    private UserService userService;
 
     @Inject
     private ParticipantStore participantStore;
@@ -353,7 +357,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
 
     private void setUpAddScreen() {
         loadPayerList();
-        User me = userStore.getUserWithName(sharedPreferenceService.getUserName());
+        User me = userService.getMe();
         checkNotNull(me);
         payerAdapter.select(me);
 

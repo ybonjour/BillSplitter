@@ -24,7 +24,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
-import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.ParticipantManager;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
 import ch.pantas.splitty.R;
@@ -41,11 +41,11 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
     @Inject
     private UserStore userStore;
     @Inject
+    private UserService userService;
+    @Inject
     private ExpenseStore expenseStore;
     @Inject
     private AttendeeStore attendeeStore;
-    @Inject
-    private SharedPreferenceService sharedPreferenceService;
     @Inject
     private ParticipantManager participantManager;
     @Inject
@@ -146,7 +146,7 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
 
     private void setupParticipantManager(Event event) {
         participantManager.clear();
-        User me = userStore.getUserWithName(sharedPreferenceService.getUserName());
+        User me = userService.getMe();
         participantManager.addFixedParticipant(me);
 
         List<User> participants = participantStore.getParticipants(event.getId());

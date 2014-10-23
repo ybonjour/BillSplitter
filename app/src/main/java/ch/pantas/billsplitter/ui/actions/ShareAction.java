@@ -10,6 +10,7 @@ import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.EventDetails;
 import ch.pantas.splitty.R;
 
@@ -19,7 +20,7 @@ public class ShareAction implements EventDetailsAction {
     private DebtCalculator debtCalculator;
 
     @Inject
-    private SharedPreferenceService sharedPreferenceService;
+    private UserService userService;
 
     @Override
     public boolean execute(EventDetails activity) {
@@ -55,7 +56,7 @@ public class ShareAction implements EventDetailsAction {
 
             first = false;
         }
-        String username = sharedPreferenceService.getUserName();
+        String username = userService.getMe().getName();
         return String.format(shareTemplate, debtsText.toString(), username);
     }
 }
