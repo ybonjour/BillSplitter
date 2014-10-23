@@ -90,7 +90,9 @@ public class EventDetails extends RoboFragmentActivity {
 
     private ShareActionProvider shareActionProvider;
 
-    List<Event> navEventsList;
+    private List<Event> navEventsList;
+
+    private int currentTabPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +139,7 @@ public class EventDetails extends RoboFragmentActivity {
         updateHelpText(0, 0.0f);
     }
 
-    void init() {
+    private void init() {
         if (getIntent().hasExtra(ARGUMENT_EVENT_ID)) {
             String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
             event = eventStore.getById(eventId);
@@ -152,6 +154,8 @@ public class EventDetails extends RoboFragmentActivity {
 
         viewPager.setAdapter(pagerAdapter);
         viewPagerTabs.setViewPager(viewPager);
+
+        viewPager.setCurrentItem(currentTabPosition);
 
         viewPagerTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -235,7 +239,7 @@ public class EventDetails extends RoboFragmentActivity {
         drawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
+                selectDrawerItem(position);
             }
         });
 
@@ -260,8 +264,15 @@ public class EventDetails extends RoboFragmentActivity {
         return event;
     }
 
+    public void setCurrentTab(int position){
+        currentTabPosition = position;
+    }
 
-    private void selectItem(int position) {
+    public int getTabPosition(String label){
+        return tabs.getTabPosition(label);
+    }
+
+    private void selectDrawerItem(int position) {
         Event newEvent = navEventsList.get(position);
 
         drawerList.setItemChecked(position, true);

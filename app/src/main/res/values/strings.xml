@@ -45,4 +45,6 @@
     <string name="delete">Delete</string>
     <string name="error_remove_user">User can not be removed</string>
     <string name="event_details_help_text">Congratulations! Now you can start adding expenses. The expense amount will be split equally among the attendants.</string>
+    <string name="overview">Overview</string>
+    <string name="expenses">Expenses</string>
 </resources>
