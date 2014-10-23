@@ -22,7 +22,7 @@ public class BeamEvent extends RoboActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.share_event);
+        setContentView(R.layout.beam_event);
 
         String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
 
