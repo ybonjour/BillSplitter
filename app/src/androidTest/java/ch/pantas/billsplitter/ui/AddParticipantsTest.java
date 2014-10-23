@@ -18,7 +18,7 @@ import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
 import ch.pantas.splitty.R;
 
-import static ch.pantas.billsplitter.model.Currency.EUR;
+import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
 import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;

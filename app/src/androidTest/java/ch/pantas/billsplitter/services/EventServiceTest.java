@@ -12,7 +12,7 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Event;
 
-import static ch.pantas.billsplitter.model.Currency.CHF;
+import static ch.pantas.billsplitter.model.SupportedCurrency.CHF;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static org.mockito.Matchers.anyString;

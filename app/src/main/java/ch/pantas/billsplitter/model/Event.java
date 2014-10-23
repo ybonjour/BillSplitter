@@ -5,9 +5,9 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class Event extends Model {
     private String name;
-    private Currency currency;
+    private SupportedCurrency currency;
 
-    public Event(String id, String name, Currency currency) {
+    public Event(String id, String name, SupportedCurrency currency) {
         super(id);
         checkNotNull(name);
         checkArgument(!name.isEmpty());
@@ -16,7 +16,7 @@ public class Event extends Model {
         this.currency = currency;
     }
 
-    public Event(String name, Currency currency) {
+    public Event(String name, SupportedCurrency currency) {
         checkNotNull(name);
         checkArgument(!name.isEmpty());
 
@@ -32,11 +32,11 @@ public class Event extends Model {
         this.name = name;
     }
 
-    public Currency getCurrency() {
+    public SupportedCurrency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(SupportedCurrency currency) {
         this.currency = currency;
     }
 

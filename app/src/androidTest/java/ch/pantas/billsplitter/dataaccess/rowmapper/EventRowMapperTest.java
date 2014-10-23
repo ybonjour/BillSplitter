@@ -9,13 +9,13 @@ import com.google.inject.Inject;
 import java.util.UUID;
 
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
-import ch.pantas.billsplitter.model.Currency;
+import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Event;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.CURRENCY;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.ID;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.NAME;
-import static ch.pantas.billsplitter.model.Currency.CHF;
+import static ch.pantas.billsplitter.model.SupportedCurrency.CHF;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +39,7 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         // Given
         String id = UUID.randomUUID().toString();
         String name = "Event 1";
-        Currency currency = CHF;
+        SupportedCurrency currency = CHF;
         Cursor cursor = createEventCursor(id, name, currency);
 
         // When
@@ -91,7 +91,7 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
         assertFalse(values.containsKey(ID));
     }
 
-    private Cursor createEventCursor(String id, String name, Currency currency) {
+    private Cursor createEventCursor(String id, String name, SupportedCurrency currency) {
         Cursor c = mock(Cursor.class);
         when(c.getColumnIndex(ID)).thenReturn(0);
         when(c.getString(0)).thenReturn(id);

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import static ch.pantas.billsplitter.services.AmountCalculator.convertToString;
 
-public enum Currency {
+public enum SupportedCurrency {
     CHF("CHF", "%s CHF"), EUR("€", "%s €"), USD("$", "$ %s");
 
     private final String symbol;
     private final String formatTemplate;
 
-    Currency(String symbol, String formatTemplate) {
+    SupportedCurrency(String symbol, String formatTemplate) {
         this.symbol = symbol;
         this.formatTemplate = formatTemplate;
     }
@@ -27,7 +27,7 @@ public enum Currency {
 
     public static String[] getValuesAsString(){
         ArrayList<String> symbols = new ArrayList<String>();
-        for(Currency c : values()){
+        for(SupportedCurrency c : values()){
             symbols.add(c.toString());
         }
         String[] buffer = new String[symbols.size()];

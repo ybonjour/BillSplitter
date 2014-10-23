@@ -5,9 +5,9 @@ public class Debt {
     private final User from;
     private final User to;
     private final int amount;
-    private final Currency currency;
+    private final SupportedCurrency currency;
 
-    public Debt(User from, User to, int amount, Currency currency){
+    public Debt(User from, User to, int amount, SupportedCurrency currency){
         this.from = from;
         this.to = to;
         this.amount = amount;
@@ -26,7 +26,7 @@ public class Debt {
         return amount;
     }
 
-    public Currency getCurrency() {
+    public SupportedCurrency getCurrency() {
         return currency;
     }
 

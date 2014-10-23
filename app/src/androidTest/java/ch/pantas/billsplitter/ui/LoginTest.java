@@ -14,7 +14,7 @@ import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
-import static ch.pantas.billsplitter.model.Currency.EUR;
+import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;

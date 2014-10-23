@@ -11,7 +11,7 @@ import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.framework.CustomMatchers.matchesDebt;
-import static ch.pantas.billsplitter.model.Currency.EUR;
+import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasItem;

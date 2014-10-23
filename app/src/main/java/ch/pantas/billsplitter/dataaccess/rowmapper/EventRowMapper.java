@@ -3,7 +3,7 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import ch.pantas.billsplitter.model.Currency;
+import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Event;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.CURRENCY;
@@ -23,7 +23,7 @@ public class EventRowMapper implements RowMapper<Event> {
 
         String id = cursor.getString(idIdx);
         String name = cursor.getString(nameIdx);
-        Currency currency = Currency.valueOf(cursor.getString(currencyIdx));
+        SupportedCurrency currency = SupportedCurrency.valueOf(cursor.getString(currencyIdx));
 
         return new Event(id, name, currency);
     }

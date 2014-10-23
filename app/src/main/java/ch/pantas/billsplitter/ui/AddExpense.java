@@ -25,7 +25,7 @@ import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.TagStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Attendee;
-import ch.pantas.billsplitter.model.Currency;
+import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Tag;
@@ -136,7 +136,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
                 if (!hasFocus) {
                     String amountInput = amountField.getText().toString();
                     amountCents = convertToCents(amountInput);
-                    Currency currency = event.getCurrency();
+                    SupportedCurrency currency = event.getCurrency();
                     amountField.setText(currency.format(amountCents));
                 } else {
                     amountField.setText(convertToString(amountCents));

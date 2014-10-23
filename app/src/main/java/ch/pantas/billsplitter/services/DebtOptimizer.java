@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import ch.pantas.billsplitter.model.Currency;
+import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.User;
 
@@ -21,7 +21,7 @@ import static java.util.Collections.sort;
 public class DebtOptimizer {
 
 
-    public List<Debt> optimize(List<Debt> debts, Currency currency) {
+    public List<Debt> optimize(List<Debt> debts, SupportedCurrency currency) {
         checkNotNull(debts);
 
         Map<User, Integer> balances = buildBalance(debts);

@@ -12,10 +12,10 @@ public class ExpensePresentation {
     private final Context context;
     private final User payer;
     private final Expense expense;
-    private final Currency currency;
+    private final SupportedCurrency currency;
     private final List<User> attendees;
 
-    public ExpensePresentation(User payer, Expense expense, Currency currency, List<User> attendees, Context context) {
+    public ExpensePresentation(User payer, Expense expense, SupportedCurrency currency, List<User> attendees, Context context) {
         checkNotNull(payer);
         checkNotNull(expense);
         checkNotNull(attendees);

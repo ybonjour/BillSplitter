@@ -10,8 +10,11 @@ import android.widget.Spinner;
 
 import com.google.inject.Inject;
 
+import java.util.Currency;
+import java.util.Locale;
+
 import ch.pantas.billsplitter.dataaccess.EventStore;
-import ch.pantas.billsplitter.model.Currency;
+import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.splitty.R;
@@ -19,8 +22,10 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE;
+import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
+import static java.util.Currency.getInstance;
 
 public class AddEvent extends RoboActivity {
 
@@ -37,18 +42,28 @@ public class AddEvent extends RoboActivity {
 
     Event event;
 
+    private SupportedCurrency getUserCurrency(){
+        Currency userCurrency = Currency.getInstance(Locale.getDefault());
+        try{
+            return SupportedCurrency.valueOf(userCurrency.getCurrencyCode());
+        } catch(IllegalArgumentException e){
+            return EUR;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_event);
 
-        ArrayAdapter<CharSequence> currencyAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, Currency.getValuesAsString());
+        ArrayAdapter<CharSequence> currencyAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, SupportedCurrency.getValuesAsString());
         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(currencyAdapter);
 
         String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
         if (eventId == null) {
             setTitle(R.string.add_event);
+            currencySpinner.setSelection(currencyAdapter.getPosition(getUserCurrency().toString()));
         } else {
             event = eventStore.getById(eventId);
             checkNotNull(event);
@@ -71,7 +86,7 @@ public class AddEvent extends RoboActivity {
             return;
         }
 
-        Currency currency = Currency.valueOf(currencySpinner.getSelectedItem().toString());
+        SupportedCurrency currency = SupportedCurrency.valueOf(currencySpinner.getSelectedItem().toString());
         if (event == null) {
             event = new Event(eventName, currency);
         } else {

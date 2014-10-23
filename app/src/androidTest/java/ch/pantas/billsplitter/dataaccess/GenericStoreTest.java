@@ -12,7 +12,7 @@ import java.util.List;
 import ch.pantas.billsplitter.dataaccess.rowmapper.EventRowMapper;
 import ch.pantas.billsplitter.model.Event;
 
-import static ch.pantas.billsplitter.model.Currency.EUR;
+import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
