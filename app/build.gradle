@@ -8,8 +8,8 @@ android {
         applicationId "ch.pantas.splitty"
         minSdkVersion 16
         targetSdkVersion 20
-        versionCode 100
-        versionName "0.1"
+        versionCode 200
+        versionName "0.2"
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
     buildTypes {
