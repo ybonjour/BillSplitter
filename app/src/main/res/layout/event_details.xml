@@ -132,7 +132,9 @@
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#33B5E5"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:inputType="textCapWords"
+                    android:textCursorDrawable="@null"/>
             </ViewSwitcher>
         </LinearLayout>
 
