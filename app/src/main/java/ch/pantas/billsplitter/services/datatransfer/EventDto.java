@@ -10,7 +10,6 @@ import ch.pantas.billsplitter.model.User;
 public class EventDto {
     public Event event;
 
-    public List<User> participantsList;
-    public List<Expense> expensesList;
-    public Map<Expense, List<User>> attendeesMap;
+    public List<User> participants;
+    public List<ExpenseDto> expenses;
 }
