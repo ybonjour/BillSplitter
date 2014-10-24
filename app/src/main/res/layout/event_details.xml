@@ -88,17 +88,52 @@
                 android:paddingRight="8dp"
                 android:paddingTop="9dp"
                 android:paddingBottom="8dp"/>
-            <TextView
+
+            <ViewSwitcher
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/username_switcher"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/nav_drawer_username"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
                 android:paddingLeft="1dp"
                 android:paddingRight="8dp"
-                android:layout_gravity="center_vertical"
-                android:textColor="#33B5E5"
-                android:textStyle="bold"
-                android:layout_weight="1"/>
+                android:clickable="true"
+                android:onClick="editUserName">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    >
+                    <TextView
+                        android:id="@+id/nav_drawer_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#33B5E5"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:src="@drawable/ic_menu_edit"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"/>
+                </LinearLayout>
+                <EditText
+                    android:id="@+id/hidden_edit_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:maxLines="1"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#33B5E5"
+                    android:textStyle="bold"/>
+            </ViewSwitcher>
         </LinearLayout>
 
         <View

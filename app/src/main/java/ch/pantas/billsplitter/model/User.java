@@ -2,7 +2,7 @@ package ch.pantas.billsplitter.model;
 
 public class User extends Model {
 
-    private final String name;
+    private String name;
 
     public User(String id, String name) {
         super(id);
@@ -16,6 +16,8 @@ public class User extends Model {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) { this.name = name; }
 
     @Override
     public String toString() {

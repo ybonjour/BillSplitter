@@ -13,11 +13,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -124,9 +126,6 @@ public class EventDetails extends RoboFragmentActivity {
             }
 
             public void onDrawerOpened(View drawerView) {
-                final TextView usernameView = (TextView) findViewById(R.id.nav_drawer_username);
-                User me = userService.getMe();
-                usernameView.setText(me.getName());
                 invalidateOptionsMenu();
             }
         };
@@ -162,6 +161,25 @@ public class EventDetails extends RoboFragmentActivity {
 
         setTitle(event.getName());
         setUpNavigationDrawer();
+
+        final TextView usernameView = (TextView) findViewById(R.id.nav_drawer_username);
+        User me = userService.getMe();
+        usernameView.setText(me.getName());
+
+        EditText userNameEdit = (EditText) findViewById(R.id.hidden_edit_view);
+        userNameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.username_switcher);
+                    if (switcher.getDisplayedChild() == 1) {
+                        switcher.showNext();
+
+                        editUserName(false);
+                    }
+                }
+            }
+        });
 
         tabs = getInjector(this).getInstance(EventDetailTabs.class).init(event);
         pagerAdapter = getInjector(this).getInstance(EventDetailPagerAdapter.class).init(tabs);
@@ -331,6 +349,34 @@ public class EventDetails extends RoboFragmentActivity {
         } else {
             View helpView = findViewById(R.id.event_details_help_view);
             helpView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void editUserName(View v) {
+        ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.username_switcher);
+        switcher.showNext();
+
+        editUserName(switcher.getDisplayedChild() == 1);
+    }
+
+    public void editUserName(boolean editing) {
+        EditText userNameEdit = (EditText) findViewById(R.id.hidden_edit_view);
+        TextView userNameView = (TextView) findViewById(R.id.nav_drawer_username);
+
+        if (!editing) {
+            String newUserName = userNameEdit.getText().toString();
+
+            userNameView.setText(newUserName);
+            sharedPreferenceService.storeUserName(newUserName);
+            userService.changeUsername(newUserName);
+
+            pagerAdapter.notifyDataSetChanged();
+        }
+        else {
+            User user = userService.getMe();
+            userNameEdit.setText(user.getName());
+            userNameEdit.requestFocus();
+            userNameEdit.setSelection(user.getName().length());
         }
     }
 }

@@ -20,4 +20,15 @@ public class UserService {
         if(userId == null) return null;
         return userStore.getById(userId);
     }
+
+    public void changeUsername(String userName) {
+        String userId = sharedPreferenceService.getUserId();
+        User user;
+        if(userId == null) user = new User(userName);
+        else {
+            user = userStore.getById(userId);
+            user.setName(userName);
+        }
+        userStore.persist(user);
+    }
 }
