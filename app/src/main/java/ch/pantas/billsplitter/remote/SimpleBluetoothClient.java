@@ -8,8 +8,6 @@ import java.io.IOException;
 
 import roboguice.util.Ln;
 
-import static ch.pantas.billsplitter.remote.SimpleBluetoothServer.BluetoothListener;
-import static ch.pantas.billsplitter.remote.SimpleBluetoothServer.CONNECTION_UUID;
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
