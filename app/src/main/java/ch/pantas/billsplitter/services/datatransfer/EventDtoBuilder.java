@@ -60,10 +60,13 @@ public class EventDtoBuilder {
 
         List<Expense> expenses = expenseStore.getExpensesOfEvent(eventId);
         for(Expense expense : expenses) {
-            List<Participant> attendees = attendeeStore.getAttendees(expense.getId());
-            List<String> attendingParticipants = new LinkedList<String>();
-            for (Participant participant : attendees) {
-                attendingParticipants.add(participant.getId());
+            List<Attendee> attendees = attendeeStore.getAttendees(expense.getId());
+            List<AttendeeDto> attendingParticipants = new LinkedList<AttendeeDto>();
+            for (Attendee attendee : attendees) {
+                AttendeeDto attendeeDto = new AttendeeDto();
+                attendeeDto.attendeeId = attendee.getId();
+                attendeeDto.participantId = attendee.getParticipant();
+                attendingParticipants.add(attendeeDto);
             }
             withExpense(expense, attendingParticipants);
         }
@@ -88,7 +91,7 @@ public class EventDtoBuilder {
         }
     }
 
-    public void withExpense(Expense expense, List<String> attendingParticipants) {
+    public void withExpense(Expense expense, List<AttendeeDto> attendingParticipants) {
         checkNotNull(expense);
         checkNotNull(attendingParticipants);
 

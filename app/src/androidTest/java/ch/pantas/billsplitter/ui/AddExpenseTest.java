@@ -230,7 +230,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         }
         when(expenseStore.getById(expense.getId())).thenReturn(expense);
         when(participantStore.getParticipants(event.getId())).thenReturn(allParticipants);
-        when(attendeeStore.getAttendees(expense.getId())).thenReturn(attendingParticipants);
+        when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(attendingParticipants);
         when(payerAdapter.getSelectedUser()).thenReturn(payer);
         when(payerAdapter.filterOutSelectedUser(anyList())).thenReturn(nonPayerList);
         when(attendeeAdapter.getSelectedUsers()).thenReturn(attendeeSet);

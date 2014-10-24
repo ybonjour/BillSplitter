@@ -110,7 +110,7 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
         Expense expense = new Expense(randomUUID().toString(), event.getId(), participantPayer.getId(), "Food", amount);
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
 
-        when(attendeeStore.getAttendees(expense.getId())).thenReturn(asList(participant));
+        when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(asList(participant));
 
         // When
         List<Debt> result = debtCalculator.calculateDebts(event);
@@ -139,7 +139,7 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
         Expense expense = new Expense(randomUUID().toString(), event.getId(), participantPayer.getId(), "Food", amount);
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
 
-        when(attendeeStore.getAttendees(expense.getId())).thenReturn(asList(participant));
+        when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(asList(participant));
 
         // When
         List<Debt> result = debtCalculator.calculateDebts(event);

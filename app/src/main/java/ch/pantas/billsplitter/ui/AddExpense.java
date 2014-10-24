@@ -356,7 +356,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
         selectPayer(payer);
 
         loadAttendeesList();
-        List<Participant> attendees = attendeeStore.getAttendees(expense.getId());
+        List<Participant> attendees = attendeeStore.getAttendingParticipants(expense.getId());
         for (Participant participant : attendees) {
             User user = userStore.getById(participant.getUserId());
             attendeeAdapter.select(user);

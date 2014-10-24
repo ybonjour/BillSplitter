@@ -127,7 +127,7 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
     private boolean isParticipantInvolvedInExpense(Expense expense, Participant participant) {
         if (participant.isNew()) return false;
         if (expense.getPayerId().equals(participant.getId())) return true;
-        List<Participant> attendees = attendeeStore.getAttendees(expense.getId());
+        List<Participant> attendees = attendeeStore.getAttendingParticipants(expense.getId());
         return attendees.contains(participant);
     }
 

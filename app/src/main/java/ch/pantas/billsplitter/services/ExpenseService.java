@@ -49,7 +49,7 @@ public class ExpenseService {
         List<ExpensePresentation> result = new LinkedList<ExpensePresentation>();
         for (Expense expense : expenses) {
             Participant payer = participantStore.getById(expense.getPayerId());
-            List<Participant> attendees = attendeeStore.getAttendees(expense.getId());
+            List<Participant> attendees = attendeeStore.getAttendingParticipants(expense.getId());
 
             User payingUser = userStore.getById(payer.getUserId());
             List<User> attendingUsers = new LinkedList<User>();

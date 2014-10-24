@@ -8,5 +8,5 @@ import ch.pantas.billsplitter.model.User;
 
 public class ExpenseDto {
     public Expense expense;
-    public List<String> attendingParticipants;
+    public List<AttendeeDto> attendingParticipants;
 }

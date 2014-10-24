@@ -46,7 +46,7 @@ public class DebtCalculator {
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
         for (Expense expense : expenses) {
             Participant toParticipant = participantStore.getById(expense.getPayerId());
-            List<Participant> fromParticipants = attendeeStore.getAttendees(expense.getId());
+            List<Participant> fromParticipants = attendeeStore.getAttendingParticipants(expense.getId());
             int amount = expense.getAmount() / (fromParticipants.size() + 1);
             for (Participant fromParticipant : fromParticipants) {
                 User fromUser = userStore.getById(fromParticipant.getUserId());

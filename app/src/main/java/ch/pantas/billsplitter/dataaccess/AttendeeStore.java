@@ -28,13 +28,8 @@ public class AttendeeStore extends BaseStore<Attendee> {
         super(mapper);
     }
 
-    public List<Participant> getAttendees(String expenseId) {
-        checkNotNull(expenseId);
-        checkArgument(!expenseId.isEmpty());
-
-        Map<String, String> where = new HashMap<String, String>();
-        where.put(EXPENSE, expenseId);
-        List<Attendee> attendees = getModelsByQuery(where);
+    public List<Participant> getAttendingParticipants(String expenseId) {
+        List<Attendee> attendees = getAttendees(expenseId);
         List<Participant> participants = new LinkedList<Participant>();
         for (Attendee attendee : attendees) {
             Participant participant = participantStore.getById(attendee.getParticipant());
@@ -42,6 +37,16 @@ public class AttendeeStore extends BaseStore<Attendee> {
         }
 
         return participants;
+    }
+
+    public List<Attendee> getAttendees(String expenseId) {
+        checkNotNull(expenseId);
+        checkArgument(!expenseId.isEmpty());
+
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(EXPENSE, expenseId);
+        List<Attendee> attendees = getModelsByQuery(where);
+        return attendees;
     }
 
     public void removeAll(String expenseId) {

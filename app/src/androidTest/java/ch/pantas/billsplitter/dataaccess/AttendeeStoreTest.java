@@ -32,7 +32,7 @@ public class AttendeeStoreTest extends BaseStoreTest {
     @SmallTest
     public void testGetAttendeesThrowsNullPointerExceptionIfNoExpenseIdProvided() {
         try {
-            store.getAttendees(null);
+            store.getAttendingParticipants(null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -42,7 +42,7 @@ public class AttendeeStoreTest extends BaseStoreTest {
     @SmallTest
     public void testGetAttendeesThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
         try {
-            store.getAttendees("");
+            store.getAttendingParticipants("");
             fail("No exception has been thrown");
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -55,7 +55,7 @@ public class AttendeeStoreTest extends BaseStoreTest {
         when(cursor.moveToNext()).thenReturn(false);
 
         // When
-        List<Participant> participants = store.getAttendees("abc");
+        List<Participant> participants = store.getAttendingParticipants("abc");
 
         // Then
         assertNotNull(participants);
@@ -72,7 +72,7 @@ public class AttendeeStoreTest extends BaseStoreTest {
         when(participantStore.getById(participant.getId())).thenReturn(participant);
 
         // When
-        List<Participant> participants = store.getAttendees(participant.getId());
+        List<Participant> participants = store.getAttendingParticipants(participant.getId());
 
         // Then
         assertNotNull(participants);
@@ -91,7 +91,7 @@ public class AttendeeStoreTest extends BaseStoreTest {
         when(mapper.getTableName()).thenReturn(TABLE);
 
         // When
-        List<Participant> participants = store.getAttendees("abc");
+        List<Participant> participants = store.getAttendingParticipants("abc");
 
         // Then
         assertNotNull(participants);
