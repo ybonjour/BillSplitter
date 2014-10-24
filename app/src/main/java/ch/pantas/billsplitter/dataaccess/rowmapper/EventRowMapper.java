@@ -10,6 +10,7 @@ import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelpe
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.ID;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.NAME;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.TABLE;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.EventTable.OWNER;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class EventRowMapper implements RowMapper<Event> {
@@ -20,12 +21,14 @@ public class EventRowMapper implements RowMapper<Event> {
         int idIdx = cursor.getColumnIndex(ID);
         int nameIdx = cursor.getColumnIndex(NAME);
         int currencyIdx = cursor.getColumnIndex(CURRENCY);
+        int ownerIdx = cursor.getColumnIndex(OWNER);
 
         String id = cursor.getString(idIdx);
         String name = cursor.getString(nameIdx);
         SupportedCurrency currency = SupportedCurrency.valueOf(cursor.getString(currencyIdx));
+        String ownerId = cursor.getString(ownerIdx);
 
-        return new Event(id, name, currency);
+        return new Event(id, name, currency, ownerId);
     }
 
     @Override
@@ -37,6 +40,7 @@ public class EventRowMapper implements RowMapper<Event> {
         if (event.getId() != null) values.put(ID, event.getId());
         values.put(NAME, event.getName());
         values.put(CURRENCY, event.getCurrency().toString());
+        values.put(OWNER, event.getOwnerId());
 
         return values;
     }

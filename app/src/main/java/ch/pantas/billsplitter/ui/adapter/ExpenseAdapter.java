@@ -13,6 +13,7 @@ import java.util.List;
 
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.ExpensePresentation;
+import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.NORMAL;
@@ -23,6 +24,9 @@ public class ExpenseAdapter extends BaseAdapter {
 
     @Inject
     private LayoutInflater inflater;
+
+    @Inject
+    private SharedPreferenceService sharedPreferenceService;
 
     private List<ExpensePresentation> expenses = new LinkedList<ExpensePresentation>();
 
@@ -57,7 +61,6 @@ public class ExpenseAdapter extends BaseAdapter {
         View userView = view.findViewById(R.id.expense_item_user);
         setupUserItem(userView, expensePresentation.getPayer(), NORMAL);
 
-
         String title;
         if(expense.getDescription() != null && !expense.getDescription().isEmpty()){
             String template = view.getResources().getString(R.string.expense_text_with_description);
@@ -75,6 +78,11 @@ public class ExpenseAdapter extends BaseAdapter {
         String attendeeTemplate = view.getResources().getString(R.string.expense_attendees);
         textField.setText(format(attendeeTemplate, expensePresentation.getAttendeesCommaSeparated()));
         textField.setTextSize(view.getResources().getDimension(R.dimen.expense_item_text));
+
+        String userId = sharedPreferenceService.getUserId();
+        if (!userId.equals(expense.getOwnerId())) {
+            view.setAlpha(0.5f);
+        }
 
         return view;
     }

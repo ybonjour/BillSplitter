@@ -17,6 +17,7 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -39,6 +40,9 @@ public class AddEvent extends RoboActivity {
 
     @Inject
     private ActivityStarter activityStarter;
+
+    @Inject
+    private SharedPreferenceService sharedPreferenceService;
 
     Event event;
 
@@ -89,7 +93,8 @@ public class AddEvent extends RoboActivity {
 
         SupportedCurrency currency = SupportedCurrency.valueOf(currencySpinner.getSelectedItem().toString());
         if (event == null) {
-            event = new Event(eventName, currency);
+            String ownerId = sharedPreferenceService.getUserId();
+            event = new Event(eventName, currency, ownerId);
         } else {
             event.setName(eventName);
             event.setCurrency(currency);

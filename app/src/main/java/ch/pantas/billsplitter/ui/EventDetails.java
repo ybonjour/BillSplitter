@@ -256,8 +256,15 @@ public class EventDetails extends RoboFragmentActivity {
 
         menu.findItem(R.id.action_add_expense).setVisible(!drawerOpen);
         menu.findItem(R.id.action_delete_event).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
         menu.findItem(R.id.action_share).setVisible(!drawerOpen);
+
+        String userId = sharedPreferenceService.getUserId();
+        if (userId.equals(event.getOwnerId())) {
+            menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
+        }
+        else {
+            menu.findItem(R.id.action_edit_event).setVisible(false);
+        }
 
         return super.onPrepareOptionsMenu(menu);
     }

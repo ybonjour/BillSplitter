@@ -272,7 +272,7 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
         }
 
         if (expense == null) {
-            expense = new Expense(event.getId(), payer.getId(), description, amountCents);
+            expense = new Expense(event.getId(), payer.getId(), description, amountCents, sharedPreferenceService.getUserId());
         } else {
             expense.setPayerId(payer.getId());
             expense.setDescription(description);

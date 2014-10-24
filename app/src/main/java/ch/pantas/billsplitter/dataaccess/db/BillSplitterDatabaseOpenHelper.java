@@ -13,7 +13,7 @@ import static roboguice.RoboGuice.getInjector;
 public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "BillSplitter";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private final Context context;
 
@@ -60,13 +60,15 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
 
         public static final String NAME = "Name";
         public static final String CURRENCY = "currency";
+        public static final String OWNER = "owner";
 
         public static void onCreate(SQLiteDatabase db) {
             db.execSQL(
                     "CREATE TABLE " + TABLE + "("
                             + ID + " TEXT PRIMARY KEY, "
                             + CURRENCY + " TEXT, "
-                            + NAME + " TEXT);"
+                            + NAME + " TEXT, "
+                            + OWNER + " TEXT);"
             );
         }
 
@@ -74,6 +76,10 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
             if (oldVersion < 3) {
                 db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + CURRENCY + " TEXT;");
                 db.execSQL("UPDATE " + TABLE + " SET " + CURRENCY + "='EUR';");
+            }
+            if (oldVersion < 4) {
+                db.execSQL("DROP TABLE " + TABLE + ";");
+                EventTable.onCreate(db);
             }
         }
     }
@@ -104,6 +110,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         public static final String PARTICIPANT = "participant";
         public static final String DESCRIPTION = "description";
         public static final String AMOUNT = "amount";
+        public static final String OWNER = "owner";
 
         public static void onCreate(SQLiteDatabase db) {
             db.execSQL(
@@ -112,7 +119,8 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                             + EVENT + " TEXT, "
                             + PARTICIPANT + " TEXT, "
                             + DESCRIPTION + " TEXT, "
-                            + AMOUNT + " INTEGER);"
+                            + AMOUNT + " INTEGER, "
+                            + OWNER + " TEXT);"
             );
         }
 
@@ -165,6 +173,10 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         }
 
         public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+            if (oldVersion < 4) {
+                db.execSQL("DROP TABLE " + TABLE + ";");
+                ParticipantTable.onCreate(db);
+            }
         }
     }
 

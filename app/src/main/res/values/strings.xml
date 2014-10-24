@@ -59,4 +59,6 @@
     <string name="importEvent">Import &gt;</string>
     <string name="beam_communication_error">An error occured. Turn arround and run away.</string>
     <string name="beam_event_sending">Beaming group</string>
+    <string name="access_denied_event">You can only edit your own groups.</string>
+    <string name="access_denied_expense">You can only edit your own expenses.</string>
 </resources>

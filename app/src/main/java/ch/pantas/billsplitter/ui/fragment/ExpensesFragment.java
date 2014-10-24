@@ -7,15 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import java.util.List;
 
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.ExpensePresentation;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.ExpenseService;
+import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.adapter.ExpenseAdapter;
 import ch.pantas.splitty.R;
 
@@ -28,6 +31,8 @@ public class ExpensesFragment extends BaseEventDetailsFragment {
     private ExpenseService expenseService;
     @Inject
     private Context context;
+    @Inject
+    private SharedPreferenceService sharedPreferenceService;
 
     private ListView expensesList;
 
@@ -52,8 +57,17 @@ public class ExpensesFragment extends BaseEventDetailsFragment {
         expensesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String userId = sharedPreferenceService.getUserId();
                 ExpensePresentation expensePresentation = (ExpensePresentation) adapterView.getItemAtPosition(i);
-                activityStarter.startEditExpense(context, expensePresentation.getExpense());
+                Expense expense = expensePresentation.getExpense();
+
+                if (userId.equals(expense.getOwnerId())) {
+                    activityStarter.startEditExpense(context, expense);
+                }
+                else {
+                    Toast toast = Toast.makeText(context, getResources().getString(R.string.access_denied_expense), Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
         });
 

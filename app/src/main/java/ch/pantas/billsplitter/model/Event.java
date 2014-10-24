@@ -6,22 +6,27 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 public class Event extends Model {
     private String name;
     private SupportedCurrency currency;
+    private String ownerId;
 
-    public Event(String id, String name, SupportedCurrency currency) {
+    public Event(String id, String name, SupportedCurrency currency, String ownerId) {
         super(id);
         checkNotNull(name);
         checkArgument(!name.isEmpty());
+        checkNotNull(ownerId);
+        checkArgument(!ownerId.isEmpty());
 
         this.name = name;
         this.currency = currency;
+        this.ownerId = ownerId;
     }
 
-    public Event(String name, SupportedCurrency currency) {
+    public Event(String name, SupportedCurrency currency, String ownerId) {
         checkNotNull(name);
         checkArgument(!name.isEmpty());
 
         this.name = name;
         this.currency = currency;
+        this.ownerId = ownerId;
     }
 
     public String getName() {
@@ -39,6 +44,8 @@ public class Event extends Model {
     public void setCurrency(SupportedCurrency currency) {
         this.currency = currency;
     }
+
+    public String getOwnerId() { return ownerId; }
 
     @Override
     public String toString() {

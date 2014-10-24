@@ -9,32 +9,39 @@ public class Expense extends Model {
     private String payerId;
     private String description;
     private int amount;
+    private String ownerId;
 
-    public Expense(String id, String eventId, String payerId, String description, int amount) {
+    public Expense(String id, String eventId, String payerId, String description, int amount, String ownerId) {
         super(id);
         checkNotNull(eventId);
         checkArgument(!eventId.isEmpty());
         checkNotNull(payerId);
         checkArgument(!payerId.isEmpty());
         checkArgument(amount > 0);
+        checkNotNull(ownerId);
+        checkArgument(!ownerId.isEmpty());
 
         this.eventId = eventId;
         this.payerId = payerId;
         this.description = description;
         this.amount = amount;
+        this.ownerId = ownerId;
     }
 
-    public Expense(String eventId, String payerId, String description, int amount) {
+    public Expense(String eventId, String payerId, String description, int amount, String ownerId) {
         checkNotNull(eventId);
         checkArgument(!eventId.isEmpty());
         checkNotNull(payerId);
         checkArgument(!payerId.isEmpty());
         checkArgument(amount > 0);
+        checkNotNull(ownerId);
+        checkArgument(!ownerId.isEmpty());
 
         this.eventId = eventId;
         this.payerId = payerId;
         this.description = description;
         this.amount = amount;
+        this.ownerId = ownerId;
     }
 
     public String getEventId() { return eventId; }
@@ -56,4 +63,6 @@ public class Expense extends Model {
     public void setPayerId(String payerId) {
         this.payerId = payerId;
     }
+
+    public String getOwnerId() { return ownerId; }
 }

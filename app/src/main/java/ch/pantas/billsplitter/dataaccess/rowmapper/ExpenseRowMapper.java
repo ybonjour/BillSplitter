@@ -11,6 +11,7 @@ import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelpe
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.ID;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.TABLE;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.PARTICIPANT;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.OWNER;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class ExpenseRowMapper implements RowMapper<Expense> {
@@ -23,14 +24,16 @@ public class ExpenseRowMapper implements RowMapper<Expense> {
         int payerIdx = cursor.getColumnIndex(PARTICIPANT);
         int descriptionIdx = cursor.getColumnIndex(DESCRIPTION);
         int amountIdx = cursor.getColumnIndex(AMOUNT);
+        int ownerIdx = cursor.getColumnIndex(OWNER);
 
         String id = cursor.getString(idIdx);
         String eventId = cursor.getString(eventIdx);
         String payerId = cursor.getString(payerIdx);
         String description = cursor.getString(descriptionIdx);
         int amount = cursor.getInt(amountIdx);
+        String ownerId = cursor.getString(ownerIdx);
 
-        return new Expense(id, eventId, payerId, description, amount);
+        return new Expense(id, eventId, payerId, description, amount, ownerId);
     }
 
     @Override
@@ -41,6 +44,7 @@ public class ExpenseRowMapper implements RowMapper<Expense> {
         values.put(PARTICIPANT, expense.getPayerId());
         values.put(DESCRIPTION, expense.getDescription());
         values.put(AMOUNT, expense.getAmount());
+        values.put(OWNER, expense.getOwnerId());
 
         return values;
     }
