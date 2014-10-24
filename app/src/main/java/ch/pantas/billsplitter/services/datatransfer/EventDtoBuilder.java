@@ -16,6 +16,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.services.SharedPreferenceService;
 
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
@@ -34,6 +35,9 @@ public class EventDtoBuilder {
 
     @Inject
     private UserStore userStore;
+
+    @Inject
+    private SharedPreferenceService sharedPreferenceService;
 
     EventDto eventDto;
 
@@ -97,10 +101,13 @@ public class EventDtoBuilder {
         checkNotNull(expense);
         checkNotNull(attendingParticipants);
 
-        ExpenseDto expenseDto = new ExpenseDto();
-        expenseDto.expense = expense;
-        expenseDto.attendingParticipants = attendingParticipants;
-        eventDto.expenses.add(expenseDto);
+        String userId = sharedPreferenceService.getUserId();
+        if (userId.equals(expense.getOwnerId())) {
+            ExpenseDto expenseDto = new ExpenseDto();
+            expenseDto.expense = expense;
+            expenseDto.attendingParticipants = attendingParticipants;
+            eventDto.expenses.add(expenseDto);
+        }
     }
 
     static public String convertToJson(EventDto eventDto) {

@@ -15,13 +15,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 
 import java.util.List;
-import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -211,24 +209,45 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
 
     private void store(EventDto eventDto, User me) {
         Event existingEvent = eventStore.getById(eventDto.event.getId());
-        // TODO: Synchronize if event already exists
-        if (existingEvent != null) return;
-
         Event event = eventDto.event;
-        eventStore.createExistingModel(event);
 
-        for (ParticipantDto participant : eventDto.participants) {
-            User user = participant.user;
-
-            if (!user.equals(me)) {
-                User existingUser = userStore.getById(user.getId());
-                if (existingUser == null) {
-                    user.setName(userService.findBestFreeNameForUser(user));
-                    userStore.createExistingModel(user);
-                }
+        if (existingEvent != null) {
+            if (event.getOwnerId() != me.getId()) {
+                eventStore.persist(event);
             }
 
-            participantStore.createExistingModel(new Participant(participant.participantId, user.getId(), event.getId(), participant.confirmed));
+            if (eventDto.expenses.size() > 0) {
+                String ownerId = eventDto.expenses.get(0).expense.getOwnerId();
+                expenseStore.removeAll(event.getId(), ownerId);
+                for (ExpenseDto expenseDto : eventDto.expenses) {
+                    attendeeStore.removeAll(expenseDto.expense.getId());
+                }
+            }
+        }
+        else {
+            eventStore.createExistingModel(event);
+        }
+
+        for (ParticipantDto participant : eventDto.participants) {
+
+            Participant existingParticipant = participantStore.getById(participant.participantId);
+            if (existingParticipant != null) {
+                participantStore.persist(existingParticipant);
+            }
+            else {
+                User user = participant.user;
+
+                if (!user.equals(me)) {
+                    User existingUser = userStore.getById(user.getId());
+                    if (existingUser == null) {
+                        user.setName(userService.findBestFreeNameForUser(user));
+                        userStore.createExistingModel(user);
+                    }
+                }
+
+                participantStore.createExistingModel(new Participant(participant.participantId, user.getId(), event.getId(), participant.confirmed));
+            }
+
         }
 
         for (ExpenseDto expenseDto : eventDto.expenses) {
@@ -274,6 +293,10 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         if (me == null) {
             adapter.selectFirst();
             joinButon.setVisibility(GONE);
+        } else if (eventDto.event.getOwnerId() == me.getId()) {
+            adapter.selectParticipantByUserId(me.getId());
+            participantsList.setVisibility(GONE);
+            return;
         } else {
             adapter.selectParticipantByName(me.getName());
 
@@ -314,9 +337,9 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         messageField.append(message);
 
         eventDto = EventDtoBuilder.createFromJson(message);
-
         setUpSuccessScreen(eventDto.participants);
     }
+
 
     @Override
     public void onConnected() {

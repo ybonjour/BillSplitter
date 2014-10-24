@@ -54,6 +54,16 @@ public class BeamParticipantAdapter extends BaseAdapter {
         selectFirst();
     }
 
+    public void selectParticipantByUserId(String userId) {
+        for (ParticipantDto participant : participants) {
+            User user = participant.user;
+            if (user.getId().equals(userId)) {
+                selected = user;
+                return;
+            }
+        }
+    }
+
     public void selectFirst() {
         if (participants.isEmpty()) return;
 
