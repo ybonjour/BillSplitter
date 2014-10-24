@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -23,6 +22,7 @@ import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
@@ -45,6 +45,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Double.parseDouble;
+import static java.util.UUID.randomUUID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.argThat;
@@ -89,6 +90,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     private AttendeeAdapter attendeeAdapter;
 
     private User me;
+    private Participant participantMe;
 
     private Event event;
 
@@ -101,8 +103,10 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);
         when(eventStore.getById(event.getId())).thenReturn(event);
-        me = new User(UUID.randomUUID().toString(), "Me");
+        me = new User(randomUUID().toString(), "Me");
         when(userService.getMe()).thenReturn(me);
+        participantMe = new Participant(randomUUID().toString(), me.getId(), event.getId());
+        when(participantStore.getParticipant(event.getId(), me.getId())).thenReturn(participantMe);
         when(userStore.getUserWithName(me.getName())).thenReturn(me);
         when(payerAdapter.getSelectedUser()).thenReturn(me);
 
@@ -142,7 +146,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
 
         // Then
         int savedAmount = (int) parseDouble(amount) * 100;
-        verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, savedAmount, event.getId(), me.getId())));
+        verify(expenseStore, times(1)).persist(argThat(newExpenseWith(description, savedAmount, event.getId(), participantMe.getId())));
     }
 
     @LargeTest
@@ -150,11 +154,13 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         // Given
         String description = "An expense";
         String amount = "25.0";
-        User user = new User(UUID.randomUUID().toString(), "Joe");
+        User user = new User(randomUUID().toString(), "Joe");
+        Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId());
         getActivity();
         onView(withId(R.id.expense_description)).perform(typeText(description));
         onView(withId(R.id.expense_amount)).perform(typeText(amount));
         when(attendeeAdapter.getSelectedUsers()).thenReturn(newHashSet(user));
+        when(participantStore.getParticipant(event.getId(), user.getId())).thenReturn(participant);
 
         // When
         onView(withText(R.string.save)).perform(click());
@@ -197,6 +203,11 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         allUsers.add(nonAttendee1);
         allUsers.add(nonAttendee2);
 
+        List<Participant> allParticipants = new LinkedList<Participant>();
+        for (User user : allUsers) {
+            allParticipants.add(new Participant("participantId" + user.getId(), user.getId(), event.getId()));
+        }
+
         List<User> nonPayerList = new LinkedList<User>();
         nonPayerList.add(attendee1);
         nonPayerList.add(attendee2);
@@ -208,14 +219,18 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         attendeeList.add(attendee1);
         attendeeList.add(attendee2);
 
+        List<Participant> attendingParticipants = allParticipants;
+        attendingParticipants.remove(attendingParticipants.size() - 1);
+        attendingParticipants.remove(attendingParticipants.size() - 1);
+
         Set<User> attendeeSet = new HashSet<User>(attendeeList);
 
         for (User user : allUsers) {
             when(userStore.getById(user.getId())).thenReturn(user);
         }
         when(expenseStore.getById(expense.getId())).thenReturn(expense);
-        when(participantStore.getParticipants(event.getId())).thenReturn(allUsers);
-        when(attendeeStore.getAttendees(expense.getId())).thenReturn(attendeeList);
+        when(participantStore.getParticipants(event.getId())).thenReturn(allParticipants);
+        when(attendeeStore.getAttendees(expense.getId())).thenReturn(attendingParticipants);
         when(payerAdapter.getSelectedUser()).thenReturn(payer);
         when(payerAdapter.filterOutSelectedUser(anyList())).thenReturn(nonPayerList);
         when(attendeeAdapter.getSelectedUsers()).thenReturn(attendeeSet);
@@ -236,23 +251,23 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         onView(withId(R.id.expense_amount)).check(hasText(String.valueOf(expense.getAmount() / 100.0)));
     }
 
-    private static Matcher<Attendee> newAttendeeWithUserId(final String userId) {
+    private static Matcher<Attendee> newAttendeeWithUserId(final String participantId) {
         return new TypeSafeMatcher<Attendee>() {
             @Override
             public boolean matchesSafely(Attendee attendee) {
                 return attendee.isNew()
-                        && userId.equals(attendee.getUser());
+                        && participantId.equals(attendee.getParticipant());
             }
 
             @Override
             public void describeTo(Description description) {
                 description.appendText("New Attendee with user ");
-                description.appendText(userId);
+                description.appendText(participantId);
             }
         };
     }
 
-    private static Matcher<Expense> newExpenseWith(final String expenseDescription, final int amount, final String eventId, final String userId) {
+    private static Matcher<Expense> newExpenseWith(final String expenseDescription, final int amount, final String eventId, final String participantId) {
         return new TypeSafeMatcher<Expense>() {
             @Override
             public boolean matchesSafely(Expense expense) {
@@ -260,7 +275,8 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
                 if (!expenseDescription.equals(expense.getDescription())) return false;
                 if (amount != expense.getAmount()) return false;
                 if (!eventId.equals(expense.getEventId())) return false;
-                if (userId != null && !userId.equals(expense.getPayerId())) return false;
+                if (participantId != null && !participantId.equals(expense.getPayerId()))
+                    return false;
 
                 return true;
             }

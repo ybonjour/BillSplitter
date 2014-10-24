@@ -101,7 +101,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         public static final String TABLE = "Expense";
 
         public static final String EVENT = "event";
-        public static final String USER = "user";
+        public static final String PARTICIPANT = "participant";
         public static final String DESCRIPTION = "description";
         public static final String AMOUNT = "amount";
 
@@ -110,13 +110,18 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                     "CREATE TABLE " + TABLE + "("
                             + ID + " TEXT PRIMARY KEY, "
                             + EVENT + " TEXT, "
-                            + USER + " TEXT, "
+                            + PARTICIPANT + " TEXT, "
                             + DESCRIPTION + " TEXT, "
                             + AMOUNT + " INTEGER);"
             );
         }
 
         public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+            if (oldVersion < 4) {
+                db.execSQL("DROP TABLE " + TABLE + ";");
+                ExpenseTable.onCreate(db);
+            }
+
         }
     }
 
@@ -124,18 +129,23 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
         public static final String TABLE = "Attendee";
 
         public static final String EXPENSE = "expense";
-        public static final String USER = "user";
+        public static final String PARTICIPANT = "participant";
 
         public static void onCreate(SQLiteDatabase db) {
             db.execSQL(
                     "CREATE TABLE " + TABLE + "("
                             + ID + " TEXT PRIMARY KEY, "
                             + EXPENSE + " TEXT,"
-                            + USER + " TEXT);"
+                            + PARTICIPANT + " TEXT);"
             );
         }
 
         public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+            if (oldVersion < 4) {
+                db.execSQL("DROP TABLE " + TABLE + ";");
+                AttendeeTable.onCreate(db);
+            }
+
         }
     }
 

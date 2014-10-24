@@ -12,7 +12,7 @@ import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Attendee;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.EXPENSE;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.USER;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.PARTICIPANT;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.Table.ID;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -38,8 +38,8 @@ public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
         // Given
         String id = UUID.randomUUID().toString();
         String expense = UUID.randomUUID().toString();
-        String user = UUID.randomUUID().toString();
-        Cursor c = createAttendeeCursor(id, expense, user);
+        String participant = UUID.randomUUID().toString();
+        Cursor c = createAttendeeCursor(id, expense, participant);
 
         // When
         Attendee attendee = mapper.map(c);
@@ -48,7 +48,7 @@ public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
         assertNotNull(attendee);
         assertEquals(id, attendee.getId());
         assertEquals(expense, attendee.getExpense());
-        assertEquals(user, attendee.getUser());
+        assertEquals(participant, attendee.getParticipant());
     }
 
     @SmallTest
@@ -66,8 +66,8 @@ public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
         // Given
         String id = UUID.randomUUID().toString();
         String expense = UUID.randomUUID().toString();
-        String user = UUID.randomUUID().toString();
-        Attendee attendee = new Attendee(id, expense, user);
+        String participant = UUID.randomUUID().toString();
+        Attendee attendee = new Attendee(id, expense, participant);
 
         // When
         ContentValues values = mapper.getValues(attendee);
@@ -77,7 +77,7 @@ public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
         assertEquals(3, values.size());
         assertEquals(id, values.get(ID));
         assertEquals(expense, values.get(EXPENSE));
-        assertEquals(user, values.get(USER));
+        assertEquals(participant, values.get(PARTICIPANT));
     }
 
     private Cursor createAttendeeCursor(String id, String expense, String user) {
@@ -86,7 +86,7 @@ public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
         when(c.getString(0)).thenReturn(id);
         when(c.getColumnIndex(EXPENSE)).thenReturn(1);
         when(c.getString(1)).thenReturn(expense);
-        when(c.getColumnIndex(USER)).thenReturn(2);
+        when(c.getColumnIndex(PARTICIPANT)).thenReturn(2);
         when(c.getString(2)).thenReturn(user);
 
         return c;

@@ -7,7 +7,7 @@ import ch.pantas.billsplitter.model.Attendee;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.EXPENSE;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.TABLE;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.USER;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.PARTICIPANT;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.Table.ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
@@ -18,13 +18,13 @@ public class AttendeeRowMapper implements RowMapper<Attendee> {
 
         int idIdx = cursor.getColumnIndex(ID);
         int expenseIdx = cursor.getColumnIndex(EXPENSE);
-        int userIdx = cursor.getColumnIndex(USER);
+        int participantIdx = cursor.getColumnIndex(PARTICIPANT);
 
         String id = cursor.getString(idIdx);
         String expense = cursor.getString(expenseIdx);
-        String user = cursor.getString(userIdx);
+        String participant = cursor.getString(participantIdx);
 
-        return new Attendee(id, expense, user);
+        return new Attendee(id, expense, participant);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class AttendeeRowMapper implements RowMapper<Attendee> {
         ContentValues values = new ContentValues();
         values.put(ID, attendee.getId());
         values.put(EXPENSE, attendee.getExpense());
-        values.put(USER, attendee.getUser());
+        values.put(PARTICIPANT, attendee.getParticipant());
 
         return values;
     }

@@ -14,7 +14,7 @@ import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelpe
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.DESCRIPTION;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.EVENT;
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.ID;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.USER;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.PARTICIPANT;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -61,7 +61,7 @@ public class ExpenseRowMapperTest extends BaseMockitoInstrumentationTest {
         when(c.getString(0)).thenReturn(id);
         when(c.getColumnIndex(EVENT)).thenReturn(1);
         when(c.getString(1)).thenReturn(eventId);
-        when(c.getColumnIndex(USER)).thenReturn(2);
+        when(c.getColumnIndex(PARTICIPANT)).thenReturn(2);
         when(c.getString(2)).thenReturn(payerId);
         when(c.getColumnIndex(DESCRIPTION)).thenReturn(3);
         when(c.getString(3)).thenReturn(description);

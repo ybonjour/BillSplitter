@@ -34,6 +34,7 @@ import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.makeText;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.SELECTED;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.UNSELECTED;
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
 public class ParticipantsFragment extends BaseEventDetailsFragment {
@@ -87,7 +88,11 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 User user = (User) adapterView.getItemAtPosition(i);
-                if (canBeRemoved(user)) {
+
+                Participant  participant = participantStore.getParticipant(event.getId(), user.getId());
+                checkNotNull(participant);
+
+                if (canBeRemoved(participant)) {
                     participantManager.removeParticipant(user);
                     participantStore.removeBy(event.getId(), user.getId());
                 } else {
@@ -119,17 +124,17 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
         return rootView;
     }
 
-    private boolean isUserInvolvedInExpense(Expense expense, User user) {
-        if (user.isNew()) return false;
-        if (expense.getPayerId().equals(user.getId())) return true;
-        List<User> attendees = attendeeStore.getAttendees(expense.getId());
-        return attendees.contains(user);
+    private boolean isParticipantInvolvedInExpense(Expense expense, Participant participant) {
+        if (participant.isNew()) return false;
+        if (expense.getPayerId().equals(participant.getId())) return true;
+        List<Participant> attendees = attendeeStore.getAttendees(expense.getId());
+        return attendees.contains(participant);
     }
 
-    private boolean isUserInvolvedInExpensesOfEvent(Event event, User user) {
+    private boolean isParticipantInvolvedInExpensesOfEvent(Event event, Participant participant) {
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
         for (Expense expense : expenses) {
-            if (isUserInvolvedInExpense(expense, user)) {
+            if (isParticipantInvolvedInExpense(expense, participant)) {
                 return true;
             }
         }
@@ -137,10 +142,12 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
         return false;
     }
 
-    private boolean canBeRemoved(User user) {
-        if (user.isNew()) return true;
+    private boolean canBeRemoved(Participant participant) {
+        if (participant.isNew()) return true;
 
-        return !participantManager.isFixedParticipant(user) && !isUserInvolvedInExpensesOfEvent(getCurrentEvent(), user);
+        User user = userStore.getById(participant.getUserId());
+
+        return !participantManager.isFixedParticipant(user) && !isParticipantInvolvedInExpensesOfEvent(getCurrentEvent(), participant);
 
     }
 
@@ -149,8 +156,9 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
         User me = userService.getMe();
         participantManager.addFixedParticipant(me);
 
-        List<User> participants = participantStore.getParticipants(event.getId());
-        for (User user : participants) {
+        List<Participant> participants = participantStore.getParticipants(event.getId());
+        for (Participant participant : participants) {
+            User user = userStore.getById(participant.getUserId());
             participantManager.addParticipant(user);
         }
     }
@@ -168,10 +176,18 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
     }
 
     private void storeParticipants(Event event) {
-        participantStore.removeAll(event.getId());
         for (User user : participantManager.getParticipants()) {
-            Participant participant = new Participant(user.getId(), event.getId());
-            participantStore.persist(participant);
+            Participant participant = participantStore.getParticipant(event.getId(), user.getId());
+            if (participant == null) {
+                participantStore.persist(new Participant(user.getId(), event.getId()));
+            }
+        }
+
+        for (Participant participant : participantStore.getParticipants(event.getId())) {
+            User user = userStore.getById(participant.getUserId());
+            if (!participantManager.getParticipants().contains(user)) {
+                participantStore.removeBy(event.getId(), user.getId());
+            }
         }
     }
 

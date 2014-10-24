@@ -58,7 +58,7 @@ public class ExpenseStoreTest extends BaseStoreTest {
         // Given
         Expense e = new Expense("a", "b", "c", "d", 10);
         String userId = UUID.randomUUID().toString();
-        expenseStore.getExpensesOfUser(userId);
+        expenseStore.getExpensesOfPayer(userId);
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
         when(mapper.map(cursor)).thenReturn(e).thenReturn(null);
 

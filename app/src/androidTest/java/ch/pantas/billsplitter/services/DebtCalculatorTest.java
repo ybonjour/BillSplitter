@@ -13,11 +13,13 @@ import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
+import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.framework.CustomMatchers.matchesDebt;
@@ -27,6 +29,7 @@ import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,6 +52,9 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
     @Mock
     private DebtOptimizer debtOptimizer;
 
+    @Mock
+    private ParticipantStore participantStore;
+
     private Event event;
 
     @Override
@@ -60,7 +66,7 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return invocation.getArguments()[0];
             }
-        }).when(debtOptimizer).optimize(anyList(), EUR);
+        }).when(debtOptimizer).optimize(anyList(), eq(EUR));
     }
 
     @SmallTest
@@ -95,11 +101,16 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
         User attendee = new User(randomUUID().toString(), "Joe");
         when(userStore.getById(attendee.getId())).thenReturn(attendee);
 
+        Participant participantPayer = new Participant(randomUUID().toString(), payer.getId(), "eventId");
+        Participant participant = new Participant(randomUUID().toString(), attendee.getId(), "eventId");
+        when(participantStore.getById(participantPayer.getId())).thenReturn(participantPayer);
+        when(participantStore.getById(participant.getId())).thenReturn(participant);
+
         int amount = 20;
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), payer.getId(), "Food", amount);
+        Expense expense = new Expense(randomUUID().toString(), event.getId(), participantPayer.getId(), "Food", amount);
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
 
-        when(attendeeStore.getAttendees(expense.getId())).thenReturn(asList(attendee));
+        when(attendeeStore.getAttendees(expense.getId())).thenReturn(asList(participant));
 
         // When
         List<Debt> result = debtCalculator.calculateDebts(event);
@@ -119,11 +130,16 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
         User attendee = new User(randomUUID().toString(), "Joe");
         when(userStore.getById(attendee.getId())).thenReturn(attendee);
 
+        Participant participantPayer = new Participant(randomUUID().toString(), payer.getId(), "eventId");
+        Participant participant = new Participant(randomUUID().toString(), attendee.getId(), "eventId");
+        when(participantStore.getById(participantPayer.getId())).thenReturn(participantPayer);
+        when(participantStore.getById(participant.getId())).thenReturn(participant);
+
         int amount = 20;
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), payer.getId(), "Food", amount);
+        Expense expense = new Expense(randomUUID().toString(), event.getId(), participantPayer.getId(), "Food", amount);
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
 
-        when(attendeeStore.getAttendees(expense.getId())).thenReturn(asList(attendee));
+        when(attendeeStore.getAttendees(expense.getId())).thenReturn(asList(participant));
 
         // When
         List<Debt> result = debtCalculator.calculateDebts(event);

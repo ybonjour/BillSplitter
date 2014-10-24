@@ -96,8 +96,11 @@ public class AddParticipants extends RoboActivity {
         event = eventStore.getById(eventId);
         checkNotNull(event);
 
-        List<User> participants = participantStore.getParticipants(event.getId());
-        for (User user : participants) participantManager.addParticipant(user);
+        List<Participant> participants = participantStore.getParticipants(event.getId());
+        for (Participant participant : participants) {
+            User user = userStore.getById(participant.getUserId());
+            participantManager.addParticipant(user);
+        }
 
         reloadLists();
         userGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {

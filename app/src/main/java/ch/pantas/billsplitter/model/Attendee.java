@@ -3,17 +3,17 @@ package ch.pantas.billsplitter.model;
 public class Attendee extends Model {
 
     private String expense;
-    private String user;
+    private String participant;
 
-    public Attendee(String id, String expense, String user) {
+    public Attendee(String id, String expense, String participant) {
         super(id);
         this.expense = expense;
-        this.user = user;
+        this.participant = participant;
     }
 
-    public Attendee(String expense, String user) {
+    public Attendee(String expense, String participant) {
         this.expense = expense;
-        this.user = user;
+        this.participant = participant;
     }
 
     public String getExpense() {
@@ -24,11 +24,11 @@ public class Attendee extends Model {
         this.expense = expense;
     }
 
-    public String getUser() {
-        return user;
+    public String getParticipant() {
+        return participant;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setParticipant(String participant) {
+        this.participant = participant;
     }
 }

@@ -62,7 +62,7 @@ public class ParticipantStoreTest extends BaseStoreTest {
         when(cursor.moveToNext()).thenReturn(false);
 
         // When
-        List<User> users = store.getParticipants("someEventId");
+        List<Participant> users = store.getParticipants("someEventId");
 
         // Then
         assertNotNull(users);
@@ -84,7 +84,7 @@ public class ParticipantStoreTest extends BaseStoreTest {
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
 
         // When
-        List<User> users = store.getParticipants(eventId);
+        List<Participant> users = store.getParticipants(eventId);
 
         // Then
         assertNotNull(users);
@@ -105,7 +105,7 @@ public class ParticipantStoreTest extends BaseStoreTest {
         when(userStore.getById(userId)).thenReturn(null);
 
         // When
-        List<User> users = store.getParticipants(eventId);
+        List<Participant> users = store.getParticipants(eventId);
 
         // Then
         assertNotNull(users);

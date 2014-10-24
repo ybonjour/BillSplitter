@@ -11,10 +11,9 @@ import java.util.Map;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.AttendeeRowMapper;
 import ch.pantas.billsplitter.model.Attendee;
-import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.model.Participant;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.EXPENSE;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.USER;
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
@@ -22,44 +21,27 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 public class AttendeeStore extends BaseStore<Attendee> {
 
     @Inject
-    private UserStore userStore;
+    private ParticipantStore participantStore;
 
     @Inject
     public AttendeeStore(AttendeeRowMapper mapper) {
         super(mapper);
     }
 
-    public List<User> getAttendees(String expenseId) {
+    public List<Participant> getAttendees(String expenseId) {
         checkNotNull(expenseId);
         checkArgument(!expenseId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
         where.put(EXPENSE, expenseId);
         List<Attendee> attendees = getModelsByQuery(where);
-        List<User> users = new LinkedList<User>();
+        List<Participant> participants = new LinkedList<Participant>();
         for (Attendee attendee : attendees) {
-            User user = userStore.getById(attendee.getUser());
-            if (user != null) users.add(user);
+            Participant participant = participantStore.getById(attendee.getParticipant());
+            if (participant != null) participants.add(participant);
         }
 
-        return users;
-    }
-
-    public Attendee getAttendeeByExpenseAndUser(String expenseId, String userId) {
-        checkNotNull(expenseId);
-        checkArgument(!expenseId.isEmpty());
-        checkNotNull(userId);
-        checkArgument(!userId.isEmpty());
-
-        Map<String, String> where = new HashMap<String, String>();
-        where.put(EXPENSE, expenseId);
-        where.put(USER, userId);
-        List<Attendee> attendees = getModelsByQuery(where);
-        if (attendees.size() == 0) {
-            return null;
-        } else {
-            return attendees.get(0);
-        }
+        return participants;
     }
 
     public void removeAll(String expenseId) {

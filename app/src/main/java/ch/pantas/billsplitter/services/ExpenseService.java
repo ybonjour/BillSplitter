@@ -11,10 +11,12 @@ import java.util.List;
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
+import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.ExpensePresentation;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
@@ -25,6 +27,8 @@ public class ExpenseService {
 
     @Inject
     private ExpenseStore expenseStore;
+    @Inject
+    private ParticipantStore participantStore;
     @Inject
     private UserStore userStore;
     @Inject
@@ -44,9 +48,16 @@ public class ExpenseService {
 
         List<ExpensePresentation> result = new LinkedList<ExpensePresentation>();
         for (Expense expense : expenses) {
-            User payer = userStore.getById(expense.getPayerId());
-            List<User> attendees = attendeeStore.getAttendees(expense.getId());
-            result.add(new ExpensePresentation(payer, expense, event.getCurrency(), attendees, context));
+            Participant payer = participantStore.getById(expense.getPayerId());
+            List<Participant> attendees = attendeeStore.getAttendees(expense.getId());
+
+            User payingUser = userStore.getById(payer.getUserId());
+            List<User> attendingUsers = new LinkedList<User>();
+            for (Participant participant : attendees) {
+                User user = userStore.getById(participant.getUserId());
+                attendingUsers.add(user);
+            }
+            result.add(new ExpensePresentation(payingUser, expense, event.getCurrency(), attendingUsers, context));
         }
 
         return result;

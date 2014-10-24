@@ -10,7 +10,6 @@ import ch.pantas.billsplitter.dataaccess.rowmapper.ExpenseRowMapper;
 import ch.pantas.billsplitter.model.Expense;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.EVENT;
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.USER;
 
 public class ExpenseStore extends BaseStore<Expense> {
 
@@ -22,12 +21,6 @@ public class ExpenseStore extends BaseStore<Expense> {
     public List<Expense> getExpensesOfEvent(String eventId) {
         Map<String, String> where = new HashMap<String, String>();
         where.put(EVENT, eventId);
-        return getModelsByQuery(where);
-    }
-
-    public List<Expense> getExpensesOfUser(String userId) {
-        Map<String, String> where = new HashMap<String, String>();
-        where.put(USER, userId);
         return getModelsByQuery(where);
     }
 

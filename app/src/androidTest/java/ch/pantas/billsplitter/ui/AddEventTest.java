@@ -122,7 +122,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     }
 
     @LargeTest
-    public void testEditParticipantsIsStartedIfNextButtonIsPressed() {
+    public void testEditParticipantsIsNotStartedIfNextButtonIsPressed() {
         // Given
         Event event = new Event("abc", "testname", EUR);
         Intent intent = new Intent();
@@ -136,7 +136,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
 
         // Then
         verify(eventStore, times(1)).persist(eq(event));
-        verify(activityStarter, times(1)).startAddParticipants(any(Context.class), eq(event));
+        verify(activityStarter, times(0)).startAddParticipants(any(Context.class), eq(event));
     }
 
     private static Matcher<Event> newEventWith(final String eventName) {

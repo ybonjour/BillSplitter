@@ -13,6 +13,7 @@ import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
@@ -90,16 +91,24 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     public void testEditParticipantsExistingParticipantsAreShown() {
         // Given
         User me = new User("a", "Me");
-        List<User> participantsList = new LinkedList<User>();
-        participantsList.add(me);
-        participantsList.add(new User("b", "Hans"));
-        participantsList.add(new User("c", "Fritz"));
+        User userB = new User("b", "Hans");
+        User userC = new User("c", "Fritz");
 
-        List<User> otherParticipantsList = new LinkedList<User>(participantsList);
+        List<User> userList = new LinkedList<User>();
+        userList.add(me);
+        userList.add(userB);
+        userList.add(userC);
+
+        List<Participant> participantsList = new LinkedList<Participant>();
+        participantsList.add(new Participant("partA", me.getId(), me.getName()));
+        participantsList.add(new Participant("partB", userB.getId(), userB.getName()));
+        participantsList.add(new Participant("partC", userC.getId(), userC.getName()));
+
+        List<User> otherParticipantsList = new LinkedList<User>(userList);
         otherParticipantsList.remove(0);
 
         when(participantStore.getParticipants(event.getId())).thenReturn(participantsList);
-        when(participantManager.getParticipants()).thenReturn(participantsList);
+        when(participantManager.getParticipants()).thenReturn(userList);
         when(userService.getMe()).thenReturn(me);
         when(participantManager.filterOutParticipants(anyList())).thenReturn(otherParticipantsList);
 
@@ -107,7 +116,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         getActivity();
 
         // Then
-        verify(participantAdapter, times(2)).setUsers(participantsList);
+        verify(participantAdapter, times(2)).setUsers(userList);
     }
 
     // TODO: Participants UI tests

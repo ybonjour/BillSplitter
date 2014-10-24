@@ -18,6 +18,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.inject.Inject;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ch.pantas.billsplitter.BillSplitterApplication;
@@ -28,6 +29,7 @@ import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.TagStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Attendee;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
@@ -252,7 +254,8 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
 
 
     public void onSave() {
-        User payer = payerAdapter.getSelectedUser();
+        User payingUser = payerAdapter.getSelectedUser();
+        Participant payer = participantStore.getParticipant(event.getId(), payingUser.getId());
         checkNotNull(payer);
 
         String description = descriptionField.getText().toString();
@@ -281,7 +284,10 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
         attendeeStore.removeAll(expense.getId());
 
         for (User user : attendeeAdapter.getSelectedUsers()) {
-            Attendee newAttendee = new Attendee(expense.getId(), user.getId());
+            Participant participant = participantStore.getParticipant(event.getId(), user.getId());
+            checkNotNull(participant);
+
+            Attendee newAttendee = new Attendee(expense.getId(), participant.getId());
             attendeeStore.persist(newAttendee);
         }
 
@@ -345,12 +351,14 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
         amountCents = expense.getAmount();
 
         loadPayerList();
-        User payer = userStore.getById(expense.getPayerId());
+        Participant participantPayer = participantStore.getById(expense.getPayerId());
+        User payer = userStore.getById(participantPayer.getUserId());
         selectPayer(payer);
 
         loadAttendeesList();
-        List<User> attendees = attendeeStore.getAttendees(expense.getId());
-        for (User user : attendees) {
+        List<Participant> attendees = attendeeStore.getAttendees(expense.getId());
+        for (Participant participant : attendees) {
+            User user = userStore.getById(participant.getUserId());
             attendeeAdapter.select(user);
         }
     }
@@ -383,14 +391,26 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
     }
 
     private void loadAttendeesList() {
-        List<User> attendees = participantStore.getParticipants(event.getId());
-        attendees = payerAdapter.filterOutSelectedUser(attendees);
-        attendeeAdapter.setUsers(attendees);
+        List<Participant> attendees = participantStore.getParticipants(event.getId());
+
+        List<User> attendingUsers = new LinkedList<User>();
+        for (Participant participant : attendees) {
+            attendingUsers.add(userStore.getById(participant.getUserId()));
+        }
+
+        attendingUsers = payerAdapter.filterOutSelectedUser(attendingUsers);
+        attendeeAdapter.setUsers(attendingUsers);
         attendeesGrid.setAdapter(attendeeAdapter);
     }
 
     private void loadPayerList() {
-        payerAdapter.setUsers(participantStore.getParticipants(event.getId()));
+        List<Participant> participants = participantStore.getParticipants(event.getId());
+        List<User> users = new LinkedList<User>();
+        for (Participant participant : participants) {
+            users.add(userStore.getById(participant.getUserId()));
+        }
+
+        payerAdapter.setUsers(users);
         payerGrid.setAdapter(payerAdapter);
     }
 }

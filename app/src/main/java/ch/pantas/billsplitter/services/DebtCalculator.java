@@ -7,10 +7,12 @@ import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
+import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
@@ -21,6 +23,9 @@ public class DebtCalculator {
 
     @Inject
     private UserStore userStore;
+
+    @Inject
+    private ParticipantStore participantStore;
 
     @Inject
     private AttendeeStore attendeeStore;
@@ -40,10 +45,12 @@ public class DebtCalculator {
         List<Debt> debts = new LinkedList<Debt>();
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId());
         for (Expense expense : expenses) {
-            User toUser = userStore.getById(expense.getPayerId());
-            List<User> fromUsers = attendeeStore.getAttendees(expense.getId());
-            int amount = expense.getAmount() / (fromUsers.size() + 1);
-            for (User fromUser : fromUsers) {
+            Participant toParticipant = participantStore.getById(expense.getPayerId());
+            List<Participant> fromParticipants = attendeeStore.getAttendees(expense.getId());
+            int amount = expense.getAmount() / (fromParticipants.size() + 1);
+            for (Participant fromParticipant : fromParticipants) {
+                User fromUser = userStore.getById(fromParticipant.getUserId());
+                User toUser = userStore.getById(toParticipant.getUserId());
                 debts.add(new Debt(fromUser, toUser, amount, event.getCurrency()));
             }
         }
