@@ -145,8 +145,7 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
             User me = userService.getMe();
             if (me == null) {
                 me = selectedParticipant.user;
-                userStore.createExistingModel(me);
-                sharedPreferenceService.storeUserId(me.getId());
+                userService.storeMe(me);
             } else {
                 replaceUserWithMe(eventDto, selectedParticipant.user, me);
                 selectedParticipant.user = me;
@@ -185,12 +184,12 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
             if (!user.equals(me)) {
                 User existingUser = userStore.getById(user.getId());
                 if (existingUser == null) {
-                    user.setName(findBestFreeName(user.getName()));
+                    user.setName(userService.findBestFreeNameForUser(user));
                     userStore.createExistingModel(user);
                 }
             }
 
-            participantStore.createExistingModel(new Participant(participant.participantId, user.getId(), event.getId()));
+            participantStore.createExistingModel(new Participant(participant.participantId, user.getId(), event.getId(), participant.confirmed));
         }
 
         for (ExpenseDto expenseDto : eventDto.expenses) {
@@ -204,19 +203,6 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         }
 
         sharedPreferenceService.storeActiveEventId(event.getId());
-    }
-
-    private String findBestFreeName(String name) {
-        String currentName = name;
-        int i = 1;
-        while (true) {
-            User user = userStore.getUserWithName(currentName);
-            if (user == null) return currentName;
-
-            currentName = currentName + " " + i;
-
-            i += 1;
-        }
     }
 
     private void setUpWaitingScreen() {

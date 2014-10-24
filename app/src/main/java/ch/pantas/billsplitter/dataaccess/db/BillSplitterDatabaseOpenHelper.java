@@ -129,7 +129,6 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                 db.execSQL("DROP TABLE " + TABLE + ";");
                 ExpenseTable.onCreate(db);
             }
-
         }
     }
 
@@ -162,13 +161,15 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
 
         public static final String EVENT = "event";
         public static final String USER = "user";
+        public static final String CONFIRMED = "Confirmed";
 
         public static void onCreate(SQLiteDatabase db) {
             db.execSQL(
                     "CREATE TABLE " + TABLE + "("
                             + ID + " TEXT PRIMARY KEY, "
                             + EVENT + " TEXT,"
-                            + USER + " TEXT);"
+                            + USER + " TEXT, "
+                            + CONFIRMED + " INTEGER);"
             );
         }
 

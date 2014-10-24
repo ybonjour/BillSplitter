@@ -3,7 +3,6 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.UserTable.ID;
@@ -18,6 +17,7 @@ public class UserRowMapper implements RowMapper<User> {
 
         int idIdx = cursor.getColumnIndex(ID);
         int nameIdx = cursor.getColumnIndex(NAME);
+
 
         String id = cursor.getString(idIdx);
         String name = cursor.getString(nameIdx);

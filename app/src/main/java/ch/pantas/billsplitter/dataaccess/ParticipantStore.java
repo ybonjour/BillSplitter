@@ -54,6 +54,16 @@ public class ParticipantStore extends BaseStore<Participant> {
         return participants.size() > 0 ? participants.get(0) : null;
     }
 
+    public List<Participant> getParticipantsForUsers(String userId){
+        checkNotNull(userId);
+        checkArgument(!userId.isEmpty());
+
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(USER, userId);
+
+        return getModelsByQuery(where);
+    }
+
     public void removeAll(String eventId) {
         Map<String, String> where = new HashMap<String, String>();
         where.put(EVENT, eventId);
