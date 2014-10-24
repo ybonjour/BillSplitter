@@ -150,9 +150,11 @@ public class AddParticipants extends RoboActivity {
 
     public void onSave() {
 
+        User me = userService.getMe();
         participantStore.removeAll(event.getId());
         for (User user : participantManager.getParticipants()) {
-            Participant participant = new Participant(user.getId(), event.getId());
+            boolean confirmed = user.equals(me);
+            Participant participant = new Participant(user.getId(), event.getId(), confirmed);
             participantStore.persist(participant);
         }
 

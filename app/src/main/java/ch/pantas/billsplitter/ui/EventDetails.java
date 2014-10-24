@@ -375,7 +375,7 @@ public class EventDetails extends RoboFragmentActivity {
 
             userNameView.setText(newUserName);
             sharedPreferenceService.storeUserName(newUserName);
-            userService.changeUsername(newUserName);
+            userService.changeMyUsername(newUserName);
 
             pagerAdapter.notifyDataSetChanged();
         }

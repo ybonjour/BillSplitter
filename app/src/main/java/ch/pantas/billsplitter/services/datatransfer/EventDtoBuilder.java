@@ -87,6 +87,8 @@ public class EventDtoBuilder {
             User user = userStore.getById(participant.getUserId());
             participantDto.user = user;
 
+            participantDto.confirmed = participant.isConfirmed();
+
             eventDto.participants.add(participantDto);
         }
     }

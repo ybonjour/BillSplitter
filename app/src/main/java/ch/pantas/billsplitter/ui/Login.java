@@ -87,8 +87,7 @@ public class Login extends RoboActivity {
         }
 
         User me = new User(userName);
-        userStore.persist(me);
-        sharedPreferenceService.storeUserId(me.getId());
+        userService.storeMe(me);
         createStandardTags();
 
         activityStarter.startStartEvent(this);

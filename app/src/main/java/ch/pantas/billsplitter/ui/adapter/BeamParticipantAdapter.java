@@ -30,7 +30,12 @@ public class BeamParticipantAdapter extends BaseAdapter {
     private User selected = null;
 
     public void setParticipants(List<ParticipantDto> participants) {
-        this.participants = participants;
+        this.participants.clear();
+        for(ParticipantDto participantDto : participants){
+            if(!participantDto.confirmed){
+                this.participants.add(participantDto);
+            }
+        }
     }
 
     public void selectParticipantByName(String name) {

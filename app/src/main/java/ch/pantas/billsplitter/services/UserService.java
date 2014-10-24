@@ -21,7 +21,7 @@ public class UserService {
         return userStore.getById(userId);
     }
 
-    public void changeUsername(String userName) {
+    public void changeMyUsername(String userName) {
         String userId = sharedPreferenceService.getUserId();
         User user;
         if(userId == null) user = new User(userName);
@@ -30,5 +30,29 @@ public class UserService {
             user.setName(userName);
         }
         userStore.persist(user);
+    }
+
+    public String findBestFreeNameForUser(User user) {
+        String currentName = user.getName();
+        int i = 1;
+        while (true) {
+            User existingUser = userStore.getUserWithName(currentName);
+            if (existingUser == null) return currentName;
+
+            currentName = currentName + " " + i;
+
+            i += 1;
+        }
+    }
+
+    public void storeMe(User me){
+        if(me.isNew()){
+            userStore.persist(me);
+        } else {
+            // This is used if an existing user object is used
+            // as part of the beam / synchronize process
+            userStore.createExistingModel(me);
+        }
+        sharedPreferenceService.storeUserId(me.getId());
     }
 }
