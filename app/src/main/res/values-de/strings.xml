@@ -52,7 +52,9 @@
     <string name="settings_google_analytics_description">Schalten Sie Google Analytics ein um uns dabei zu helfen Splitty zu verbesseren.</string>
     <string name="settings">Einstellungen</string>
     <string name="beam_event">Gruppe beamen</string>
+    <string name="beam_event_title_template">Gruppe %s beamen</string>
     <string name="beam_event_message">Tappe dein Telefon gegen ein anderes Telefon um die Gruppe zu beamen.</string>
     <string name="beam_event_error">Android Beam oder Bluetooth ist nicht verfügbar. Die Gruppe kann nicht gebeamt werden.</string>
     <string name="beam_event_receiving">Eine Gruppe wird empfangen</string>
+    <string name="importEvent">Importieren &gt;</string>
 </resources>

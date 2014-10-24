@@ -5,7 +5,11 @@ import android.os.Handler;
 
 import com.google.inject.Inject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.Scanner;
 import java.util.UUID;
@@ -22,8 +26,8 @@ public abstract class BluetoothCommunicator extends Thread {
     private static final String FINISHING_MESSAGE = "##FINISHER##";
 
     private BlockingQueue<String> messages = new ArrayBlockingQueue<String>(1);
-    private Scanner in;
-    private PrintStream out;
+    private BufferedReader in;
+    private BufferedWriter out;
     private BluetoothListener listener;
     private BluetoothSocket socket;
 
@@ -38,8 +42,8 @@ public abstract class BluetoothCommunicator extends Thread {
 
     protected void setSocket(BluetoothSocket socket) throws IOException {
         this.socket = socket;
-        this.in = new Scanner(socket.getInputStream());
-        this.out = new PrintStream(socket.getOutputStream());
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         notifyConnected();
     }
 
@@ -62,8 +66,12 @@ public abstract class BluetoothCommunicator extends Thread {
     }
 
     private void closeStreams() {
-        if (in != null) in.close();
-        if (out != null) out.close();
+        try {
+            if (in != null) in.close();
+            if (out != null) out.close();
+        } catch (IOException e) {
+            Ln.e("Exception while closing steams", e);
+        }
     }
 
 
@@ -82,7 +90,8 @@ public abstract class BluetoothCommunicator extends Thread {
         String message = messages.take();
         if (FINISHING_MESSAGE.equals(message)) return;
 
-        out.write(message.getBytes());
+        out.write(message + "\n");
+
         out.flush();
     }
 
@@ -90,7 +99,7 @@ public abstract class BluetoothCommunicator extends Thread {
         if (in == null) return;
 
         Ln.d("receiveMessage");
-        String message = in.nextLine();
+        String message = in.readLine();
         Ln.d("received message " + message);
 
         notifyMessage(message);

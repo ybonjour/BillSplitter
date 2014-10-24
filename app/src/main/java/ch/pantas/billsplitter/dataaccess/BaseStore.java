@@ -16,6 +16,7 @@ import ch.pantas.billsplitter.dataaccess.rowmapper.RowMapper;
 import ch.pantas.billsplitter.model.Model;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.Table.ID;
+import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public abstract class BaseStore<M extends Model> {
@@ -58,6 +59,13 @@ public abstract class BaseStore<M extends Model> {
         } else {
             db.update(mapper.getTableName(), mapper.getValues(model));
         }
+    }
+
+    public void createExistingModel(M model){
+        checkArgument(!model.isNew());
+        BillSplitterDatabase db = dbHelper.getDatabase();
+
+        db.insert(mapper.getTableName(), mapper.getValues(model));
     }
 
     public void removeById(String id){
