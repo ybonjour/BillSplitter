@@ -1,6 +1,5 @@
 package ch.pantas.billsplitter.ui;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -15,9 +14,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
@@ -34,9 +33,11 @@ import ch.pantas.billsplitter.remote.SimpleBluetoothClient;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
+import ch.pantas.billsplitter.services.datatransfer.AttendeeDto;
 import ch.pantas.billsplitter.services.datatransfer.EventDto;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder;
 import ch.pantas.billsplitter.services.datatransfer.ExpenseDto;
+import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 import ch.pantas.billsplitter.ui.adapter.BeamParticipantAdapter;
 import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
@@ -139,21 +140,21 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         if (R.id.action_import == item.getItemId()) {
             if (eventDto == null || adapter == null) return true;
 
-            User selectedUser = adapter.getSelected();
+            ParticipantDto selectedParticipant = adapter.getSelected();
 
             User me = userService.getMe();
             if (me == null) {
-                me = selectedUser;
+                me = selectedParticipant.user;
                 userStore.createExistingModel(me);
                 sharedPreferenceService.storeUserId(me.getId());
             } else {
-                replaceUserWithMe(eventDto, selectedUser, me);
+                replaceUserWithMe(eventDto, selectedParticipant.user, me);
+                selectedParticipant.user = me;
             }
 
             store(eventDto, me);
 
-            String response = String.format("%s received the group.", me.getName());
-            bluetoothClient.postMessage(response);
+            bluetoothClient.postMessage(new Gson().toJson(selectedParticipant));
 
             activityStarter.startEventDetails(this, eventDto.event, true);
             finish();
@@ -162,82 +163,60 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         return super.onOptionsItemSelected(item);
     }
 
-    private String findBestFreeName(String name){
-        String currentName = name;
-        int i = 1;
-        while(true){
-            User user = userStore.getUserWithName(currentName);
-            if(user == null) return currentName;
-
-            currentName = currentName + " " + i;
-
-            i += 1;
+    private void replaceUserWithMe(EventDto eventDto, User user, User me) {
+        for (ParticipantDto participant : eventDto.participants) {
+            if (participant.user.equals(user)) {
+                participant.user = me;
+            }
         }
     }
 
     private void store(EventDto eventDto, User me) {
         Event existingEvent = eventStore.getById(eventDto.event.getId());
         // TODO: Synchronize if event already exists
-        if(existingEvent != null) return;
+        if (existingEvent != null) return;
 
         Event event = eventDto.event;
         eventStore.createExistingModel(event);
 
-        for(User user : eventDto.participants){
-            if(!user.equals(me)) {
-                user.setName(findBestFreeName(user.getName()));
+        for (ParticipantDto participant : eventDto.participants) {
+            User user = participant.user;
+
+            if (!user.equals(me)) {
                 User existingUser = userStore.getById(user.getId());
                 if (existingUser == null) {
+                    user.setName(findBestFreeName(user.getName()));
                     userStore.createExistingModel(user);
                 }
             }
 
-            participantStore.persist(new Participant(user.getId(), event.getId()));
+            participantStore.createExistingModel(new Participant(participant.participantId, user.getId(), event.getId()));
         }
 
-        for(ExpenseDto expenseDto : eventDto.expenses){
+        for (ExpenseDto expenseDto : eventDto.expenses) {
             Expense expense = expenseDto.expense;
             expenseStore.createExistingModel(expense);
 
-            for(User user : expenseDto.attendees){
-                Attendee attendee = new Attendee(expense.getId(), user.getId());
-                attendeeStore.persist(attendee);
+            for (AttendeeDto attendeeDto : expenseDto.attendingParticipants) {
+                Attendee attendee = new Attendee(attendeeDto.attendeeId, expense.getId(), attendeeDto.participantId);
+                attendeeStore.createExistingModel(attendee);
             }
         }
 
         sharedPreferenceService.storeActiveEventId(event.getId());
     }
 
-    private void replaceUserInExpenses(EventDto dto, User user, User replacement){
-        for(ExpenseDto expenseDto : eventDto.expenses){
-            if(expenseDto.expense.getPayerId().equals(user.getId())){
-                expenseDto.expense.setPayerId(replacement.getId());
-            }
-            List<User> newAttendees = new LinkedList<User>();
-            for(User attendee : expenseDto.attendees){
-                if(attendee.equals(user)){
-                    newAttendees.add(replacement);
-                } else {
-                    newAttendees.add(attendee);
-                }
-            }
-            expenseDto.attendees = newAttendees;
+    private String findBestFreeName(String name) {
+        String currentName = name;
+        int i = 1;
+        while (true) {
+            User user = userStore.getUserWithName(currentName);
+            if (user == null) return currentName;
+
+            currentName = currentName + " " + i;
+
+            i += 1;
         }
-    }
-
-
-    private void replaceUserWithMe(EventDto eventDto, User user, User me) {
-
-        List<User> newParticipants = new LinkedList<User>();
-        for(User participant : eventDto.participants){
-            if(participant.equals(user)){
-                newParticipants.add(me);
-            } else {
-                newParticipants.add(participant);
-            }
-        }
-        eventDto.participants = newParticipants;
-        replaceUserInExpenses(eventDto, user, me);
     }
 
     private void setUpWaitingScreen() {
@@ -250,24 +229,24 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         participantsList.setVisibility(GONE);
     }
 
-    private void setUpCommunicationErrorScreen(){
+    private void setUpCommunicationErrorScreen() {
         showMessage(R.string.beam_communication_error);
         participantsList.setVisibility(GONE);
     }
 
-    private void showMessage(int messageResId){
+    private void showMessage(int messageResId) {
         messageField.setText(getString(messageResId));
         messageField.setVisibility(VISIBLE);
     }
 
-    private void setUpSuccessScreen(List<User> participants) {
+    private void setUpSuccessScreen(List<ParticipantDto> participants) {
         messageField.setVisibility(GONE);
 
         adapter = getInjector(this).getInstance(BeamParticipantAdapter.class);
         adapter.setParticipants(participants);
 
         User me = userService.getMe();
-        if(me == null){
+        if (me == null) {
             adapter.selectFirst();
         } else {
             adapter.selectParticipantByName(me.getName());
@@ -277,8 +256,8 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         participantsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                User user = (User) adapterView.getItemAtPosition(i);
-                adapter.selectParticipantByName(user.getName());
+                ParticipantDto participantDto = (ParticipantDto) adapterView.getItemAtPosition(i);
+                adapter.selectParticipantByName(participantDto.user.getName());
                 participantsList.invalidateViews();
             }
         });

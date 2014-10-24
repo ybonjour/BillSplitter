@@ -11,7 +11,9 @@ import com.google.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode;
@@ -23,18 +25,19 @@ public class BeamParticipantAdapter extends BaseAdapter {
     @Inject
     private LayoutInflater inflater;
 
-    private List<User> participants = new LinkedList<User>();
+    private List<ParticipantDto> participants = new LinkedList<ParticipantDto>();
 
     private User selected = null;
 
-    public void setParticipants(List<User> participants) {
+    public void setParticipants(List<ParticipantDto> participants) {
         this.participants = participants;
     }
 
     public void selectParticipantByName(String name) {
-        for (User participant : participants) {
-            if (participant.getName().equals(name)) {
-                selected = participant;
+        for (ParticipantDto participant : participants) {
+            User user = participant.user;
+            if (user.getName().equals(name)) {
+                selected = user;
                 return;
             }
         }
@@ -43,11 +46,17 @@ public class BeamParticipantAdapter extends BaseAdapter {
     public void selectFirst() {
         if (participants.isEmpty()) return;
 
-        selected = participants.get(0);
+        selected = participants.get(0).user;
     }
 
-    public User getSelected(){
-        return selected;
+    public ParticipantDto getSelected(){
+        for(ParticipantDto participantDto : participants){
+            if(participantDto.user.equals(selected)) {
+                return participantDto;
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -71,7 +80,9 @@ public class BeamParticipantAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.beam_participant_item, null);
         }
 
-        User user = participants.get(i);
+        ParticipantDto particpantDto = participants.get(i);
+        User user = particpantDto.user;
+
         View userView = view.findViewById(R.id.user_item);
 
         UserItemMode mode = user.equals(selected) ? SELECTED : UNSELECTED;
