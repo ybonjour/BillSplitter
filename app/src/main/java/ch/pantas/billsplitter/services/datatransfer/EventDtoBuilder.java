@@ -10,8 +10,11 @@ import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
+import ch.pantas.billsplitter.dataaccess.UserStore;
+import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
@@ -28,6 +31,9 @@ public class EventDtoBuilder {
 
     @Inject
     private ExpenseStore expenseStore;
+
+    @Inject
+    private UserStore userStore;
 
     EventDto eventDto;
 
@@ -49,13 +55,17 @@ public class EventDtoBuilder {
         Event event = eventStore.getById(eventId);
         withEvent(event);
 
-        List<User> participants = participantStore.getParticipants(eventId);
+        List<Participant> participants = participantStore.getParticipants(eventId);
         withParticipants(participants);
 
         List<Expense> expenses = expenseStore.getExpensesOfEvent(eventId);
         for(Expense expense : expenses) {
-            List<User> attendees = attendeeStore.getAttendees(expense.getId());
-            withExpense(expense, attendees);
+            List<Participant> attendees = attendeeStore.getAttendees(expense.getId());
+            List<String> attendingParticipants = new LinkedList<String>();
+            for (Participant participant : attendees) {
+                attendingParticipants.add(participant.getId());
+            }
+            withExpense(expense, attendingParticipants);
         }
     }
 
@@ -64,18 +74,27 @@ public class EventDtoBuilder {
         eventDto.event = event;
     }
 
-    public void withParticipants(List<User> participants) {
+    public void withParticipants(List<Participant> participants) {
         checkNotNull(participants);
-        eventDto.participants = participants;
+        eventDto.participants = new LinkedList<ParticipantDto>();
+        for (Participant participant : participants) {
+            ParticipantDto participantDto = new ParticipantDto();
+            participantDto.participantId = participant.getId();
+
+            User user = userStore.getById(participant.getUserId());
+            participantDto.user = user;
+
+            eventDto.participants.add(participantDto);
+        }
     }
 
-    public void withExpense(Expense expense, List<User> attendees) {
+    public void withExpense(Expense expense, List<String> attendingParticipants) {
         checkNotNull(expense);
-        checkNotNull(attendees);
+        checkNotNull(attendingParticipants);
 
         ExpenseDto expenseDto = new ExpenseDto();
         expenseDto.expense = expense;
-        expenseDto.attendees = attendees;
+        expenseDto.attendingParticipants = attendingParticipants;
         eventDto.expenses.add(expenseDto);
     }
 
