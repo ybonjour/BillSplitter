@@ -31,35 +31,14 @@ public class SimpleBluetoothServer extends BluetoothCommunicator {
     }
 
     @Override
-    public void run() {
-        checkNotNull(serverSocket);
-        Ln.d("Starting server");
-        while (true) {
-            BluetoothSocket socket;
-            try {
-                socket = serverSocket.accept();
-            } catch (IOException e) {
-                Ln.e("Exception while accepting socket", e);
-                break;
-            }
+    public void runSafely() throws IOException, InterruptedException {
+        BluetoothSocket socket = serverSocket.accept();
+        if (socket == null) throw new IOException("No socket");
 
-            if (socket == null) continue;
-
-            closeServerSocket();
-
-            // Continue working in same thread since we no longer listen to incoming connections
-            try {
-                setSocket(socket);
-                sendNextMessage();
-                receiveMessage();
-            } catch (IOException e) {
-                Ln.e("Exception during communication", e);
-            } catch (InterruptedException e) {
-                Ln.e("Exception during communication", e);
-            } finally {
-                cleanUp();
-            }
-        }
+        closeServerSocket();
+        setSocket(socket);
+        sendNextMessage();
+        receiveMessage();
     }
 
     @Override

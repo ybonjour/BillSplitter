@@ -151,6 +151,12 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
             }
 
             store(eventDto, me);
+
+            String response = String.format("%s received the group.", me.getName());
+            bluetoothClient.postMessage(response);
+
+            activityStarter.startEventDetails(this, eventDto.event, true);
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -200,8 +206,6 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         }
 
         sharedPreferenceService.storeActiveEventId(event.getId());
-        activityStarter.startEventDetails(this, event, true);
-        finish();
     }
 
     private void replaceUserInExpenses(EventDto dto, User user, User replacement){
@@ -237,15 +241,23 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     }
 
     private void setUpWaitingScreen() {
-        messageField.setVisibility(VISIBLE);
+        showMessage(R.string.beam_event_receiving);
         participantsList.setVisibility(GONE);
-        String message = getString(R.string.beam_event_receiving);
-        messageField.setText(message);
     }
 
     private void setUpErrorScreen() {
-        String message = getString(R.string.beam_event_error);
-        messageField.setText(message);
+        showMessage(R.string.beam_event_error);
+        participantsList.setVisibility(GONE);
+    }
+
+    private void setUpCommunicationErrorScreen(){
+        showMessage(R.string.beam_communication_error);
+        participantsList.setVisibility(GONE);
+    }
+
+    private void showMessage(int messageResId){
+        messageField.setText(getString(messageResId));
+        messageField.setVisibility(VISIBLE);
     }
 
     private void setUpSuccessScreen(List<User> participants) {
@@ -294,19 +306,16 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
 
         eventDto = EventDtoBuilder.createFromJson(message);
         setUpSuccessScreen(eventDto.participants);
-
-        User me = userService.getMe();
-
-        //TODO: Send response after user was selected
-        String userName = me != null ? me.getName() : "Unknown";
-
-        String response = String.format("%s received the group.", userName);
-        bluetoothClient.postMessage(response);
     }
 
 
     @Override
     public void onConnected() {
 
+    }
+
+    @Override
+    public void onCommunicationError(Exception e) {
+        setUpCommunicationErrorScreen();
     }
 }

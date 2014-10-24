@@ -93,13 +93,23 @@ public class BeamEvent extends RoboActivity implements BluetoothListener {
     }
 
     private void setUpTapScreen() {
-        String message = getString(R.string.beam_event_message);
-        beamMessageField.setText(message);
+        showMessage(R.string.beam_event_message);
     }
 
     private void setUpErrorScreen() {
-        String message = getString(R.string.beam_event_error);
-        beamMessageField.setText(message);
+        showMessage(R.string.beam_event_error);
+    }
+
+    private void setUpCommunicationErrorScreen() {
+        showMessage(R.string.beam_communication_error);
+    }
+
+    private void setUpWaitingScreen(){
+        showMessage(R.string.beam_event_sending);
+    }
+
+    private void showMessage(int messageResId) {
+        beamMessageField.setText(getString(messageResId));
     }
 
     private void startBluetoothServer() {
@@ -126,5 +136,11 @@ public class BeamEvent extends RoboActivity implements BluetoothListener {
         EventDtoBuilder builder = getInjector(this).getInstance(EventDtoBuilder.class);
         builder.withEventId(event.getId());
         bluetoothServer.postMessage(convertToJson(builder.build()));
+        setUpWaitingScreen();
+    }
+
+    @Override
+    public void onCommunicationError(Exception e) {
+        setUpCommunicationErrorScreen();
     }
 }

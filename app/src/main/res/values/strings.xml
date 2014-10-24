@@ -57,4 +57,6 @@
     <string name="beam_event_error">Android Beam or Bluetooth is not available on your phone. You can not beam a group.</string>
     <string name="beam_event_receiving">Receiving a group</string>
     <string name="importEvent">Import &gt;</string>
+    <string name="beam_communication_error">An error occured. Turn arround and run away.</string>
+    <string name="beam_event_sending">Beaming group</string>
 </resources>

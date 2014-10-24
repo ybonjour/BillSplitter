@@ -10,8 +10,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -47,6 +45,23 @@ public abstract class BluetoothCommunicator extends Thread {
         notifyConnected();
     }
 
+    @Override
+    public void run() {
+        try {
+            runSafely();
+        } catch (IOException e) {
+            Ln.e("Exception during communication", e);
+            notifyError(e);
+        } catch (InterruptedException e) {
+            Ln.e("Exception during communication", e);
+            notifyError(e);
+        } finally {
+            cleanUp();
+        }
+    }
+
+    public abstract void runSafely() throws IOException, InterruptedException;
+
     public void postMessage(String message) {
         try {
             this.messages.put(message);
@@ -73,7 +88,6 @@ public abstract class BluetoothCommunicator extends Thread {
             Ln.e("Exception while closing steams", e);
         }
     }
-
 
     private void closeSocket() {
         if (socket == null) return;
@@ -105,7 +119,6 @@ public abstract class BluetoothCommunicator extends Thread {
         notifyMessage(message);
     }
 
-
     private void notifyConnected() {
         handler.post(new Runnable() {
             @Override
@@ -124,6 +137,15 @@ public abstract class BluetoothCommunicator extends Thread {
         });
     }
 
+    private void notifyError(final Exception e){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                listener.onCommunicationError(e);
+            }
+        });
+    }
+
     private void interruptMessageQueue() {
         try {
             messages.put(FINISHING_MESSAGE);
@@ -136,6 +158,8 @@ public abstract class BluetoothCommunicator extends Thread {
         void onMessageReceived(String message);
 
         void onConnected();
+
+        void onCommunicationError(Exception e);
     }
 
 }

@@ -36,22 +36,13 @@ public class SimpleBluetoothClient extends BluetoothCommunicator {
     }
 
     @Override
-    public void run() {
-        // Cancel discovery because it will slow down the connection
+    public void runSafely() throws IOException, InterruptedException {
+        // Cancel discovery for better performance
         adapter.cancelDiscovery();
-
-        try {
-            socket.connect();
-            setSocket(socket);
-            receiveMessage();
-            sendNextMessage();
-        } catch (IOException e) {
-            Ln.e("Exception during communication", e);
-        } catch (InterruptedException e) {
-            Ln.e("Exception during communication", e);
-        } finally {
-            cleanUp();
-        }
+        socket.connect();
+        setSocket(socket);
+        receiveMessage();
+        sendNextMessage();
     }
 
 }
