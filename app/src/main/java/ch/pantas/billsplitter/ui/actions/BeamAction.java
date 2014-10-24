@@ -15,7 +15,7 @@ public class BeamAction implements EventDetailsAction {
     public boolean execute(EventDetails activity) {
         Event event = activity.getEvent();
         if(event != null) {
-            activityStarter.startBeamEvent(activity, event);
+            activityStarter.startBeamEvent(activity);
         }
         return false;
     }

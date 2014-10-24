@@ -94,12 +94,10 @@ public class ActivityStarter {
         context.startActivity(intent);
     }
 
-    public void startBeamEvent(Context context, Event event) {
+    public void startBeamEvent(Context context) {
         checkNotNull(context);
-        checkNotNull(event);
 
         Intent intent = new Intent(context, BeamEvent.class);
-        intent.putExtra(BeamEvent.ARGUMENT_EVENT_ID, event.getId());
         context.startActivity(intent);
     }
 }
