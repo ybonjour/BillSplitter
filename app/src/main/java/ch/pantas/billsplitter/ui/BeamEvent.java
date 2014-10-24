@@ -1,5 +1,6 @@
 package ch.pantas.billsplitter.ui;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -19,42 +20,38 @@ import static roboguice.RoboGuice.getInjector;
 
 public class BeamEvent extends RoboActivity implements BluetoothListener {
 
-    private static final int REQUEST_ENABLE_BT = 0;
+    private static final int REQUEST_ENABLE_BT = 1;
 
     @InjectView(R.id.beam_message)
     private TextView beamMessageField;
 
     private SimpleBluetoothServer bluetoothServer;
     private BluetoothAdapter bluetoothAdapter;
+    private NfcAdapter nfcAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.beam_event);
-
-        String message;
-        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (nfcAdapter != null && bluetoothAdapter != null) {
-            message = getString(R.string.beam_event_message);
-            nfcAdapter.setNdefPushMessage(createNdefMessage(bluetoothAdapter.getAddress()), this);
-        } else {
-            message = getString(R.string.beam_event_error);
-        }
-
-        beamMessageField.setText(message);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (bluetoothAdapter == null) return;
-        if (!bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            startBluetoothServer();
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null ||
+                bluetoothAdapter == null ||
+                !nfcAdapter.isNdefPushEnabled() ||
+                !bluetoothAdapter.isEnabled()) {
+            setUpErrorScreen();
+            return;
         }
+
+        setUpTapScreen();
+        nfcAdapter.setNdefPushMessage(createNdefMessage(bluetoothAdapter.getAddress()), this);
+        startBluetoothServer();
     }
 
     @Override
@@ -62,16 +59,30 @@ public class BeamEvent extends RoboActivity implements BluetoothListener {
         super.onPause();
         if (bluetoothServer != null) {
             bluetoothServer.cancel();
+            finish();
         }
-        finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (REQUEST_ENABLE_BT == requestCode) {
-            startBluetoothServer();
+            if (resultCode == Activity.RESULT_OK) {
+                startBluetoothServer();
+            } else {
+                setUpErrorScreen();
+            }
         }
+    }
+
+    private void setUpTapScreen() {
+        String message = getString(R.string.beam_event_message);
+        beamMessageField.setText(message);
+    }
+
+    private void setUpErrorScreen() {
+        String message = getString(R.string.beam_event_error);
+        beamMessageField.setText(message);
     }
 
     private void startBluetoothServer() {

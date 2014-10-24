@@ -53,5 +53,6 @@
     <string name="settings">Settings</string>
     <string name="beam_event">Beam group</string>
     <string name="beam_event_message">Tap your phone against another phone with Splitty installed to share this group.</string>
-    <string name="beam_event_error">NFC or Bluetooth is not available on your phone. You can not beam a group.</string>
+    <string name="beam_event_error">Android Beam or Bluetooth is not available on your phone. You can not beam a group.</string>
+    <string name="beam_event_receiving">Receiving a group</string>
 </resources>
