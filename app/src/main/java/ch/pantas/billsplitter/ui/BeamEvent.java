@@ -152,21 +152,31 @@ public class BeamEvent extends RoboActivity implements BluetoothListener {
         ParticipantDto participantDto = gson.fromJson(message, ParticipantDto.class);
         User newUser = participantDto.user;
         Participant participant = participantStore.getById(participantDto.participantId);
+        if(participant == null){
+            User existingUser = userStore.getById(newUser.getId());
+            if (existingUser == null) {
+                userStore.createExistingModel(newUser);
+            }
 
-        User oldUser = userStore.getById(participant.getUserId());
-        removeOrRenameUser(oldUser);
+            Participant newParticipant = new Participant(participantDto.participantId, newUser.getId(), event.getId(), true);
+            participantStore.createExistingModel(newParticipant);
 
-        User existingUser = userStore.getById(newUser.getId());
-        if (existingUser == null) {
-            userStore.createExistingModel(newUser);
+        } else {
+            User oldUser = userStore.getById(participant.getUserId());
+            removeOrRenameUser(oldUser);
+
+            User existingUser = userStore.getById(newUser.getId());
+            if (existingUser == null) {
+                userStore.createExistingModel(newUser);
+            }
+
+            participant.setConfirmed(true);
+            participant.setUserId(newUser.getId());
+            participantStore.persist(participant);
+
         }
 
-        participant.setConfirmed(true);
-        participant.setUserId(newUser.getId());
-        participantStore.persist(participant);
-
         String messageTemplate = getString(R.string.beam_received_template);
-
         showMessage(String.format(messageTemplate, newUser.getName()));
     }
 

@@ -62,4 +62,5 @@
     <string name="beam_received_template">%s hat die Gruppe empfangen.</string>
     <string name="access_denied_event">Es können nur eigene Gruppen editiert werden.</string>
     <string name="access_denied_expense">Es können nur eigene Ausgaben editiert werden.</string>
+    <string name="beam_select_yourself">Wähle aus, welcher Benutzer du bist: </string>
 </resources>

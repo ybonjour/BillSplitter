@@ -23,7 +23,7 @@ public abstract class BluetoothCommunicator extends Thread {
     protected final static UUID CONNECTION_UUID = UUID.fromString("2d90a480-5ad7-11e4-8ed6-0800200c9a66");
     private static final String FINISHING_MESSAGE = "##FINISHER##";
 
-    private BlockingQueue<String> messages = new ArrayBlockingQueue<String>(1);
+    private BlockingQueue<String> messages;
     private BufferedReader in;
     private BufferedWriter out;
     private BluetoothListener listener;
@@ -42,6 +42,7 @@ public abstract class BluetoothCommunicator extends Thread {
         this.socket = socket;
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        messages = new ArrayBlockingQueue<String>(1);
         notifyConnected();
     }
 

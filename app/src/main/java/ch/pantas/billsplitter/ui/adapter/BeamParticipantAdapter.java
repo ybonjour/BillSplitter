@@ -13,6 +13,7 @@ import java.util.List;
 
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 import ch.pantas.splitty.R;
 
@@ -24,15 +25,18 @@ public class BeamParticipantAdapter extends BaseAdapter {
 
     @Inject
     private LayoutInflater inflater;
+    @Inject
+    private UserService userService;
 
     private List<ParticipantDto> participants = new LinkedList<ParticipantDto>();
 
     private User selected = null;
 
     public void setParticipants(List<ParticipantDto> participants) {
+        User me = userService.getMe();
         this.participants.clear();
         for(ParticipantDto participantDto : participants){
-            if(!participantDto.confirmed){
+            if(!participantDto.confirmed || participantDto.user.equals(me)){
                 this.participants.add(participantDto);
             }
         }
@@ -46,6 +50,8 @@ public class BeamParticipantAdapter extends BaseAdapter {
                 return;
             }
         }
+
+        selectFirst();
     }
 
     public void selectFirst() {
@@ -97,5 +103,14 @@ public class BeamParticipantAdapter extends BaseAdapter {
         text.setText(user.getName());
 
         return view;
+    }
+
+    public boolean hasUser(User me) {
+        for(ParticipantDto dto : participants){
+            if(dto.user.equals(me)){
+                return true;
+            }
+        }
+        return false;
     }
 }
