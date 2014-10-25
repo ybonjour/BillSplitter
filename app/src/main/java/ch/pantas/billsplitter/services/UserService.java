@@ -44,15 +44,4 @@ public class UserService {
             i += 1;
         }
     }
-
-    public void storeMe(User me){
-        if(me.isNew()){
-            userStore.persist(me);
-        } else {
-            // This is used if an existing user object is used
-            // as part of the beam / synchronize process
-            userStore.createExistingModel(me);
-        }
-        sharedPreferenceService.storeUserId(me.getId());
-    }
 }

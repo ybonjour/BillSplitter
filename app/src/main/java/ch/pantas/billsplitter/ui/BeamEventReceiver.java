@@ -21,15 +21,12 @@ import com.google.inject.Inject;
 
 import java.util.List;
 
-import ch.pantas.billsplitter.dataaccess.AttendeeStore;
-import ch.pantas.billsplitter.dataaccess.EventStore;
-import ch.pantas.billsplitter.dataaccess.ExpenseStore;
-import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.remote.SimpleBluetoothClient;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.ImportService;
+import ch.pantas.billsplitter.services.LoginService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.services.datatransfer.EventDto;
@@ -71,16 +68,7 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     private SharedPreferenceService sharedPreferenceService;
 
     @Inject
-    private EventStore eventStore;
-
-    @Inject
-    private ParticipantStore participantStore;
-
-    @Inject
-    private ExpenseStore expenseStore;
-
-    @Inject
-    private AttendeeStore attendeeStore;
+    private LoginService loginService;
 
     @Inject
     private ActivityStarter activityStarter;
@@ -165,7 +153,7 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         User me = userService.getMe();
         if (me == null) {
             me = selectedUser;
-            userService.storeMe(me);
+            loginService.login(me);
         } else {
             eventDto.replaceUser(selectedUser, me);
         }
