@@ -34,7 +34,82 @@ public class ImportService {
     @Inject
     private UserStore userStore;
 
+    public void deepImportEvent(EventDtoOperator eventDto){
 
+        User me = userService.getMe();
+        String senderUserId = eventDto.getSenderUserId();
+
+        Event event = eventDto.getEvent();
+        removeExpensesOfOwner(event, senderUserId);
+
+        createEventIfNotExists(event);
+
+        // Apply changes to event only if I am not the owner
+        if (!event.getOwnerId().equals(me.getId())) {
+            eventStore.persist(event);
+        }
+
+        importParticipants(eventDto);
+
+        importExpenses(eventDto);
+    }
+
+    public User importParticipant(ParticipantDto participantDto, Event event) {
+        User newUser = participantDto.user;
+        Participant participant = participantStore.getById(participantDto.participantId);
+        if(participant == null){
+            createParticipant(participantDto.participantId, newUser, event);
+        } else {
+            User oldUser = userStore.getById(participant.getUserId());
+            removeIfPossible(oldUser);
+
+            createUserIfNotExists(newUser);
+
+            participant.setConfirmed(true);
+            participant.setUserId(newUser.getId());
+            participantStore.persist(participant);
+        }
+
+        return newUser;
+    }
+
+    private void createParticipant(String participantId, User user, Event event){
+        createUserIfNotExists(user);
+        Participant newParticipant = new Participant(participantId, user.getId(), event.getId(), true);
+        participantStore.createExistingModel(newParticipant);
+    }
+
+    private void createUserIfNotExists(User user){
+        User existingUser = userStore.getById(user.getId());
+        if (existingUser == null) {
+            String username = userService.findBestFreeNameForUser(user);
+            user.setName(username);
+            userStore.createExistingModel(user);
+        }
+    }
+
+    private void removeIfPossible(User user) {
+        if (!participatesInMultipleEvents(user)) {
+            userStore.removeById(user.getId());
+        }
+    }
+
+    private boolean participatesInMultipleEvents(User user) {
+        return participantStore.getParticipantsForUsers(user.getId()).size() > 1;
+    }
+
+    private void importExpenses(EventDtoOperator eventDto) {
+        // Assumption in the eventDto we only get the expenses of the creator
+        for (ExpenseDto expenseDto : eventDto.getExpenses()) {
+            Expense expense = expenseDto.expense;
+            expenseStore.createExistingModel(expense);
+
+            for (AttendeeDto attendeeDto : expenseDto.attendingParticipants) {
+                Attendee attendee = new Attendee(attendeeDto.attendeeId, expense.getId(), attendeeDto.participantId);
+                attendeeStore.createExistingModel(attendee);
+            }
+        }
+    }
 
     private void removeExpensesOfOwner(Event event, String userId){
         if(userId == null) return;
@@ -73,39 +148,6 @@ public class ImportService {
                 participantStore.createExistingModel(new Participant(participant.participantId, user.getId(), eventDto.getEvent().getId(), participant.confirmed));
             }
 
-        }
-    }
-
-    public void deepImportEvent(EventDtoOperator eventDto){
-
-        User me = userService.getMe();
-        String senderUserId = eventDto.getSenderUserId();
-
-        Event event = eventDto.getEvent();
-        removeExpensesOfOwner(event, senderUserId);
-
-        createEventIfNotExists(event);
-
-        // Apply changes to event only if I am not the owner
-        if (!event.getOwnerId().equals(me.getId())) {
-            eventStore.persist(event);
-        }
-
-        importParticipants(eventDto);
-
-        importExpenses(eventDto);
-    }
-
-    private void importExpenses(EventDtoOperator eventDto) {
-        // Assumption in the eventDto we only get the expenses of the creator
-        for (ExpenseDto expenseDto : eventDto.getExpenses()) {
-            Expense expense = expenseDto.expense;
-            expenseStore.createExistingModel(expense);
-
-            for (AttendeeDto attendeeDto : expenseDto.attendingParticipants) {
-                Attendee attendee = new Attendee(attendeeDto.attendeeId, expense.getId(), attendeeDto.participantId);
-                attendeeStore.createExistingModel(attendee);
-            }
         }
     }
 }

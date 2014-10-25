@@ -19,6 +19,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.remote.SimpleBluetoothServer;
+import ch.pantas.billsplitter.services.ImportService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
@@ -142,51 +143,15 @@ public class BeamEvent extends RoboActivity implements BluetoothListener {
         });
     }
 
-    private boolean participatesInMultipleEvents(User user) {
-        return participantStore.getParticipantsForUsers(user.getId()).size() > 1;
-    }
-
+    @Inject
+    private ImportService importService;
     @Override
     public void onMessageReceived(String message) {
         Gson gson = new Gson();
         ParticipantDto participantDto = gson.fromJson(message, ParticipantDto.class);
-        User newUser = participantDto.user;
-        Participant participant = participantStore.getById(participantDto.participantId);
-        if(participant == null){
-            User existingUser = userStore.getById(newUser.getId());
-            if (existingUser == null) {
-                userStore.createExistingModel(newUser);
-            }
-
-            Participant newParticipant = new Participant(participantDto.participantId, newUser.getId(), event.getId(), true);
-            participantStore.createExistingModel(newParticipant);
-
-        } else {
-            User oldUser = userStore.getById(participant.getUserId());
-            removeOrRenameUser(oldUser);
-
-            User existingUser = userStore.getById(newUser.getId());
-            if (existingUser == null) {
-                userStore.createExistingModel(newUser);
-            }
-
-            participant.setConfirmed(true);
-            participant.setUserId(newUser.getId());
-            participantStore.persist(participant);
-
-        }
-
+        User newUser = importService.importParticipant(participantDto, event);
         String messageTemplate = getString(R.string.beam_received_template);
         showMessage(String.format(messageTemplate, newUser.getName()));
-    }
-
-    private void removeOrRenameUser(User user) {
-        if (!participatesInMultipleEvents(user)) {
-            userStore.removeById(user.getId());
-        } else {
-            user.setName(userService.findBestFreeNameForUser(user));
-            userStore.persist(user);
-        }
     }
 
     @Override
