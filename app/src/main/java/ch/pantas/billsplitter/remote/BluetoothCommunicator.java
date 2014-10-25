@@ -148,6 +148,7 @@ public abstract class BluetoothCommunicator extends Thread {
     }
 
     private void interruptMessageQueue() {
+        if(messages == null) return;
         try {
             messages.put(FINISHING_MESSAGE);
         } catch (InterruptedException e) {

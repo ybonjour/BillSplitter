@@ -82,6 +82,8 @@ public class ExpenseAdapter extends BaseAdapter {
         String userId = sharedPreferenceService.getUserId();
         if (!userId.equals(expense.getOwnerId())) {
             view.setAlpha(0.5f);
+        } else {
+            view.setAlpha(1f);
         }
 
         return view;

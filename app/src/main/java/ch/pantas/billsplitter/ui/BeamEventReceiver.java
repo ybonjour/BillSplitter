@@ -283,6 +283,14 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         messageField.setVisibility(VISIBLE);
     }
 
+    public ParticipantDto getParticipantFromDto(User user){
+        checkNotNull(eventDto);
+        for(ParticipantDto participantDto : eventDto.participants){
+            if(participantDto.user.equals(user)) return participantDto;
+        }
+        return null;
+    }
+
     private void setUpSuccessScreen(List<ParticipantDto> participants) {
         messageField.setVisibility(GONE);
 
@@ -290,20 +298,23 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         adapter.setParticipants(participants);
 
         User me = userService.getMe();
+
+        Event existingEvent = eventStore.getById(eventDto.event.getId());
+        ParticipantDto participantMe = getParticipantFromDto(me);
+        if(existingEvent != null && participantMe != null){
+            handleDto(participantMe);
+            return;
+        }
+
         if (me == null) {
             adapter.selectFirst();
             joinButon.setVisibility(GONE);
-        } else if (eventDto.event.getOwnerId() == me.getId()) {
-            adapter.selectParticipantByUserId(me.getId());
-            participantsList.setVisibility(GONE);
-            return;
         } else {
             adapter.selectParticipantByName(me.getName());
 
             int visibility = adapter.hasUser(me) ? GONE : VISIBLE;
             joinButon.setVisibility(visibility);
         }
-
         participantsList.setAdapter(adapter);
         participantsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
