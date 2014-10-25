@@ -10,13 +10,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 
 import java.util.List;
@@ -29,7 +29,6 @@ import ch.pantas.billsplitter.services.ImportService;
 import ch.pantas.billsplitter.services.LoginService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
-import ch.pantas.billsplitter.services.datatransfer.EventDto;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoOperator;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
@@ -41,7 +40,9 @@ import roboguice.inject.InjectView;
 import static android.nfc.NfcAdapter.ACTION_NDEF_DISCOVERED;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
 import static ch.pantas.billsplitter.remote.SimpleBluetoothServer.BluetoothListener;
+import static ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder.convertToJson;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
@@ -90,6 +91,7 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.beam_event_receiver);
+        getWindow().addFlags(FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -161,7 +163,9 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         importService.deepImportEvent(eventDto);
         sharedPreferenceService.storeActiveEventId(eventDto.getEvent().getId());
 
-        bluetoothClient.postMessage(new Gson().toJson(eventDto.getParticipant(me)));
+        EventDtoBuilder builder = getInjector(this).getInstance(EventDtoBuilder.class);
+        builder.withEventId(eventDto.getEvent().getId());
+        bluetoothClient.postMessage(convertToJson(builder.build()));
 
         activityStarter.startEventDetails(this, eventDto.getEvent(), true);
         finish();
@@ -178,10 +182,6 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void store(EventDto eventDto, User me) {
-
     }
 
     private void setUpWaitingScreen() {

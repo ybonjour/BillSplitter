@@ -7,6 +7,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -16,18 +17,18 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Event;
-import ch.pantas.billsplitter.model.Participant;
-import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.remote.SimpleBluetoothServer;
 import ch.pantas.billsplitter.services.ImportService;
 import ch.pantas.billsplitter.services.UserService;
+import ch.pantas.billsplitter.services.datatransfer.EventDto;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder;
-import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
+import ch.pantas.billsplitter.services.datatransfer.EventDtoOperator;
 import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import static android.nfc.NdefRecord.createMime;
+import static android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
 import static ch.pantas.billsplitter.remote.SimpleBluetoothServer.BluetoothListener;
 import static ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder.convertToJson;
 import static roboguice.RoboGuice.getInjector;
@@ -48,6 +49,8 @@ public class BeamEvent extends RoboActivity implements BluetoothListener {
     private UserStore userStore;
     @Inject
     private UserService userService;
+    @Inject
+    private ImportService importService;
 
     private Event event;
 
@@ -59,6 +62,7 @@ public class BeamEvent extends RoboActivity implements BluetoothListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.beam_event);
+        getWindow().addFlags(FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -143,15 +147,12 @@ public class BeamEvent extends RoboActivity implements BluetoothListener {
         });
     }
 
-    @Inject
-    private ImportService importService;
     @Override
     public void onMessageReceived(String message) {
         Gson gson = new Gson();
-        ParticipantDto participantDto = gson.fromJson(message, ParticipantDto.class);
-        User newUser = importService.importParticipant(participantDto, event);
-        String messageTemplate = getString(R.string.beam_received_template);
-        showMessage(String.format(messageTemplate, newUser.getName()));
+        EventDtoOperator eventDto = new EventDtoOperator(gson.fromJson(message, EventDto.class));
+        importService.deepImportEvent(eventDto);
+        showMessage(getString(R.string.beam_received));
     }
 
     @Override

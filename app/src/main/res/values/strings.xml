@@ -61,7 +61,7 @@
     <string name="beam_event_sending">Beaming group</string>
     <string name="access_denied_event">You can only edit your own groups.</string>
     <string name="access_denied_expense">You can only edit your own expenses.</string>
-    <string name="beam_received_template">%s received the group.</string>
+    <string name="beam_received">Group exchanged.</string>
     <string name="beam_select_yourself">Select which user you are:</string>
     <string name="join_as_new_user">Join as new user</string>
 </resources>

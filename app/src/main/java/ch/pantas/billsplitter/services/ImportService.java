@@ -54,27 +54,32 @@ public class ImportService {
         importExpenses(eventDto);
     }
 
-    public User importParticipant(ParticipantDto participantDto, Event event) {
+    private User importParticipant(ParticipantDto participantDto, Event event) {
         User newUser = participantDto.user;
+        createUserIfNotExists(newUser);
+
         Participant participant = participantStore.getById(participantDto.participantId);
         if(participant == null){
             createParticipant(participantDto.participantId, newUser, event);
         } else {
             User oldUser = userStore.getById(participant.getUserId());
-            removeIfPossible(oldUser);
+            if(!oldUser.equals(newUser)) {
+                removeIfPossible(oldUser);
+            }
 
-            createUserIfNotExists(newUser);
-
-            participant.setConfirmed(true);
-            participant.setUserId(newUser.getId());
+            updateParticipant(participant, participantDto);
             participantStore.persist(participant);
         }
 
         return newUser;
     }
 
+    private void updateParticipant(Participant participant, ParticipantDto participantDto){
+        participant.setConfirmed(participantDto.confirmed);
+        participant.setUserId(participantDto.user.getId());
+    }
+
     private void createParticipant(String participantId, User user, Event event){
-        createUserIfNotExists(user);
         Participant newParticipant = new Participant(participantId, user.getId(), event.getId(), true);
         participantStore.createExistingModel(newParticipant);
     }
@@ -130,24 +135,8 @@ public class ImportService {
     }
 
     private void importParticipants(EventDtoOperator eventDto){
-        // TODO: rem ove participants if sent from group owner
-        for (ParticipantDto participant : eventDto.getParticipants()) {
-
-            Participant existingParticipant = participantStore.getById(participant.participantId);
-            if (existingParticipant != null) {
-                participantStore.persist(existingParticipant);
-            }
-            else {
-                User user = participant.user;
-                User existingUser = userStore.getById(user.getId());
-                if (existingUser == null) {
-                    user.setName(userService.findBestFreeNameForUser(user));
-                    userStore.createExistingModel(user);
-                }
-
-                participantStore.createExistingModel(new Participant(participant.participantId, user.getId(), eventDto.getEvent().getId(), participant.confirmed));
-            }
-
+        for (ParticipantDto participantDto : eventDto.getParticipants()) {
+            importParticipant(participantDto, eventDto.getEvent());
         }
     }
 }

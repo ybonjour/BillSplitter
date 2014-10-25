@@ -11,7 +11,6 @@ import com.google.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
@@ -35,8 +34,8 @@ public class BeamParticipantAdapter extends BaseAdapter {
     public void setParticipants(List<ParticipantDto> participants) {
         User me = userService.getMe();
         this.participants.clear();
-        for(ParticipantDto participantDto : participants){
-            if(!participantDto.confirmed || participantDto.user.equals(me)){
+        for (ParticipantDto participantDto : participants) {
+            if (!participantDto.confirmed || participantDto.user.equals(me)) {
                 this.participants.add(participantDto);
             }
         }
@@ -54,23 +53,13 @@ public class BeamParticipantAdapter extends BaseAdapter {
         selectFirst();
     }
 
-    public void selectParticipantByUserId(String userId) {
-        for (ParticipantDto participant : participants) {
-            User user = participant.user;
-            if (user.getId().equals(userId)) {
-                selected = user;
-                return;
-            }
-        }
-    }
-
     public void selectFirst() {
         if (participants.isEmpty()) return;
 
         selected = participants.get(0).user;
     }
 
-    public User getSelected(){
+    public User getSelected() {
         return selected;
     }
 
@@ -105,13 +94,14 @@ public class BeamParticipantAdapter extends BaseAdapter {
 
         TextView text = (TextView) view.findViewById(R.id.beam_participant_item_text);
         text.setText(user.getName());
+        text.setTextSize(view.getResources().getDimension(R.dimen.beam_participant_item_textsize));
 
         return view;
     }
 
     public boolean hasUser(User me) {
-        for(ParticipantDto dto : participants){
-            if(dto.user.equals(me)){
+        for (ParticipantDto dto : participants) {
+            if (dto.user.equals(me)) {
                 return true;
             }
         }
