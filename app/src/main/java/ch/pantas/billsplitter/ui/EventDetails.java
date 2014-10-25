@@ -1,5 +1,6 @@
 package ch.pantas.billsplitter.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -377,6 +379,9 @@ public class EventDetails extends RoboFragmentActivity {
             sharedPreferenceService.storeUserName(newUserName);
             userService.changeMyUsername(newUserName);
 
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(userNameEdit.getWindowToken(), 0);
+
             pagerAdapter.notifyDataSetChanged();
         }
         else {
@@ -384,6 +389,8 @@ public class EventDetails extends RoboFragmentActivity {
             userNameEdit.setText(user.getName());
             userNameEdit.requestFocus();
             userNameEdit.setSelection(user.getName().length());
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(userNameEdit, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 }
