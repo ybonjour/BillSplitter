@@ -25,6 +25,13 @@ public class ExpenseStore extends BaseStore<Expense> {
         return getModelsByQuery(where);
     }
 
+    public List<Expense> getExpensesOfEvent(String eventId, String ownerId) {
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(EVENT, eventId);
+        where.put(OWNER, ownerId);
+        return getModelsByQuery(where);
+    }
+
     public void removeAll(String eventId) {
         Map<String, String> where = new HashMap<String, String>();
         where.put(EVENT, eventId);

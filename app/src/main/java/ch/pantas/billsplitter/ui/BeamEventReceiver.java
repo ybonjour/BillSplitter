@@ -26,19 +26,15 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
-import ch.pantas.billsplitter.model.Attendee;
-import ch.pantas.billsplitter.model.Event;
-import ch.pantas.billsplitter.model.Expense;
-import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.remote.SimpleBluetoothClient;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.ImportService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
-import ch.pantas.billsplitter.services.datatransfer.AttendeeDto;
 import ch.pantas.billsplitter.services.datatransfer.EventDto;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder;
-import ch.pantas.billsplitter.services.datatransfer.ExpenseDto;
+import ch.pantas.billsplitter.services.datatransfer.EventDtoOperator;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 import ch.pantas.billsplitter.ui.adapter.BeamParticipantAdapter;
 import ch.pantas.splitty.R;
@@ -50,7 +46,6 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static ch.pantas.billsplitter.remote.SimpleBluetoothServer.BluetoothListener;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
-import static java.util.UUID.randomUUID;
 import static roboguice.RoboGuice.getInjector;
 
 public class BeamEventReceiver extends RoboActivity implements BluetoothListener {
@@ -90,6 +85,9 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     @Inject
     private ActivityStarter activityStarter;
 
+    @Inject
+    private ImportService importService;
+
     private BluetoothAdapter bluetoothAdapter;
     private NfcAdapter nfcAdapter;
 
@@ -97,7 +95,7 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
 
     private String deviceAddress;
 
-    private EventDto eventDto;
+    private EventDtoOperator eventDto;
     private BeamParticipantAdapter adapter;
 
     @Override
@@ -145,19 +143,14 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void joinAsNewUser(View v){
+    public void joinAsNewUser(View v) {
         if (eventDto == null || adapter == null) return;
 
         User me = userService.getMe();
         checkNotNull(me);
-        ParticipantDto dtoNew = new ParticipantDto();
-        dtoNew.confirmed = true;
-        dtoNew.participantId = randomUUID().toString();
-        dtoNew.user = me;
+        eventDto.addParticipant(me);
 
-        eventDto.participants.add(dtoNew);
-
-        handleDto(dtoNew);
+        handleDto(me);
     }
 
     @Override
@@ -168,21 +161,21 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void handleDto(ParticipantDto selectedParticipant){
+    private void handleDto(User selectedUser) {
         User me = userService.getMe();
         if (me == null) {
-            me = selectedParticipant.user;
+            me = selectedUser;
             userService.storeMe(me);
         } else {
-            replaceUserWithMe(eventDto, selectedParticipant.user, me);
-            selectedParticipant.user = me;
+            eventDto.replaceUser(selectedUser, me);
         }
 
-        store(eventDto, me);
+        importService.deepImportEvent(eventDto);
+        sharedPreferenceService.storeActiveEventId(eventDto.getEvent().getId());
 
-        bluetoothClient.postMessage(new Gson().toJson(selectedParticipant));
+        bluetoothClient.postMessage(new Gson().toJson(eventDto.getParticipant(me)));
 
-        activityStarter.startEventDetails(this, eventDto.event, true);
+        activityStarter.startEventDetails(this, eventDto.getEvent(), true);
         finish();
     }
 
@@ -191,76 +184,16 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         if (R.id.action_import == item.getItemId()) {
             if (eventDto == null || adapter == null) return true;
 
-            ParticipantDto selectedParticipant = adapter.getSelected();
-            handleDto(selectedParticipant);
+            User selectedUser = adapter.getSelected();
+            handleDto(selectedUser);
 
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void replaceUserWithMe(EventDto eventDto, User user, User me) {
-        for (ParticipantDto participant : eventDto.participants) {
-            if (participant.user.equals(user)) {
-                participant.user = me;
-            }
-        }
-    }
-
     private void store(EventDto eventDto, User me) {
-        Event existingEvent = eventStore.getById(eventDto.event.getId());
-        Event event = eventDto.event;
 
-        if (existingEvent != null) {
-            if (event.getOwnerId() != me.getId()) {
-                eventStore.persist(event);
-            }
-
-            if (eventDto.expenses.size() > 0) {
-                String ownerId = eventDto.expenses.get(0).expense.getOwnerId();
-                expenseStore.removeAll(event.getId(), ownerId);
-                for (ExpenseDto expenseDto : eventDto.expenses) {
-                    attendeeStore.removeAll(expenseDto.expense.getId());
-                }
-            }
-        }
-        else {
-            eventStore.createExistingModel(event);
-        }
-
-        for (ParticipantDto participant : eventDto.participants) {
-
-            Participant existingParticipant = participantStore.getById(participant.participantId);
-            if (existingParticipant != null) {
-                participantStore.persist(existingParticipant);
-            }
-            else {
-                User user = participant.user;
-
-                if (!user.equals(me)) {
-                    User existingUser = userStore.getById(user.getId());
-                    if (existingUser == null) {
-                        user.setName(userService.findBestFreeNameForUser(user));
-                        userStore.createExistingModel(user);
-                    }
-                }
-
-                participantStore.createExistingModel(new Participant(participant.participantId, user.getId(), event.getId(), participant.confirmed));
-            }
-
-        }
-
-        for (ExpenseDto expenseDto : eventDto.expenses) {
-            Expense expense = expenseDto.expense;
-            expenseStore.createExistingModel(expense);
-
-            for (AttendeeDto attendeeDto : expenseDto.attendingParticipants) {
-                Attendee attendee = new Attendee(attendeeDto.attendeeId, expense.getId(), attendeeDto.participantId);
-                attendeeStore.createExistingModel(attendee);
-            }
-        }
-
-        sharedPreferenceService.storeActiveEventId(event.getId());
     }
 
     private void setUpWaitingScreen() {
@@ -283,28 +216,13 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         messageField.setVisibility(VISIBLE);
     }
 
-    public ParticipantDto getParticipantFromDto(User user){
-        checkNotNull(eventDto);
-        for(ParticipantDto participantDto : eventDto.participants){
-            if(participantDto.user.equals(user)) return participantDto;
-        }
-        return null;
-    }
-
-    private void setUpSuccessScreen(List<ParticipantDto> participants) {
+    private void setUpUserSelectionScreen(List<ParticipantDto> participants) {
         messageField.setVisibility(GONE);
 
         adapter = getInjector(this).getInstance(BeamParticipantAdapter.class);
         adapter.setParticipants(participants);
 
         User me = userService.getMe();
-
-        Event existingEvent = eventStore.getById(eventDto.event.getId());
-        ParticipantDto participantMe = getParticipantFromDto(me);
-        if(existingEvent != null && participantMe != null){
-            handleDto(participantMe);
-            return;
-        }
 
         if (me == null) {
             adapter.selectFirst();
@@ -347,8 +265,15 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     public void onMessageReceived(String message) {
         messageField.append(message);
 
-        eventDto = EventDtoBuilder.createFromJson(message);
-        setUpSuccessScreen(eventDto.participants);
+        eventDto = new EventDtoOperator(EventDtoBuilder.createFromJson(message));
+
+        User me = userService.getMe();
+
+        if (eventDto.isParticipant(me)) {
+            handleDto(me);
+        } else {
+            setUpUserSelectionScreen(eventDto.getParticipants());
+        }
     }
 
 

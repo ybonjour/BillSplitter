@@ -70,14 +70,8 @@ public class BeamParticipantAdapter extends BaseAdapter {
         selected = participants.get(0).user;
     }
 
-    public ParticipantDto getSelected(){
-        for(ParticipantDto participantDto : participants){
-            if(participantDto.user.equals(selected)) {
-                return participantDto;
-            }
-        }
-
-        return null;
+    public User getSelected(){
+        return selected;
     }
 
     @Override
