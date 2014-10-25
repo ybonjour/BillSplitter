@@ -64,4 +64,5 @@
     <string name="beam_received">Group exchanged.</string>
     <string name="beam_select_yourself">Select which user you are:</string>
     <string name="join_as_new_user">Join as new user</string>
+    <string name="can_not_join_group">You can not join this group.</string>
 </resources>

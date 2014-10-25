@@ -1,12 +1,11 @@
 package ch.pantas.billsplitter.services.datatransfer;
 
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
-import ch.pantas.billsplitter.services.datatransfer.EventDto;
-import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 
 import static java.util.UUID.randomUUID;
 
@@ -14,11 +13,11 @@ public class EventDtoOperator {
 
     private final EventDto eventDto;
 
-    public EventDtoOperator(EventDto eventDto){
+    public EventDtoOperator(EventDto eventDto) {
         this.eventDto = eventDto;
     }
 
-    public boolean isParticipant(User user){
+    public boolean hasParticipant(User user) {
         return getParticipant(user) != null;
     }
 
@@ -30,9 +29,9 @@ public class EventDtoOperator {
         }
     }
 
-    public ParticipantDto getParticipant(User user){
-        for(ParticipantDto participantDto : eventDto.participants){
-            if(participantDto.user.equals(user)){
+    public ParticipantDto getParticipant(User user) {
+        for (ParticipantDto participantDto : eventDto.participants) {
+            if (participantDto.user.equals(user)) {
                 return participantDto;
             }
         }
@@ -40,30 +39,41 @@ public class EventDtoOperator {
         return null;
     }
 
-    public Event getEvent(){
+    public Event getEvent() {
         return eventDto.event;
     }
 
-    public String getSenderUserId(){
-        if(eventDto.expenses.isEmpty()) return null;
-
-        return eventDto.expenses.get(0).expense.getOwnerId();
-    }
-
-    public List<ParticipantDto> getParticipants(){
+    public List<ParticipantDto> getParticipants() {
         return eventDto.participants;
     }
 
-    public List<ExpenseDto> getExpenses() {
-        return eventDto.expenses;
+    public List<ExpenseDto> getExpensesOfOwner(String ownerUserId) {
+        List<ExpenseDto> expenses = new LinkedList<ExpenseDto>();
+        for (ExpenseDto expenseDto : eventDto.expenses) {
+            if (expenseDto.expense.getOwnerId().equals(ownerUserId)) {
+                expenses.add(expenseDto);
+            }
+        }
+
+        return expenses;
     }
 
-    public void addParticipant(User user){
+    public void addParticipant(User user) {
         ParticipantDto dtoNew = new ParticipantDto();
         dtoNew.confirmed = true;
         dtoNew.participantId = randomUUID().toString();
         dtoNew.user = user;
 
         eventDto.participants.add(dtoNew);
+    }
+
+    public List<ParticipantDto> getUnconfirmedParticipants() {
+        List<ParticipantDto> unconfirmedParticipants = new LinkedList<ParticipantDto>();
+        for (ParticipantDto participantDto : eventDto.participants) {
+            if (!participantDto.confirmed) {
+                unconfirmedParticipants.add(participantDto);
+            }
+        }
+        return unconfirmedParticipants;
     }
 }

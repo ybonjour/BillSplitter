@@ -6,4 +6,5 @@ public class ParticipantDto {
     public String participantId;
     public User user;
     public boolean confirmed;
+    public long lastUpdated;
 }

@@ -37,21 +37,48 @@ public class ImportService {
     public void deepImportEvent(EventDtoOperator eventDto){
 
         User me = userService.getMe();
-        String senderUserId = eventDto.getSenderUserId();
-
         Event event = eventDto.getEvent();
-        removeExpensesOfOwner(event, senderUserId);
 
         createEventIfNotExists(event);
 
-        // Apply changes to event only if I am not the owner
         if (!event.getOwnerId().equals(me.getId())) {
             eventStore.persist(event);
         }
 
         importParticipants(eventDto);
 
-        importExpenses(eventDto);
+        for(ParticipantDto participantDto : eventDto.getParticipants()){
+            Participant participant = participantStore.getById(participantDto.participantId);
+            if(participant.getLastUpdated() < participantDto.lastUpdated){
+                removeExpensesOfOwner(eventDto.getEvent(), participant.getUserId());
+                importExpensesOfOwner(eventDto, participant.getUserId());
+                participant.setLastUpdated(participantDto.lastUpdated);
+                participantStore.persist(participant);
+            }
+        }
+    }
+
+    private void removeExpensesOfOwner(Event event, String userId){
+        if(userId == null) return;
+
+        List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId(), userId);
+        for(Expense expense : expenses){
+            attendeeStore.removeAll(expense.getId());
+        }
+
+        expenseStore.removeAll(event.getId(), userId);
+    }
+
+    private void importExpensesOfOwner(EventDtoOperator eventDto, String ownerUserId) {
+        for (ExpenseDto expenseDto : eventDto.getExpensesOfOwner(ownerUserId)) {
+            Expense expense = expenseDto.expense;
+            expenseStore.createExistingModel(expense);
+
+            for (AttendeeDto attendeeDto : expenseDto.attendingParticipants) {
+                Attendee attendee = new Attendee(attendeeDto.attendeeId, expense.getId(), attendeeDto.participantId);
+                attendeeStore.createExistingModel(attendee);
+            }
+        }
     }
 
     private User importParticipant(ParticipantDto participantDto, Event event) {
@@ -80,7 +107,7 @@ public class ImportService {
     }
 
     private void createParticipant(String participantId, User user, Event event){
-        Participant newParticipant = new Participant(participantId, user.getId(), event.getId(), true);
+        Participant newParticipant = new Participant(participantId, user.getId(), event.getId(), true, 0);
         participantStore.createExistingModel(newParticipant);
     }
 
@@ -101,30 +128,6 @@ public class ImportService {
 
     private boolean participatesInMultipleEvents(User user) {
         return participantStore.getParticipantsForUsers(user.getId()).size() > 1;
-    }
-
-    private void importExpenses(EventDtoOperator eventDto) {
-        // Assumption in the eventDto we only get the expenses of the creator
-        for (ExpenseDto expenseDto : eventDto.getExpenses()) {
-            Expense expense = expenseDto.expense;
-            expenseStore.createExistingModel(expense);
-
-            for (AttendeeDto attendeeDto : expenseDto.attendingParticipants) {
-                Attendee attendee = new Attendee(attendeeDto.attendeeId, expense.getId(), attendeeDto.participantId);
-                attendeeStore.createExistingModel(attendee);
-            }
-        }
-    }
-
-    private void removeExpensesOfOwner(Event event, String userId){
-        if(userId == null) return;
-
-        List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId(), userId);
-        for(Expense expense : expenses){
-            attendeeStore.removeAll(expense.getId());
-        }
-
-        expenseStore.removeAll(event.getId(), userId);
     }
 
     private void createEventIfNotExists(Event event){

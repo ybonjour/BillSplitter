@@ -10,9 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,6 +43,7 @@ import static android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
 import static ch.pantas.billsplitter.remote.SimpleBluetoothServer.BluetoothListener;
 import static ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder.convertToJson;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
+import static com.google.inject.internal.util.$Preconditions.checkState;
 import static roboguice.RoboGuice.getInjector;
 
 public class BeamEventReceiver extends RoboActivity implements BluetoothListener {
@@ -53,11 +53,11 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     @InjectView(R.id.participant_list)
     private ListView participantsList;
 
-    @InjectView(R.id.participant_list_container)
-    private LinearLayout participantListContainer;
+    @InjectView(R.id.user_selection_container)
+    private LinearLayout userSelectionContainer;
 
     @InjectView(R.id.join_as_new_user)
-    private Button joinButon;
+    private CheckBox joinCheckBox;
 
     @Inject
     private UserService userService;
@@ -133,22 +133,96 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void joinAsNewUser(View v) {
-        if (eventDto == null || adapter == null) return;
-
-        User me = userService.getMe();
-        checkNotNull(me);
-        eventDto.addParticipant(me);
-
-        handleDto(me);
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean visible = adapter != null && adapter.getCount() > 0;
+        boolean visible = getSelectedUser() != null;
         menu.findItem(R.id.action_import).setVisible(visible);
 
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.action_import == item.getItemId()) {
+            User selectedUser = getSelectedUser();
+            checkNotNull(selectedUser);
+            handleDto(selectedUser);
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setUpWaitingScreen() {
+        showMessage(R.string.beam_event_receiving);
+        userSelectionContainer.setVisibility(GONE);
+    }
+
+    private void setUpErrorScreen() {
+        showMessage(R.string.beam_event_error);
+        userSelectionContainer.setVisibility(GONE);
+    }
+
+    private void setUpCommunicationErrorScreen() {
+        showMessage(R.string.beam_communication_error);
+        userSelectionContainer.setVisibility(GONE);
+    }
+
+    private void showMessage(int messageResId) {
+        messageField.setText(getString(messageResId));
+        messageField.setVisibility(VISIBLE);
+    }
+
+    private void setUpUserSelectionScreen(List<ParticipantDto> unconfirmedParticipants) {
+        checkState(canShowList() || canShowCheckbox());
+
+        messageField.setVisibility(GONE);
+        userSelectionContainer.setVisibility(VISIBLE);
+
+        if (canShowList()) {
+            adapter = getInjector(this).getInstance(BeamParticipantAdapter.class);
+            adapter.setParticipants(unconfirmedParticipants);
+
+            // preselect Uer with my name
+            User me = userService.getMe();
+            if (me != null) {
+                boolean success = adapter.selectParticipantByName(me.getName());
+                joinCheckBox.setChecked(!success);
+            }
+
+            participantsList.setAdapter(adapter);
+            participantsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    ParticipantDto participantDto = (ParticipantDto) adapterView.getItemAtPosition(i);
+                    boolean success = adapter.select(participantDto.user);
+                    joinCheckBox.setChecked(!success);
+                    participantsList.invalidateViews();
+                    invalidateOptionsMenu();
+                }
+            });
+
+        }
+
+        joinCheckBox.setVisibility(GONE);
+        if (canShowCheckbox()) {
+            joinCheckBox.setVisibility(VISIBLE);
+            joinCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (joinCheckBox.isChecked()) {
+                        disableList();
+                    } else {
+                        enableList();
+                    }
+
+                    invalidateOptionsMenu();
+                }
+            });
+            joinCheckBox.setChecked(adapter == null || adapter.getSelected() == null);
+        }
+
+        invalidateOptionsMenu();
     }
 
     private void handleDto(User selectedUser) {
@@ -171,67 +245,15 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         finish();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (R.id.action_import == item.getItemId()) {
-            if (eventDto == null || adapter == null) return true;
 
-            User selectedUser = adapter.getSelected();
-            handleDto(selectedUser);
-
-            return true;
+    private User getSelectedUser() {
+        if (canShowCheckbox() && joinCheckBox.isChecked()) {
+            return userService.getMe();
+        } else if (canShowList() && adapter != null) {
+            return adapter.getSelected();
         }
-        return super.onOptionsItemSelected(item);
-    }
 
-    private void setUpWaitingScreen() {
-        showMessage(R.string.beam_event_receiving);
-        participantListContainer.setVisibility(GONE);
-    }
-
-    private void setUpErrorScreen() {
-        showMessage(R.string.beam_event_error);
-        participantListContainer.setVisibility(GONE);
-    }
-
-    private void setUpCommunicationErrorScreen() {
-        showMessage(R.string.beam_communication_error);
-        participantListContainer.setVisibility(GONE);
-    }
-
-    private void showMessage(int messageResId) {
-        messageField.setText(getString(messageResId));
-        messageField.setVisibility(VISIBLE);
-    }
-
-    private void setUpUserSelectionScreen(List<ParticipantDto> participants) {
-        messageField.setVisibility(GONE);
-
-        adapter = getInjector(this).getInstance(BeamParticipantAdapter.class);
-        adapter.setParticipants(participants);
-
-        User me = userService.getMe();
-
-        if (me == null) {
-            adapter.selectFirst();
-            joinButon.setVisibility(GONE);
-        } else {
-            adapter.selectParticipantByName(me.getName());
-
-            int visibility = adapter.hasUser(me) ? GONE : VISIBLE;
-            joinButon.setVisibility(visibility);
-        }
-        participantsList.setAdapter(adapter);
-        participantsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ParticipantDto participantDto = (ParticipantDto) adapterView.getItemAtPosition(i);
-                adapter.selectParticipantByName(participantDto.user.getName());
-                participantsList.invalidateViews();
-            }
-        });
-        participantListContainer.setVisibility(VISIBLE);
-        invalidateOptionsMenu();
+        return null;
     }
 
     private void startBluetoothClient() {
@@ -249,6 +271,22 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         return new String(msg.getRecords()[0].getPayload());
     }
 
+    private void disableList() {
+        if (adapter == null) return;
+
+        adapter.disable();
+        participantsList.setEnabled(false);
+        participantsList.invalidateViews();
+    }
+
+    private void enableList() {
+        if (adapter == null) return;
+
+        adapter.enable();
+        participantsList.setEnabled(true);
+        participantsList.invalidateViews();
+    }
+
     @Override
     public void onMessageReceived(String message) {
         messageField.append(message);
@@ -257,11 +295,28 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
 
         User me = userService.getMe();
 
-        if (eventDto.isParticipant(me)) {
+        if (eventDto.hasParticipant(me)) {
             handleDto(me);
-        } else {
-            setUpUserSelectionScreen(eventDto.getParticipants());
+            return;
         }
+
+        if (!canShowList() && !canShowCheckbox()) {
+            showMessage(R.string.can_not_join_group);
+            return;
+        }
+
+        setUpUserSelectionScreen(eventDto.getUnconfirmedParticipants());
+    }
+
+    private boolean canShowList() {
+        if (eventDto == null) return false;
+
+        return !eventDto.getUnconfirmedParticipants().isEmpty();
+    }
+
+    private boolean canShowCheckbox() {
+        User me = userService.getMe();
+        return me != null;
     }
 
 

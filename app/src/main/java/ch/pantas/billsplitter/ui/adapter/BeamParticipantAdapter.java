@@ -19,6 +19,7 @@ import ch.pantas.splitty.R;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.SELECTED;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.UNSELECTED;
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class BeamParticipantAdapter extends BaseAdapter {
 
@@ -31,36 +32,62 @@ public class BeamParticipantAdapter extends BaseAdapter {
 
     private User selected = null;
 
+    private boolean isDisabled = false;
+
     public void setParticipants(List<ParticipantDto> participants) {
-        User me = userService.getMe();
-        this.participants.clear();
-        for (ParticipantDto participantDto : participants) {
-            if (!participantDto.confirmed || participantDto.user.equals(me)) {
-                this.participants.add(participantDto);
-            }
-        }
+        this.participants = participants;
     }
 
-    public void selectParticipantByName(String name) {
+    /***
+     *
+     * @param user
+     * @return TRUE if user was selected, FALSE otherwise
+     */
+    public boolean select(User user){
+        checkNotNull(user);
+        if(user.equals(selected)){
+            selected = null;
+            return false;
+        }
+
+        for(ParticipantDto participant : participants){
+            if(participant.user.equals(user)){
+                selected = user;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /***
+     *
+     * @param name
+     * @return TRUE if a user was selected, FALSE otherwise
+     */
+    public boolean selectParticipantByName(String name) {
         for (ParticipantDto participant : participants) {
             User user = participant.user;
             if (user.getName().equals(name)) {
                 selected = user;
-                return;
+                return true;
             }
         }
 
-        selectFirst();
-    }
-
-    public void selectFirst() {
-        if (participants.isEmpty()) return;
-
-        selected = participants.get(0).user;
+        return false;
     }
 
     public User getSelected() {
+        if(isDisabled) return null;
         return selected;
+    }
+
+    public void disable(){
+        isDisabled = true;
+    }
+
+    public void enable(){
+        isDisabled = false;
     }
 
     @Override
@@ -84,12 +111,12 @@ public class BeamParticipantAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.beam_participant_item, null);
         }
 
-        ParticipantDto particpantDto = participants.get(i);
-        User user = particpantDto.user;
+        ParticipantDto participantDto = participants.get(i);
+        User user = participantDto.user;
 
         View userView = view.findViewById(R.id.user_item);
 
-        UserItemMode mode = user.equals(selected) ? SELECTED : UNSELECTED;
+        UserItemMode mode = user.equals(selected) && !isDisabled ? SELECTED : UNSELECTED;
         UserItemFormatter.setupUserItem(userView, user, mode);
 
         TextView text = (TextView) view.findViewById(R.id.beam_participant_item_text);
@@ -97,14 +124,5 @@ public class BeamParticipantAdapter extends BaseAdapter {
         text.setTextSize(view.getResources().getDimension(R.dimen.beam_participant_item_textsize));
 
         return view;
-    }
-
-    public boolean hasUser(User me) {
-        for (ParticipantDto dto : participants) {
-            if (dto.user.equals(me)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

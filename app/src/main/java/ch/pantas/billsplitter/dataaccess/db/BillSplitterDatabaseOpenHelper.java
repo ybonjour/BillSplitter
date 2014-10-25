@@ -161,7 +161,8 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
 
         public static final String EVENT = "event";
         public static final String USER = "user";
-        public static final String CONFIRMED = "Confirmed";
+        public static final String CONFIRMED = "confirmed";
+        public static final String LAST_UPDATED = "lastUpdated";
 
         public static void onCreate(SQLiteDatabase db) {
             db.execSQL(
@@ -169,7 +170,8 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
                             + ID + " TEXT PRIMARY KEY, "
                             + EVENT + " TEXT,"
                             + USER + " TEXT, "
-                            + CONFIRMED + " INTEGER);"
+                            + CONFIRMED + " INTEGER, "
+                            + LAST_UPDATED + " LONG);"
             );
         }
 

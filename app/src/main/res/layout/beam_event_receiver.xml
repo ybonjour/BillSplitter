@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
     <LinearLayout
-        android:id="@+id/participant_list_container"
+        android:id="@+id/user_selection_container"
         android:orientation="vertical"
         android:visibility="gone"
         android:layout_width="wrap_content"
@@ -26,10 +26,9 @@
             android:id="@+id/participant_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
-        <Button
+        <CheckBox
             android:id="@+id/join_as_new_user"
             android:text="@string/join_as_new_user"
-            android:onClick="joinAsNewUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

@@ -17,8 +17,10 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.services.UserService;
 
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
+import static java.lang.System.currentTimeMillis;
 
 public class EventDtoBuilder {
     @Inject
@@ -37,6 +39,9 @@ public class EventDtoBuilder {
     private UserStore userStore;
 
     @Inject
+    private UserService userService;
+
+    @Inject
     private SharedPreferenceService sharedPreferenceService;
 
     EventDto eventDto;
@@ -48,7 +53,6 @@ public class EventDtoBuilder {
     private void init() {
         eventDto = new EventDto();
         eventDto.expenses = new LinkedList<ExpenseDto>();
-
     }
 
     public EventDto build() {
@@ -83,6 +87,9 @@ public class EventDtoBuilder {
 
     public void withParticipants(List<Participant> participants) {
         checkNotNull(participants);
+
+        User me = userService.getMe();
+
         eventDto.participants = new LinkedList<ParticipantDto>();
         for (Participant participant : participants) {
             ParticipantDto participantDto = new ParticipantDto();
@@ -92,6 +99,8 @@ public class EventDtoBuilder {
             participantDto.user = user;
 
             participantDto.confirmed = participant.isConfirmed();
+            participantDto.lastUpdated = user.equals(me) ?
+                    currentTimeMillis() : participant.getLastUpdated();
 
             eventDto.participants.add(participantDto);
         }
@@ -101,13 +110,10 @@ public class EventDtoBuilder {
         checkNotNull(expense);
         checkNotNull(attendingParticipants);
 
-        String userId = sharedPreferenceService.getUserId();
-        if (userId.equals(expense.getOwnerId())) {
-            ExpenseDto expenseDto = new ExpenseDto();
-            expenseDto.expense = expense;
-            expenseDto.attendingParticipants = attendingParticipants;
-            eventDto.expenses.add(expenseDto);
-        }
+        ExpenseDto expenseDto = new ExpenseDto();
+        expenseDto.expense = expense;
+        expenseDto.attendingParticipants = attendingParticipants;
+        eventDto.expenses.add(expenseDto);
     }
 
     static public String convertToJson(EventDto eventDto) {
