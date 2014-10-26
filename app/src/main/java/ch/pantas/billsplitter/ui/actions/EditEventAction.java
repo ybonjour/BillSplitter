@@ -24,9 +24,7 @@ public class EditEventAction implements EventDetailsAction {
         String userId = sharedPreferenceService.getUserId();
 
         if (userId.equals(event.getOwnerId())) {
-            if(event != null) {
-                activityStarter.startEditEvent(activity, event);
-            }
+            activityStarter.startEditEvent(activity, event);
         }
         else {
             Toast toast = Toast.makeText(activity, activity.getResources().getString(R.string.access_denied_event), Toast.LENGTH_LONG);

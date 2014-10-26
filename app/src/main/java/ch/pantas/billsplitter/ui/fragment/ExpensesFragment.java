@@ -2,6 +2,7 @@ package ch.pantas.billsplitter.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import ch.pantas.billsplitter.model.ExpensePresentation;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.ExpenseService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
+import ch.pantas.billsplitter.ui.EventDetails;
 import ch.pantas.billsplitter.ui.adapter.ExpenseAdapter;
 import ch.pantas.splitty.R;
 
@@ -62,6 +64,11 @@ public class ExpensesFragment extends BaseEventDetailsFragment {
                 Expense expense = expensePresentation.getExpense();
 
                 if (userId.equals(expense.getOwnerId())) {
+                    FragmentActivity activity = getActivity();
+                    if(activity instanceof EventDetails) {
+                        EventDetails eventDetailsActivity = (EventDetails) activity;
+                        eventDetailsActivity.setCurrentTab(eventDetailsActivity.getTabPosition(getString(R.string.expenses)));
+                    }
                     activityStarter.startEditExpense(context, expense);
                 }
                 else {
