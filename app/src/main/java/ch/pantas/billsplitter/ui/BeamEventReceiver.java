@@ -289,8 +289,6 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
 
     @Override
     public void onMessageReceived(String message) {
-        messageField.append(message);
-
         eventDto = new EventDtoOperator(EventDtoBuilder.createFromJson(message));
 
         User me = userService.getMe();
