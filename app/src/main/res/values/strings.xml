@@ -65,4 +65,8 @@
     <string name="beam_select_yourself">Select which user you are:</string>
     <string name="join_as_new_user">Join as new user</string>
     <string name="can_not_join_group">You can not join this group.</string>
+    <string name="beam_services_unavailable">Can\'t beam group because the following services are not enabled</string>
+    <string name="beam_enable_bluetooth">Turn on Bluetooth</string>
+    <string name="beam_enable_nfc">Turn on NFC</string>
+    <string name="beam_enable_nfc_beam">Turn on Android Beam</string>
 </resources>
