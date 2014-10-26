@@ -121,7 +121,6 @@ public class BeamParticipantAdapter extends BaseAdapter {
 
         TextView text = (TextView) view.findViewById(R.id.beam_participant_item_text);
         text.setText(user.getName());
-        text.setTextSize(view.getResources().getDimension(R.dimen.beam_participant_item_textsize));
 
         return view;
     }

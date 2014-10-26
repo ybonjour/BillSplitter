@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -33,7 +32,6 @@ import ch.pantas.billsplitter.services.datatransfer.EventDtoOperator;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 import ch.pantas.billsplitter.ui.adapter.BeamParticipantAdapter;
 import ch.pantas.splitty.R;
-import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import static android.nfc.NfcAdapter.ACTION_NDEF_DISCOVERED;
@@ -46,10 +44,7 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static com.google.inject.internal.util.$Preconditions.checkState;
 import static roboguice.RoboGuice.getInjector;
 
-public class BeamEventReceiver extends RoboActivity implements BluetoothListener {
-    @InjectView(R.id.beam_receive_message)
-    private TextView messageField;
-
+public class BeamEventReceiver extends BeamBaseActivity implements BluetoothListener {
     @InjectView(R.id.participant_list)
     private ListView participantsList;
 
@@ -77,9 +72,6 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     @Inject
     private ImportService importService;
 
-    private BluetoothAdapter bluetoothAdapter;
-    private NfcAdapter nfcAdapter;
-
     private SimpleBluetoothClient bluetoothClient;
 
     private String deviceAddress;
@@ -88,9 +80,14 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     private BeamParticipantAdapter adapter;
 
     @Override
+    protected int getContentView() {
+        return R.layout.beam_event_receiver;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.beam_event_receiver);
+        setTitle(R.string.beam_event);
         getWindow().addFlags(FLAG_KEEP_SCREEN_ON);
     }
 
@@ -102,19 +99,16 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
     @Override
     protected void onResume() {
         super.onResume();
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (nfcAdapter == null || bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            setUpErrorScreen();
-            return;
-        }
-
         if (ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            deviceAddress = extractMessage(getIntent());
-            startBluetoothClient();
-            setUpWaitingScreen();
+            setUpForBeam();
         }
+    }
+
+    @Override
+    protected void startBeaming(NfcAdapter nfcAdapter, BluetoothAdapter bluetoothAdapter) {
+        deviceAddress = extractMessage(getIntent());
+        startBluetoothClient(bluetoothAdapter);
+        setUpWaitingScreen();
     }
 
     @Override
@@ -122,7 +116,6 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         super.onPause();
         if (bluetoothClient != null) {
             bluetoothClient.cancel();
-            finish();
         }
     }
 
@@ -135,7 +128,7 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean visible = getSelectedUser() != null;
+        boolean visible = getSelectedUser() != null && userSelectionContainer.getVisibility() == VISIBLE;
         menu.findItem(R.id.action_import).setVisible(visible);
 
         return super.onPrepareOptionsMenu(menu);
@@ -153,30 +146,10 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         return super.onOptionsItemSelected(item);
     }
 
-    private void setUpWaitingScreen() {
-        showMessage(R.string.beam_event_receiving);
-        userSelectionContainer.setVisibility(GONE);
-    }
-
-    private void setUpErrorScreen() {
-        showMessage(R.string.beam_event_error);
-        userSelectionContainer.setVisibility(GONE);
-    }
-
-    private void setUpCommunicationErrorScreen() {
-        showMessage(R.string.beam_communication_error);
-        userSelectionContainer.setVisibility(GONE);
-    }
-
-    private void showMessage(int messageResId) {
-        messageField.setText(getString(messageResId));
-        messageField.setVisibility(VISIBLE);
-    }
-
     private void setUpUserSelectionScreen(List<ParticipantDto> unconfirmedParticipants) {
         checkState(canShowList() || canShowCheckbox());
 
-        messageField.setVisibility(GONE);
+        hideMessageAndIndicator();
         userSelectionContainer.setVisibility(VISIBLE);
 
         if (canShowList()) {
@@ -241,8 +214,10 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         builder.withEventId(eventDto.getEvent().getId());
         bluetoothClient.postMessage(convertToJson(builder.build()));
 
-        activityStarter.startEventDetails(this, eventDto.getEvent(), true);
-        finish();
+        // TODO: Server should send ACK before we show success screen
+        userSelectionContainer.setVisibility(GONE);
+        invalidateOptionsMenu();
+        setUpSuccessScreen();
     }
 
 
@@ -256,7 +231,7 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         return null;
     }
 
-    private void startBluetoothClient() {
+    private void startBluetoothClient(BluetoothAdapter bluetoothAdapter) {
         bluetoothClient = getInjector(this).getInstance(SimpleBluetoothClient.class).init(bluetoothAdapter, deviceAddress, this);
         bluetoothClient.start();
     }
@@ -299,7 +274,7 @@ public class BeamEventReceiver extends RoboActivity implements BluetoothListener
         }
 
         if (!canShowList() && !canShowCheckbox()) {
-            showMessage(R.string.can_not_join_group);
+            setUpErrorScreen(R.string.can_not_join_group);
             return;
         }
 

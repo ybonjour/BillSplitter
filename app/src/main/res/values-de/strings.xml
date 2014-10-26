@@ -59,9 +59,14 @@
     <string name="importEvent">Importieren &gt;</string>
     <string name="beam_communication_error">Ein Fehler ist aufgetreten. Renne um dein Leben.</string>
     <string name="beam_event_sending">Gruppe wird gebeamt.</string>
-    <string name="beam_received">Gruppe wurde ausgetauscht.</string>
+    <string name="beam_received">Gruppe wurde erfolgreich ausgetauscht.</string>
     <string name="access_denied_event">Es können nur eigene Gruppen editiert werden.</string>
     <string name="access_denied_expense">Es können nur eigene Ausgaben editiert werden.</string>
     <string name="beam_select_yourself">Wähle aus, welcher Benutzer du bist: </string>
     <string name="can_not_join_group">Du kannst dieser Gruppe nicht beitreten.</string>
+    <string name="beam_services_unavailable">Die Gruppe kann nicht gebeamt werden, da die folgenden Dienste nicht aktiviert sind.</string>
+    <string name="beam_enable_bluetooth">Bluetooth aktivieren</string>
+    <string name="beam_enable_nfc">NFC aktivieren</string>
+    <string name="beam_enable_nfc_beam">Android Beam aktivieren</string>
+    <string name="connection_problem">Verbindungsfehler!</string>
 </resources>

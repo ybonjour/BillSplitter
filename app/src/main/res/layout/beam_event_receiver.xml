@@ -3,24 +3,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:gravity="center">
 
-    <TextView
-        android:id="@+id/beam_receive_message"
-        android:gravity="center"
-        android:layout_margin="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
     <LinearLayout
         android:id="@+id/user_selection_container"
         android:orientation="vertical"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="10dp">
         <TextView
             android:text="@string/beam_select_yourself"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
         <ListView
             android:id="@+id/participant_list"
@@ -32,4 +27,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <include layout="@layout/beam_error_indicator" />
+
+    <include layout="@layout/beam_message" />
 </LinearLayout>

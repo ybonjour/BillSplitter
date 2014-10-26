@@ -16,7 +16,8 @@
         android:id="@+id/beam_participant_item_text"
         android:layout_weight="1"
         android:layout_marginLeft="5dp"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_height="fill_parent"
         android:gravity="center_vertical" />
 

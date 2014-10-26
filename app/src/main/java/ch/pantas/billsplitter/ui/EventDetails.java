@@ -145,7 +145,11 @@ public class EventDetails extends RoboFragmentActivity {
     protected void onResume() {
         super.onResume();
 
-        init();
+        boolean success = init();
+        if(!success) {
+            finish();
+            return;
+        }
 
         View contentView = findViewById(R.id.event_details_pager);
         contentView.setVisibility(View.VISIBLE);
@@ -155,9 +159,13 @@ public class EventDetails extends RoboFragmentActivity {
         updateHelpText(0, 0.0f);
     }
 
-    private void init() {
+    private boolean init() {
         if (getIntent().hasExtra(ARGUMENT_EVENT_ID)) {
             String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
+            event = eventStore.getById(eventId);
+        } else {
+            String eventId = sharedPreferenceService.getActiveEventId();
+            if(eventId == null) return false;
             event = eventStore.getById(eventId);
         }
 
@@ -214,6 +222,8 @@ public class EventDetails extends RoboFragmentActivity {
         });
 
         pagerAdapter.notifyDataSetChanged();
+
+        return true;
     }
 
     @Override

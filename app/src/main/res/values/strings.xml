@@ -57,11 +57,11 @@
     <string name="beam_event_error">Android Beam or Bluetooth is not available on your phone. You can not beam a group.</string>
     <string name="beam_event_receiving">Receiving a group</string>
     <string name="importEvent">Import &gt;</string>
-    <string name="beam_communication_error">An error occured. Turn arround and run away.</string>
+    <string name="beam_communication_error">An error occurred. Turn around and run away.</string>
     <string name="beam_event_sending">Beaming group</string>
     <string name="access_denied_event">You can only edit your own groups.</string>
     <string name="access_denied_expense">You can only edit your own expenses.</string>
-    <string name="beam_received">Group exchanged.</string>
+    <string name="beam_received">Group has been successfully exchanged.</string>
     <string name="beam_select_yourself">Select which user you are:</string>
     <string name="join_as_new_user">Join as new user</string>
     <string name="can_not_join_group">You can not join this group.</string>
@@ -69,4 +69,5 @@
     <string name="beam_enable_bluetooth">Turn on Bluetooth</string>
     <string name="beam_enable_nfc">Turn on NFC</string>
     <string name="beam_enable_nfc_beam">Turn on Android Beam</string>
+    <string name="connection_problem">Connection Problem!</string>
 </resources>

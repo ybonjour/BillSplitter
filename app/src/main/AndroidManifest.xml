@@ -69,21 +69,17 @@
         </activity>
         <activity
             android:name="ch.pantas.billsplitter.ui.BeamEventReceiver"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName="ch.pantas.billsplitter.ui.EventDetails"
+            >
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="application/vnd.com.example.android.beam"/>
             </intent-filter>
-        </activity>
-        <activity
-            android:name="ch.pantas.billsplitter.ui.BluetoothDeviceSelector"
-            android:parentActivityName="ch.pantas.billsplitter.ui.EventDetails"
-            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.pantas.billsplitter.ui.EventDetails" />
         </activity>
     </application>
-
 </manifest>
