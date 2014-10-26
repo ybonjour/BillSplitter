@@ -65,4 +65,8 @@ public class Expense extends Model {
     }
 
     public String getOwnerId() { return ownerId; }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
 }

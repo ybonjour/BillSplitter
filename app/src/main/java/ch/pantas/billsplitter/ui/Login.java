@@ -14,6 +14,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.LoginService;
+import ch.pantas.billsplitter.services.MigrationService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.splitty.R;
@@ -43,6 +44,9 @@ public class Login extends RoboActivity {
     @Inject
     private EventStore eventStore;
 
+    @Inject
+    private MigrationService migrationService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,13 +55,11 @@ public class Login extends RoboActivity {
             handleUserLoggedIn();
             return;
         } else if (sharedPreferenceService.getUserName() != null) {
-            // TODO: Remove once all have 0.2 Migration code to migrate from username to userid
-            User me = userStore.getUserWithName(sharedPreferenceService.getUserName());
-            if (me != null) {
-                sharedPreferenceService.storeUserId(me.getId());
-                handleUserLoggedIn();
-                return;
-            }
+            // TODO: Remove once everyone has updated to version 0.2
+            migrationService.migrateToVersion200();
+            sharedPreferenceService.removeUserName();
+            handleUserLoggedIn();
+            return;
         }
 
         setContentView(R.layout.login);

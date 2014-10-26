@@ -146,7 +146,7 @@ public class EventDetails extends RoboFragmentActivity {
         super.onResume();
 
         boolean success = init();
-        if(!success) {
+        if (!success) {
             finish();
             return;
         }
@@ -165,7 +165,7 @@ public class EventDetails extends RoboFragmentActivity {
             event = eventStore.getById(eventId);
         } else {
             String eventId = sharedPreferenceService.getActiveEventId();
-            if(eventId == null) return false;
+            if (eventId == null) return false;
             event = eventStore.getById(eventId);
         }
 
@@ -273,8 +273,7 @@ public class EventDetails extends RoboFragmentActivity {
         String userId = sharedPreferenceService.getUserId();
         if (userId.equals(event.getOwnerId())) {
             menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
-        }
-        else {
+        } else {
             menu.findItem(R.id.action_edit_event).setVisible(false);
         }
 
@@ -393,8 +392,7 @@ public class EventDetails extends RoboFragmentActivity {
             imm.hideSoftInputFromWindow(userNameEdit.getWindowToken(), 0);
 
             pagerAdapter.notifyDataSetChanged();
-        }
-        else {
+        } else {
             User user = userService.getMe();
             userNameEdit.setText(user.getName());
             userNameEdit.requestFocus();
