@@ -49,6 +49,10 @@ public class ImportService {
 
         for(ParticipantDto participantDto : eventDto.getParticipants()){
             Participant participant = participantStore.getById(participantDto.participantId);
+
+            // Never touch my own expenses
+            if (participant.getUserId().equals(me.getId())) continue;
+
             if(participant.getLastUpdated() < participantDto.lastUpdated){
                 removeExpensesOfOwner(eventDto.getEvent(), participant.getUserId());
                 importExpensesOfOwner(eventDto, participant.getUserId());
