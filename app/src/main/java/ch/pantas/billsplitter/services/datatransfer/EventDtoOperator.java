@@ -58,13 +58,22 @@ public class EventDtoOperator {
         return expenses;
     }
 
-    public void addParticipant(User user) {
+    public void confirmParticipant(User user){
+        ParticipantDto dto = getParticipant(user);
+        if(dto == null){
+            dto = addParticipant(user);
+        }
+        dto.confirmed = true;
+    }
+
+    public ParticipantDto addParticipant(User user) {
         ParticipantDto dtoNew = new ParticipantDto();
-        dtoNew.confirmed = true;
         dtoNew.participantId = randomUUID().toString();
         dtoNew.user = user;
 
         eventDto.participants.add(dtoNew);
+
+        return dtoNew;
     }
 
     public List<ParticipantDto> getUnconfirmedParticipants() {

@@ -207,6 +207,8 @@ public class BeamEventReceiver extends BeamBaseActivity implements BluetoothList
             eventDto.replaceUser(selectedUser, me);
         }
 
+        eventDto.confirmParticipant(me);
+
         importService.deepImportEvent(eventDto);
         sharedPreferenceService.storeActiveEventId(eventDto.getEvent().getId());
 
