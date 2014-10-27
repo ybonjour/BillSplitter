@@ -56,4 +56,24 @@ public class Participant extends Model {
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Participant that = (Participant) o;
+
+        if (!eventId.equals(that.eventId)) return false;
+        if (!userId.equals(that.userId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId.hashCode();
+        result = 31 * result + eventId.hashCode();
+        return result;
+    }
 }
