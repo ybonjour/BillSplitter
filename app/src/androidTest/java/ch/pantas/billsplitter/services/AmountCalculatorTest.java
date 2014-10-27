@@ -57,6 +57,30 @@ public class AmountCalculatorTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
+    public void testIsValidReturnsFalseForNegativeAmount(){
+        // Given
+        String input = "-3";
+
+        // When
+        boolean result = isValidAmount(input);
+
+        // Then
+        assertFalse(result);
+    }
+
+    @SmallTest
+    public void testIsValidAmountReturnsFalseForTooLargeValue(){
+        // Given
+        String input = "123456789";
+
+        // When
+        boolean result = isValidAmount(input);
+
+        // Then
+        assertFalse(result);
+    }
+
+    @SmallTest
     public void testConvertToCentsReturns0IfNoValidAmountIsProvided(){
         // Given
         String input = "a";

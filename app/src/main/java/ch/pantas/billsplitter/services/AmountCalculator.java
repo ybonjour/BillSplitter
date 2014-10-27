@@ -8,14 +8,14 @@ public class AmountCalculator {
         if (!isValidAmount(input)) return 0;
 
         BigDecimal amount = new BigDecimal(input);
-        return amount.multiply(new BigDecimal(100)).intValue();
+        return convertToCents(amount);
     }
 
     public static boolean isValidAmount(String input) {
         try {
-            new BigDecimal(input);
+            BigDecimal amount = new BigDecimal(input);
 
-            return true;
+            return convertToCents(amount) > 0;
         } catch (NumberFormatException e) {
             return false;
         }
@@ -25,5 +25,9 @@ public class AmountCalculator {
         if(amountCents == 0) return "";
         BigDecimal amount = new BigDecimal(amountCents).divide(new BigDecimal(100));
         return amount.toPlainString();
+    }
+
+    private static int convertToCents(BigDecimal amount){
+        return amount.multiply(new BigDecimal(100)).intValue();
     }
 }
