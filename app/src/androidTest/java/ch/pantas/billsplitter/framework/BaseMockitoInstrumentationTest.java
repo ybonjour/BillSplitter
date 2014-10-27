@@ -3,8 +3,11 @@ package ch.pantas.billsplitter.framework;
 import android.app.Application;
 import android.test.InstrumentationTestCase;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 import com.google.inject.Stage;
+
+import ch.pantas.billsplitter.dataaccess.GenericStore;
+import ch.pantas.billsplitter.model.Attendee;
 
 import static ch.pantas.billsplitter.framework.AbstractModuleFactory.EMPTY_MODULES_ARRAY;
 import static ch.pantas.billsplitter.framework.AbstractModuleFactory.getAbstractModuleFactory;
@@ -40,7 +43,11 @@ public abstract class BaseMockitoInstrumentationTest extends InstrumentationTest
         application = null;
     }
 
-    private AbstractModule getMockModule() {
-        return getAbstractModuleFactory().createModule(this, BaseMockitoInstrumentationTest.class);
+    private Module getMockModule() {
+        return getAbstractModuleFactory().createModule(this, BaseMockitoInstrumentationTest.class, getDefaultModule());
+    }
+
+    protected Module getDefaultModule(){
+        return null;
     }
 }

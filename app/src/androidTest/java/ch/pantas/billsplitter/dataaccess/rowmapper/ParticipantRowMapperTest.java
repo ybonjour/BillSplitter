@@ -73,11 +73,11 @@ public class ParticipantRowMapperTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertNotNull(values);
-        assertEquals(3, values.size());
+        assertEquals(5, values.size());
         assertEquals(id, values.get(ID));
         assertEquals(user, values.get(USER));
         assertEquals(event, values.get(EVENT));
-        assertEquals(confirmed, values.get(CONFIRMED));
+        assertEquals(1, values.get(CONFIRMED));
         assertEquals(lastUpdated, values.get(LAST_UPDATED));
     }
 

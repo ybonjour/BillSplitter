@@ -1,13 +1,18 @@
 package ch.pantas.billsplitter.framework;
 
+import android.content.ContentValues;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.User;
+
+import static com.google.inject.internal.util.$Preconditions.checkArgument;
 
 public class CustomMatchers {
 
@@ -45,6 +50,52 @@ public class CustomMatchers {
                 description.appendText(to.getName());
                 description.appendText(" with amount");
                 description.appendValue(amount);
+            }
+        };
+    }
+
+    public static Matcher<ContentValues> matchesContentValues(final String... values) {
+        checkArgument(values.length % 2 == 0, "You must provide a value for each key.");
+        return new TypeSafeMatcher<ContentValues>() {
+            @Override
+            public boolean matchesSafely(ContentValues contentValues) {
+                if (contentValues == null) return false;
+
+                Map<String, String> values = getValues();
+                if (values.size() != contentValues.size()) return false;
+
+                for (String key : values.keySet()) {
+                    if (!contentValues.containsKey(key)) return false;
+
+                    if (!contentValues.get(key).equals(values.get(key))) return false;
+                }
+                return true;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Content value with entries ");
+                boolean first = true;
+                Map<String, String> values = getValues();
+                for (String key : values.keySet()) {
+                    if (!first) description.appendText(",");
+
+                    description.appendText("(");
+                    description.appendText(key);
+                    description.appendText(",");
+                    description.appendText(values.get(key));
+                    description.appendText(")");
+
+                    first = false;
+                }
+            }
+
+            private Map<String, String> getValues() {
+                Map<String, String> valueMap = new HashMap<String, String>();
+                for (int i = 0; i < values.length; i += 2) {
+                    valueMap.put(values[i], values[i + 1]);
+                }
+                return valueMap;
             }
         };
     }

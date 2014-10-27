@@ -2,37 +2,68 @@ package ch.pantas.billsplitter.dataaccess;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
+import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
 
 import org.mockito.Mock;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.AttendeeRowMapper;
+import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.Participant;
 
-import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.TABLE;
+import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.EXPENSE;
+import static ch.pantas.billsplitter.framework.CustomMatchers.hasSize;
+import static java.util.Arrays.asList;
+import static java.util.UUID.randomUUID;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AttendeeStoreTest extends BaseStoreTest {
+public class AttendeeStoreTest extends BaseMockitoInstrumentationTest {
 
-    @Inject
-    private AttendeeStore store;
+    private static final List<Attendee> EMPTY_LIST = new LinkedList<Attendee>();
 
     @Mock
-    private AttendeeRowMapper mapper;
+    private GenericStore<Attendee> genericStore;
 
     @Mock
     private Attendee attendee;
 
     @Mock
+    private AttendeeRowMapper attendeeRowMapper;
+
+    @Mock
     private ParticipantStore participantStore;
+
+    @Inject
+    private AttendeeStore store;
+
+
+    @Override
+    protected Module getDefaultModule() {
+        return new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(new TypeLiteral<GenericStore<Attendee>>() {
+                }).toInstance(genericStore);
+            }
+        };
+    }
 
     @SmallTest
     public void testGetAttendeesThrowsNullPointerExceptionIfNoExpenseIdProvided() {
         try {
-            store.getAttendingParticipants(null);
+            store.getAttendees(null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -42,6 +73,52 @@ public class AttendeeStoreTest extends BaseStoreTest {
     @SmallTest
     public void testGetAttendeesThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
         try {
+            store.getAttendees("");
+            fail("No exception has been thrown");
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testGetAttendeesReturnsResultOfGenericStore() {
+        // Given
+        String expenseId = randomUUID().toString();
+        when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
+
+        // When
+        List<Attendee> attendees = store.getAttendees(expenseId);
+
+        // Then
+        assertEquals(EMPTY_LIST, attendees);
+    }
+
+    @SmallTest
+    public void testGetAttendeesUsesCorrectWhereParameters() {
+        // Given
+        String expenseId = randomUUID().toString();
+        when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
+
+        // When
+        store.getAttendees(expenseId);
+
+        // Then
+        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(EXPENSE, expenseId))));
+    }
+
+    @SmallTest
+    public void testGetAttendingParticipantsThrowsNullPointerExceptionIfNoExpenseIdProvided() {
+        try {
+            store.getAttendingParticipants(null);
+            fail("No exception has been thrown");
+        } catch (NullPointerException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testGetAttendingParticipantsThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
+        try {
             store.getAttendingParticipants("");
             fail("No exception has been thrown");
         } catch (IllegalArgumentException e) {
@@ -50,12 +127,13 @@ public class AttendeeStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetAttendeesReturnsEmptyParticipantListIfNoExpensesExist() {
+    public void testGetAttendingParticipantsReturnsEmptyListIfNoAttendeesExist() {
         // Given
-        when(cursor.moveToNext()).thenReturn(false);
+        String expenseId = randomUUID().toString();
+        when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        List<Participant> participants = store.getAttendingParticipants("abc");
+        List<Participant> participants = store.getAttendingParticipants(expenseId);
 
         // Then
         assertNotNull(participants);
@@ -63,16 +141,17 @@ public class AttendeeStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetAttendeesReturnsCorrectParticipant() {
+    public void testGetAttendingParticipantsReturnsCorrectParticipant() {
         // Given
-        Participant participant = new Participant("participantId", "userId", "eventId", false, 0);
-        when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mapper.map(cursor)).thenReturn(attendee);
-        when(attendee.getParticipant()).thenReturn(participant.getId());
+        String expenseId = randomUUID().toString();
+        Attendee attendee = new Attendee(randomUUID().toString(), randomUUID().toString(), randomUUID().toString());
+        when(genericStore.getModelsByQuery(anyMap())).thenReturn(asList(attendee));
+
+        Participant participant = new Participant(attendee.getParticipant(), randomUUID().toString(), randomUUID().toString(), false, 0);
         when(participantStore.getById(participant.getId())).thenReturn(participant);
 
         // When
-        List<Participant> participants = store.getAttendingParticipants(participant.getId());
+        List<Participant> participants = store.getAttendingParticipants(expenseId);
 
         // Then
         assertNotNull(participants);
@@ -81,20 +160,52 @@ public class AttendeeStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetAttendeesDoesNotReturnUserIfItDoesNotExist() {
+    public void testGetAttendingParticipantsDoesNotReturnParticipantIfItDoesNotExist() {
         // Given
-        String participantId = "participantId";
-        when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mapper.map(cursor)).thenReturn(attendee);
-        when(attendee.getParticipant()).thenReturn(participantId);
-        when(participantStore.getById(participantId)).thenReturn(null);
-        when(mapper.getTableName()).thenReturn(TABLE);
+        String expenseId = randomUUID().toString();
+        Attendee attendee = new Attendee(randomUUID().toString(), randomUUID().toString(), randomUUID().toString());
+        when(genericStore.getModelsByQuery(anyMap())).thenReturn(asList(attendee));
+
+        when(participantStore.getById(attendee.getParticipant())).thenReturn(null);
 
         // When
-        List<Participant> participants = store.getAttendingParticipants("abc");
+        List<Participant> participants = store.getAttendingParticipants(expenseId);
 
         // Then
         assertNotNull(participants);
         assertEquals(0, participants.size());
+        assertEquals(0, participants.size());
+    }
+
+    @SmallTest
+    public void testRemoveAllThrowsNullPointerExceptionIfNoExpenseIdProvided() {
+        try {
+            store.removeAll((String) null);
+            fail("No exception has been thrown");
+        } catch (NullPointerException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testRemoveAllThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
+        try {
+            store.removeAll("");
+            fail("No exception has been thrown");
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testRemoveAllCallsRemoveAllWithCorrectWhereArgument() {
+        // Given
+        String expenseId = randomUUID().toString();
+
+        // When
+        store.removeAll(expenseId);
+
+        // Then
+        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(1), hasEntry(EXPENSE, expenseId))));
     }
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Stage;
 
 import static ch.pantas.billsplitter.framework.AbstractModuleFactory.EMPTY_MODULES_ARRAY;
@@ -45,7 +44,7 @@ public abstract class BaseEspressoTest<T extends Activity> extends ActivityInstr
         application = null;
     }
 
-    private AbstractModule getMockModule() {
+    private com.google.inject.Module getMockModule() {
         return AbstractModuleFactory.getAbstractModuleFactory().createModule(this, BaseEspressoTest.class);
     }
 }

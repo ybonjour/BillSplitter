@@ -24,11 +24,23 @@ public class AttendeeStore extends BaseStore<Attendee> {
     private ParticipantStore participantStore;
 
     @Inject
-    public AttendeeStore(AttendeeRowMapper mapper) {
-        super(mapper);
+    public AttendeeStore(AttendeeRowMapper mapper, GenericStore<Attendee> genericStore) {
+        super(mapper, genericStore);
+    }
+
+    public List<Attendee> getAttendees(String expenseId) {
+        checkNotNull(expenseId);
+        checkArgument(!expenseId.isEmpty());
+
+        Map<String, String> where = new HashMap<String, String>();
+        where.put(EXPENSE, expenseId);
+        return genericStore.getModelsByQuery(where);
     }
 
     public List<Participant> getAttendingParticipants(String expenseId) {
+        checkNotNull(expenseId);
+        checkArgument(!expenseId.isEmpty());
+
         List<Attendee> attendees = getAttendees(expenseId);
         List<Participant> participants = new LinkedList<Participant>();
         for (Attendee attendee : attendees) {
@@ -39,19 +51,12 @@ public class AttendeeStore extends BaseStore<Attendee> {
         return participants;
     }
 
-    public List<Attendee> getAttendees(String expenseId) {
+    public void removeAll(String expenseId) {
         checkNotNull(expenseId);
         checkArgument(!expenseId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
         where.put(EXPENSE, expenseId);
-        List<Attendee> attendees = getModelsByQuery(where);
-        return attendees;
-    }
-
-    public void removeAll(String expenseId) {
-        Map<String, String> where = new HashMap<String, String>();
-        where.put(EXPENSE, expenseId);
-        removeAll(where);
+        genericStore.removeAll(where);
     }
 }

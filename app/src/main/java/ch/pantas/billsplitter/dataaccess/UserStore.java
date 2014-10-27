@@ -11,20 +11,25 @@ import ch.pantas.billsplitter.dataaccess.rowmapper.UserRowMapper;
 import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.UserTable.NAME;
+import static com.google.inject.internal.util.$Preconditions.checkArgument;
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 @Singleton
 public class UserStore extends BaseStore<User> {
 
     @Inject
-    public UserStore(UserRowMapper mapper) {
-        super(mapper);
+    public UserStore(UserRowMapper mapper, GenericStore<User> genericStore) {
+        super(mapper, genericStore);
     }
 
     public User getUserWithName(String name) {
+        checkNotNull(name);
+        checkArgument(!name.isEmpty());
+
         Map<String, String> where = new HashMap<String, String>();
         where.put(NAME, name);
 
-        List<User> users = getModelsByQuery(where);
+        List<User> users = genericStore.getModelsByQuery(where);
 
         if (users.size() == 0) {
             return null;
@@ -34,9 +39,11 @@ public class UserStore extends BaseStore<User> {
     }
 
     public List<User> getUsersWithNameLike(String name) {
+        checkNotNull(name);
+
         Map<String, String> where = new HashMap<String, String>();
         where.put(NAME, name);
 
-        return getModelsByQueryWithLike(where);
+        return genericStore.getModelsByQueryWithLike(where);
     }
 }

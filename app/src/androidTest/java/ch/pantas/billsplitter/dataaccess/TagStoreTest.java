@@ -1,37 +1,57 @@
 package ch.pantas.billsplitter.dataaccess;
 
-import android.database.Cursor;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
+import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
 
 import org.mockito.Mock;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.TagRowMapper;
+import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Tag;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.TagTable.NAME;
 import static ch.pantas.billsplitter.framework.CustomMatchers.hasSize;
+import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasEntry;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TagStoreTest extends BaseStoreTest {
-    @Inject
-    private TagStore tagStore;
+public class TagStoreTest extends BaseMockitoInstrumentationTest {
+
+    private static final List<Tag> EMPTY_LIST = new LinkedList<Tag>();
+
+    @Mock
+    private GenericStore<Tag> genericStore;
 
     @Mock
     private TagRowMapper mapper;
+    @Inject
+    private TagStore store;
 
     private Tag tag;
+
+    @Override
+    protected Module getDefaultModule() {
+        return new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(new TypeLiteral<GenericStore<Tag>>() {
+                }).toInstance(genericStore);
+            }
+        };
+    }
 
     @Override
     public void setUp() throws Exception {
@@ -42,7 +62,7 @@ public class TagStoreTest extends BaseStoreTest {
     @SmallTest
     public void testGetTagWithNameThrowsNullPointerExceptionIfNoNameProvided() {
         try {
-            tagStore.getTagWithName(null);
+            store.getTagWithName(null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -50,9 +70,9 @@ public class TagStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetTagWithNameThrowsIllegalArgumentExceptionIfEmptyoNameProvided() {
+    public void testGetTagWithNameThrowsIllegalArgumentExceptionIfEmptyNameProvided() {
         try {
-            tagStore.getTagWithName("");
+            store.getTagWithName("");
             fail("No exception has been thrown");
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -62,10 +82,10 @@ public class TagStoreTest extends BaseStoreTest {
     @SmallTest
     public void testGetTagWithNameReturnsNullIfNoTagWithThatNameExists() {
         // Given
-        when(cursor.moveToNext()).thenReturn(false);
+        when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        Tag result = tagStore.getTagWithName("Food");
+        Tag result = store.getTagWithName("Food");
 
         // Then
         assertNull(result);
@@ -74,11 +94,10 @@ public class TagStoreTest extends BaseStoreTest {
     @SmallTest
     public void testGetTagWithNameReturnsCorrectTag() {
         // Given
-        when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mapper.map(cursor)).thenReturn(tag);
+        when(genericStore.getModelsByQuery(anyMap())).thenReturn(asList(tag));
 
         // When
-        Tag result = tagStore.getTagWithName(tag.getName());
+        Tag result = store.getTagWithName(tag.getName());
 
         // Then
         assertEquals(tag, result);
@@ -88,18 +107,19 @@ public class TagStoreTest extends BaseStoreTest {
     public void testGetTagWithNameHasCorrectWhereArgument() {
         // Given
         String name = "Food";
+        when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        tagStore.getTagWithName(name);
+        store.getTagWithName(name);
 
         // Then
-        verify(database, times(1)).query(anyString(), argThat(allOf(hasSize(1), hasEntry(NAME, name))));
+        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(NAME, name))));
     }
 
     @SmallTest
     public void testGetTagWithNameLikeThrowsNullPointerExceptionIfNoNameProvided() {
         try {
-            tagStore.getTagWithName(null);
+            store.getTagWithName(null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -107,42 +127,26 @@ public class TagStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetTagWithNameLikeReturnsEmptyListIfNoMatchingTagExists() {
+    public void testGetTagWithNameLikeReturnsResultOfGenericStore() {
         // Given
-        when(cursor.moveToNext()).thenReturn(false);
+        when(genericStore.getModelsByQueryWithLike(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        List<Tag> tags = tagStore.getTagsWithNameLike("foo");
+        List<Tag> tags = store.getTagsWithNameLike("foo");
 
         // Then
-        assertNotNull(tags);
-        assertEquals(0, tags.size());
-    }
-
-    @SmallTest
-    public void testGetTagWithNameLikeReturnsCorrectTags() {
-        // Given
-        when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mapper.map(any(Cursor.class))).thenReturn(tag);
-
-        // When
-        List<Tag> tags = tagStore.getTagsWithNameLike("foo");
-
-        // Then
-        assertEquals(1, tags.size());
-        assertEquals(tag, tags.get(0));
+        assertEquals(EMPTY_LIST, tags);
     }
 
     @SmallTest
     public void testGetTagWithNameLikeHasCorrectWhereArguments() {
         // Given
         String name = "food";
-        when(cursor.moveToNext()).thenReturn(false);
 
         // When
-        tagStore.getTagsWithNameLike(name);
+        store.getTagsWithNameLike(name);
 
         // Then
-        verify(database, times(1)).queryWithLike(anyString(), argThat(allOf(hasSize(1), hasEntry(NAME, name))));
+        verify(genericStore, times(1)).getModelsByQueryWithLike(argThat(allOf(hasSize(1), hasEntry(NAME, name))));
     }
 }

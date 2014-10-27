@@ -6,8 +6,11 @@ import com.google.inject.Module;
 import org.mockito.Mock;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.inject.util.Modules.override;
 
 public class AbstractModuleFactory {
 
@@ -15,16 +18,24 @@ public class AbstractModuleFactory {
 
     private static AbstractModuleFactory instance;
 
-    private AbstractModuleFactory() { }
+    private AbstractModuleFactory() {
+    }
 
     public static AbstractModuleFactory getAbstractModuleFactory() {
-        if(instance == null) instance = new AbstractModuleFactory();
+        if (instance == null) instance = new AbstractModuleFactory();
 
         return instance;
     }
 
-    public AbstractModule createModule(Object test, Class baseClazz) {
-        return new MockModule(getListOfMocks(test, baseClazz));
+    public Module createModule(Object test, Class baseClazz) {
+        return createModule(test, baseClazz, null);
+    }
+
+    public Module createModule(Object test, Class baseClazz, Module defaultModule) {
+        Module module = new MockModule(getListOfMocks(test, baseClazz));
+        if(defaultModule == null) return module;
+
+        return override(module).with(defaultModule);
     }
 
     private static List<Object> getListOfMocks(Object test, Class baseClazz) {
@@ -76,7 +87,8 @@ public class AbstractModuleFactory {
         protected void configure() {
             for (final Object mock : mocksToInject) {
                 Class clazz = mock.getClass();
-                bind(clazz.getSuperclass()).toInstance(mock);
+                Class mockingClazz = clazz.getSuperclass().equals(Proxy.class) ? clazz : clazz.getSuperclass();
+                bind(mockingClazz).toInstance(mock);
             }
         }
     }
