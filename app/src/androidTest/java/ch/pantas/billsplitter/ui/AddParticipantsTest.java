@@ -25,6 +25,7 @@ import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static java.util.UUID.randomUUID;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,7 +61,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     public void setUp() throws Exception {
         super.setUp();
 
-        event = new Event("abcd", "An Event", EUR);
+        event = new Event("abcd", "An Event", EUR, randomUUID().toString());
         Intent intent = new Intent();
         intent.putExtra(EVENT_ID, event.getId());
         setActivityIntent(intent);
@@ -100,9 +101,9 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         userList.add(userC);
 
         List<Participant> participantsList = new LinkedList<Participant>();
-        participantsList.add(new Participant("partA", me.getId(), me.getName()));
-        participantsList.add(new Participant("partB", userB.getId(), userB.getName()));
-        participantsList.add(new Participant("partC", userC.getId(), userC.getName()));
+        participantsList.add(new Participant("partA", me.getId(), me.getName(), false, 0));
+        participantsList.add(new Participant("partB", userB.getId(), userB.getName(), false, 0));
+        participantsList.add(new Participant("partC", userC.getId(), userC.getName(), false, 0));
 
         List<User> otherParticipantsList = new LinkedList<User>(userList);
         otherParticipantsList.remove(0);

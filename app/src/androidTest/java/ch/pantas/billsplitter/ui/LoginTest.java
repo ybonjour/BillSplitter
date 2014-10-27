@@ -24,6 +24,7 @@ import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewA
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static java.util.UUID.randomUUID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -138,7 +139,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     public void testEventDetailIsStartedWhenEventIdIsAlreadySet() {
         // Given
         when(userService.getMe()).thenReturn(new User("a", "joe"));
-        Event event = new Event("eventId", "eventName", EUR);
+        Event event = new Event("eventId", "eventName", EUR, randomUUID().toString());
         when(preferenceService.getActiveEventId()).thenReturn(event.getId());
         when(eventStore.getById(event.getId())).thenReturn(event);
 

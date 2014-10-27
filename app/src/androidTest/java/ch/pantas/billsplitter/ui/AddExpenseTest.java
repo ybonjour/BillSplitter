@@ -98,14 +98,14 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     public void setUp() throws Exception {
         super.setUp();
 
-        event = new Event("abcd", "An Event", EUR);
+        event = new Event("abcd", "An Event", EUR, randomUUID().toString());
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);
         when(eventStore.getById(event.getId())).thenReturn(event);
         me = new User(randomUUID().toString(), "Me");
         when(userService.getMe()).thenReturn(me);
-        participantMe = new Participant(randomUUID().toString(), me.getId(), event.getId());
+        participantMe = new Participant(randomUUID().toString(), me.getId(), event.getId(), true, 0);
         when(participantStore.getParticipant(event.getId(), me.getId())).thenReturn(participantMe);
         when(userStore.getUserWithName(me.getName())).thenReturn(me);
         when(payerAdapter.getSelectedUser()).thenReturn(me);
@@ -155,7 +155,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
         String description = "An expense";
         String amount = "25.0";
         User user = new User(randomUUID().toString(), "Joe");
-        Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId());
+        Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId(), false, 0);
         getActivity();
         onView(withId(R.id.expense_description)).perform(typeText(description));
         onView(withId(R.id.expense_amount)).perform(typeText(amount));
@@ -189,7 +189,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     public void testEditExpenseLoadsExistingValues() {
         // Given
         User payer = new User("payerId", "Payer");
-        Expense expense = new Expense("expenseId", event.getId(), payer.getId(), "desc", 123);
+        Expense expense = new Expense("expenseId", event.getId(), payer.getId(), "desc", 123, randomUUID().toString());
 
         User attendee1 = new User("att1", "attendee1");
         User attendee2 = new User("att2", "attendee2");
@@ -205,7 +205,7 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
 
         List<Participant> allParticipants = new LinkedList<Participant>();
         for (User user : allUsers) {
-            allParticipants.add(new Participant("participantId" + user.getId(), user.getId(), event.getId()));
+            allParticipants.add(new Participant("participantId" + user.getId(), user.getId(), event.getId(), false, 0));
         }
 
         List<User> nonPayerList = new LinkedList<User>();

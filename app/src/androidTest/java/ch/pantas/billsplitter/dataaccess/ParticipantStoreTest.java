@@ -9,9 +9,7 @@ import org.mockito.Mock;
 import java.util.List;
 import java.util.UUID;
 
-import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
 import ch.pantas.billsplitter.dataaccess.rowmapper.ParticipantRowMapper;
-import ch.pantas.billsplitter.framework.CustomMatchers;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 
@@ -37,27 +35,27 @@ public class ParticipantStoreTest extends BaseStoreTest {
     private UserStore userStore;
 
     @SmallTest
-    public void testGetParticipantsThrowsNullPointerExceptionIfNoEventIdProvided(){
-        try{
+    public void testGetParticipantsThrowsNullPointerExceptionIfNoEventIdProvided() {
+        try {
             store.getParticipants(null);
             fail("No exception has been thrown");
-        } catch(NullPointerException e){
+        } catch (NullPointerException e) {
             assertNotNull(e);
         }
     }
 
     @SmallTest
-    public void testGetParticipantsThrowsIllegalArgumentExceptionIfEmptyEventIdProvided(){
-        try{
+    public void testGetParticipantsThrowsIllegalArgumentExceptionIfEmptyEventIdProvided() {
+        try {
             store.getParticipants("");
             fail("No exception has been thrown");
-        } catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
     }
 
     @SmallTest
-    public void testGetParticipantsReturnsEmptyListIfNoParticipantsForThatEventExist(){
+    public void testGetParticipantsReturnsEmptyListIfNoParticipantsForThatEventExist() {
         // Given
         when(cursor.moveToNext()).thenReturn(false);
 
@@ -70,7 +68,7 @@ public class ParticipantStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetParticipantsReturnsCorrectUser(){
+    public void testGetParticipantsReturnsCorrectUser() {
         // Given
         String userId = UUID.randomUUID().toString();
         User user = new User(userId, "Joe");
@@ -78,7 +76,7 @@ public class ParticipantStoreTest extends BaseStoreTest {
 
         String id = UUID.randomUUID().toString();
         String eventId = UUID.randomUUID().toString();
-        Participant participant = new Participant(id, userId, eventId);
+        Participant participant = new Participant(id, userId, eventId, false, 0);
         when(mapper.map(cursor)).thenReturn(participant);
 
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
@@ -93,12 +91,12 @@ public class ParticipantStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetParticipantsDoesNotReturnUserIfItDoesNotExist(){
+    public void testGetParticipantsDoesNotReturnUserIfItDoesNotExist() {
         // Given
         String id = UUID.randomUUID().toString();
         String userId = UUID.randomUUID().toString();
         String eventId = UUID.randomUUID().toString();
-        Participant participant = new Participant(id, userId, eventId);
+        Participant participant = new Participant(id, userId, eventId, false, 0);
         when(mapper.map(cursor)).thenReturn(participant);
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
 
@@ -113,7 +111,7 @@ public class ParticipantStoreTest extends BaseStoreTest {
     }
 
     @SmallTest
-    public void testGetParticipantsCallsQueryWithCorrectWhereClause(){
+    public void testGetParticipantsCallsQueryWithCorrectWhereClause() {
         // Given
         String eventId = UUID.randomUUID().toString();
         when(cursor.moveToNext()).thenReturn(false);

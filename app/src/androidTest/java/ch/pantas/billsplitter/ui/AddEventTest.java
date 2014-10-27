@@ -25,6 +25,7 @@ import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewA
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static java.util.UUID.randomUUID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -107,7 +108,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     @LargeTest
     public void testEditEventCurrentEventNameDisplayed() {
         // Given
-        Event event = new Event("abc", "testname", EUR);
+        Event event = new Event("abc", "testname", EUR, randomUUID().toString());
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);
@@ -124,7 +125,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     @LargeTest
     public void testEditParticipantsIsNotStartedIfNextButtonIsPressed() {
         // Given
-        Event event = new Event("abc", "testname", EUR);
+        Event event = new Event("abc", "testname", EUR, randomUUID().toString());
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);

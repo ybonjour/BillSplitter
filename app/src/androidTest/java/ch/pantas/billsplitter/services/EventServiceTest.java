@@ -37,7 +37,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        event = new Event(randomUUID().toString(), "Event name", CHF);
+        event = new Event(randomUUID().toString(), "Event name", CHF, randomUUID().toString());
         when(sharedPreferenceService.getActiveEventId()).thenReturn(null);
     }
 
@@ -54,7 +54,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveEventThrowsIllegalArgumentExceptionIfNewEventProvided() {
         try {
-            Event event = new Event("Name", CHF);
+            Event event = new Event("Name", CHF, randomUUID().toString());
             eventService.removeEventAndGetActiveEvent(event);
             fail("No exception has been thrown");
         } catch (IllegalArgumentException e) {
@@ -74,7 +74,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveEventSetsNewActiveEventAndReturnsIt(){
         // Given
-        Event newActiveEvent = new Event(randomUUID().toString(), "Name", CHF);
+        Event newActiveEvent = new Event(randomUUID().toString(), "Name", CHF, randomUUID().toString());
         when(sharedPreferenceService.getActiveEventId()).thenReturn(event.getId());
         when(eventStore.getAll()).thenReturn(asList(newActiveEvent));
 
@@ -99,7 +99,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveEventDoesNotSetNewActiveEventWhenActiveEventWasNotProvidedEvent(){
         // Given
-        Event activeEvent = new Event(randomUUID().toString(), "Name", CHF);
+        Event activeEvent = new Event(randomUUID().toString(), "Name", CHF, randomUUID().toString());
         when(sharedPreferenceService.getActiveEventId()).thenReturn(activeEvent.getId());
         when(eventStore.getById(activeEvent.getId())).thenReturn(activeEvent);
 

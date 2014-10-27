@@ -39,7 +39,7 @@ public class ExpenseStoreTest extends BaseStoreTest {
     @SmallTest
      public void testExpensesOfEvent() {
         // Given
-        Expense e = new Expense("a", "b", "c", "d", 10);
+        Expense e = new Expense("a", "b", "c", "d", 10, "owner");
         String eventId = UUID.randomUUID().toString();
         expenseStore.getExpensesOfEvent(eventId);
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
@@ -47,23 +47,6 @@ public class ExpenseStoreTest extends BaseStoreTest {
 
         // When
         List<Expense> expenses = expenseStore.getExpensesOfEvent(eventId);
-
-        // Then
-        assertEquals(1, expenses.size());
-        assertEquals(e, expenses.get(0));
-    }
-
-    @SmallTest
-    public void testExpensesOfUser() {
-        // Given
-        Expense e = new Expense("a", "b", "c", "d", 10);
-        String userId = UUID.randomUUID().toString();
-        expenseStore.getExpensesOfPayer(userId);
-        when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mapper.map(cursor)).thenReturn(e).thenReturn(null);
-
-        // When
-        List<Expense> expenses = expenseStore.getExpensesOfEvent(userId);
 
         // Then
         assertEquals(1, expenses.size());

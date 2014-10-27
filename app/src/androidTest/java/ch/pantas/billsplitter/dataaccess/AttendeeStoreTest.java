@@ -65,7 +65,7 @@ public class AttendeeStoreTest extends BaseStoreTest {
     @SmallTest
     public void testGetAttendeesReturnsCorrectParticipant() {
         // Given
-        Participant participant = new Participant("participantId", "userId", "eventId");
+        Participant participant = new Participant("participantId", "userId", "eventId", false, 0);
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
         when(mapper.map(cursor)).thenReturn(attendee);
         when(attendee.getParticipant()).thenReturn(participant.getId());

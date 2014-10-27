@@ -86,7 +86,7 @@ public class GenericStoreTest extends BaseStoreTest {
     @SmallTest
     public void testPersistWithNewModel() {
         // Given
-        final Event event = new Event("Lissabon Trip", EUR);
+        final Event event = new Event("Lissabon Trip", EUR, "owner");
 
         // When
         store.persist(event);
@@ -100,7 +100,7 @@ public class GenericStoreTest extends BaseStoreTest {
     public void testPersistWithExistingModel() {
         // Given
         String id = "abc";
-        Event event = new Event(id, "Lissabon Trip", EUR);
+        Event event = new Event(id, "Lissabon Trip", EUR, "owner");
 
         // When
         store.persist(event);
