@@ -80,15 +80,6 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     }
 
     @LargeTest
-    public void testSaveButtonIsDisplayed() {
-        // When
-        getActivity();
-
-        // Then
-        onView(withText(R.string.save)).check(matches(isDisplayed()));
-    }
-
-    @LargeTest
     public void testEditParticipantsExistingParticipantsAreShown() {
         // Given
         User me = new User("a", "Me");

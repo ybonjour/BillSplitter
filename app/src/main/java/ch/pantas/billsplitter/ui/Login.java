@@ -8,11 +8,10 @@ import android.widget.EditText;
 
 import com.google.inject.Inject;
 
-import ch.pantas.billsplitter.dataaccess.EventStore;
-import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.EventService;
 import ch.pantas.billsplitter.services.LoginService;
 import ch.pantas.billsplitter.services.MigrationService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
@@ -33,16 +32,13 @@ public class Login extends RoboActivity {
     private ActivityStarter activityStarter;
 
     @Inject
-    private UserStore userStore;
-
-    @Inject
     private UserService userService;
 
     @Inject
     private LoginService loginService;
 
     @Inject
-    private EventStore eventStore;
+    private EventService eventService;
 
     @Inject
     private MigrationService migrationService;
@@ -67,7 +63,7 @@ public class Login extends RoboActivity {
     }
 
     private void handleUserLoggedIn() {
-        Event event = getStoredEvent();
+        Event event = eventService.getActiveEvent();
         if (event != null) {
             activityStarter.startEventDetails(this, event, true);
         } else {
@@ -76,7 +72,7 @@ public class Login extends RoboActivity {
         finish();
     }
 
-    public void onStarted() {
+    public void onStartClicked() {
         String userName = nameField.getText().toString();
         if (userName == null || userName.isEmpty()) {
             nameField.setBackgroundColor(getResources().getColor(R.color.error_color));
@@ -100,15 +96,9 @@ public class Login extends RoboActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (R.id.action_login_start == item.getItemId()) {
-            onStarted();
+            onStartClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private Event getStoredEvent() {
-        String eventId = sharedPreferenceService.getActiveEventId();
-        if (eventId == null) return null;
-        return eventStore.getById(eventId);
     }
 }

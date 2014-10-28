@@ -5,18 +5,20 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import org.mockito.Mock;
 
-import ch.pantas.billsplitter.dataaccess.EventStore;
-import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.EventService;
+import ch.pantas.billsplitter.services.LoginService;
+import ch.pantas.billsplitter.services.MigrationService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.splitty.R;
 
+import static ch.pantas.billsplitter.framework.CustomMatchers.matchesUser;
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
-import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.closeSoftKeyboard;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
@@ -24,10 +26,10 @@ import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewA
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
-import static java.util.UUID.randomUUID;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,19 +37,22 @@ import static org.mockito.Mockito.when;
 
 public class LoginTest extends BaseEspressoTest<Login> {
     @Mock
-    private UserStore userStore;
-
-    @Mock
     private SharedPreferenceService preferenceService;
 
     @Mock
     private ActivityStarter activityStarter;
 
     @Mock
-    private EventStore eventStore;
+    private UserService userService;
 
     @Mock
-    private UserService userService;
+    private LoginService loginService;
+
+    @Mock
+    private EventService eventService;
+
+    @Mock
+    private MigrationService migrationService;
 
     public LoginTest() {
         super(Login.class);
@@ -63,24 +68,25 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-    public void testSaveButtonIsShown() {
+    public void testStartButtonIsShown() {
         // When
         getActivity();
 
         // Then
-        onView(withText(R.string.save)).check(matches(isDisplayed()));
+        onView(withId(R.id.action_login_start)).check(matches(isDisplayed()));
     }
 
     @LargeTest
-    public void testUserNameIsNotStoredIfNoUserNameEntered() {
+    public void testUserIdIsNotLoggedIfNoUserNameEntered() {
         // Given
         getActivity();
 
         // When
-        onView(withText(R.string.save)).perform(click());
+        onView(withId(R.id.action_login_start)).perform(click());
 
         // Then
-        verify(preferenceService, never()).storeUserName(anyString());
+        verify(loginService, never()).login(any(User.class));
+
     }
 
     @LargeTest
@@ -89,31 +95,51 @@ public class LoginTest extends BaseEspressoTest<Login> {
         getActivity();
 
         // When
-        onView(withText(R.string.save)).perform(click());
+        onView(withId(R.id.action_login_start)).perform(click());
 
         // Then
         onView(withId(R.id.user_name)).check(hasBackgroundColor(R.color.error_color));
     }
 
     @LargeTest
-    public void testUserNameIsWrittenToSharedPreferencesWhenSaved() {
+    public void testUserIsLoggedInWhenPressingStart() throws InterruptedException {
         // Given
         String userName = "Joe";
         getActivity();
         onView(withId(R.id.user_name)).perform(typeText(userName));
+        closeSoftKeyboard();
+        //HACK: Await keyboard closed, since this animation can not be disabled on the phone
+        Thread.sleep(100);
 
         // When
-        onView(withText(R.string.save)).perform(click());
+        onView(withId(R.id.action_login_start)).perform(click());
 
         // Then
-        verify(preferenceService, times(1)).storeUserName(userName);
-
+        verify(loginService, times(1)).login(argThat(matchesUser(userName)));
     }
 
     @LargeTest
-    public void testEventListIsStartedWhenUsernameIsAlreadySet() {
+    public void testStartEventIsStartedWhenPressingStart() throws InterruptedException {
+        // Given
+        String userName = "Joe";
+        getActivity();
+        onView(withId(R.id.user_name)).perform(typeText(userName));
+        closeSoftKeyboard();
+        //HACK: Await keyboard closed, since this animation can not be disabled on the phone
+        Thread.sleep(100);
+
+        // When
+        onView(withId(R.id.action_login_start)).perform(click());
+
+        // Then
+        verify(activityStarter, times(1)).startStartEvent(any(Login.class));
+    }
+
+    @LargeTest
+    public void testStartEventIsStartedWhenUserAlreadyLoggedInButNoActiveEventIsSet() {
         // Given
         when(userService.getMe()).thenReturn(new User("a", "Joe"));
+        when(eventService.getActiveEvent()).thenReturn(null);
 
         // When
         getActivity();
@@ -123,30 +149,35 @@ public class LoginTest extends BaseEspressoTest<Login> {
     }
 
     @LargeTest
-    public void testEventListIsStartedWhenNoEventIdIsAlreadySet() {
+    public void testEventDetailIsStartedWhenUserIsLoggedInAndActiveEventIsSet() {
         // Given
         when(userService.getMe()).thenReturn(new User("a", "joe"));
-        when(preferenceService.getActiveEventId()).thenReturn(null);
-
-        // When
-        getActivity();
-
-        // Then
-        verify(activityStarter, times(1)).startStartEvent(any(Context.class));
-    }
-
-    @LargeTest
-    public void testEventDetailIsStartedWhenEventIdIsAlreadySet() {
-        // Given
-        when(userService.getMe()).thenReturn(new User("a", "joe"));
-        Event event = new Event("eventId", "eventName", EUR, randomUUID().toString());
-        when(preferenceService.getActiveEventId()).thenReturn(event.getId());
-        when(eventStore.getById(event.getId())).thenReturn(event);
+        Event event = mock(Event.class);
+        when(eventService.getActiveEvent()).thenReturn(event);
 
         // When
         getActivity();
 
         // Then
         verify(activityStarter, times(1)).startEventDetails(any(Context.class), eq(event), eq(true));
+    }
+
+    // TODO: Remove once everyone has updated to version 0.2
+    @LargeTest
+    public void testMigrationLogicIsPerformedCorrectly(){
+        // Given
+        String username = "Joe";
+        when(userService.getMe()).thenReturn(null);
+        when(preferenceService.getUserName()).thenReturn(username);
+        Event event = mock(Event.class);
+        when(eventService.getActiveEvent()).thenReturn(event);
+
+        // When
+        getActivity();
+
+        // Then
+        verify(migrationService, times(1)).migrateToVersion200();
+        verify(preferenceService, times(1)).removeUserName();
+        verify(activityStarter, times(1)).startEventDetails(any(Login.class), eq(event), eq(true));
     }
 }

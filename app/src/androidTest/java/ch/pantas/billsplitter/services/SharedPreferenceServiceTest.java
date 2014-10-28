@@ -8,9 +8,13 @@ import com.google.inject.Inject;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 
 import static ch.pantas.billsplitter.services.SharedPreferenceService.ACTIVE_EVENT_ID;
+import static ch.pantas.billsplitter.services.SharedPreferenceService.TRACKING_ENABLED;
+import static ch.pantas.billsplitter.services.SharedPreferenceService.TrackingEnabledListener;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_ID;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_NAME;
 import static java.util.UUID.randomUUID;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest {
 
@@ -23,6 +27,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     private String cachedUsername;
     private String cachedUserId;
     private String cachedActiveEventId;
+    private boolean cachedTrackingEnabled;
 
     @Override
     public void setUp() throws Exception {
@@ -30,9 +35,12 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
         cachedUsername = sharedPreferences.getString(USER_NAME, null);
         cachedUserId = sharedPreferences.getString(USER_ID, null);
         cachedActiveEventId = sharedPreferences.getString(ACTIVE_EVENT_ID, null);
+        boolean cachedTrackingEnabled = sharedPreferences.getBoolean(TRACKING_ENABLED, false);
+
         sharedPreferences.edit().remove(USER_NAME).commit();
         sharedPreferences.edit().remove(USER_ID).commit();
         sharedPreferences.edit().remove(ACTIVE_EVENT_ID).commit();
+        sharedPreferences.edit().remove(TRACKING_ENABLED).commit();
     }
 
     @Override
@@ -49,6 +57,8 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
         if (cachedActiveEventId != null) {
             sharedPreferences.edit().putString(ACTIVE_EVENT_ID, cachedActiveEventId).commit();
         }
+
+        sharedPreferences.edit().putBoolean(TRACKING_ENABLED, cachedTrackingEnabled).commit();
     }
 
     @SmallTest
@@ -90,6 +100,19 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
 
         // Then
         assertEquals(userName, service.getUserName());
+    }
+
+    @SmallTest
+    public void testRemoveUserNameRemovesUserName(){
+        // Given
+        String userName = "Joe";
+        service.storeUserName(userName);
+
+        // When
+        service.removeUserName();
+
+        // Then
+        assertNull(service.getUserName());
     }
 
     @SmallTest
@@ -154,4 +177,37 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
         assertEquals(eventId, service.getActiveEventId());
     }
 
+    @SmallTest
+    public void testStoreAndRetrieveActiveEventIdNull(){
+        // Given
+        service.storeActiveEventId("eventId");
+
+        // When
+        service.storeActiveEventId(null);
+
+        // Then
+        assertNull(service.getActiveEventId());
+    }
+
+    @SmallTest
+    public void testGetTrackingEnabledReturnsFalseIfNoFlagPresent(){
+        // When
+        boolean trackingEnabled = service.getTrackingEnabled();
+
+        // Then
+        assertFalse(trackingEnabled);
+    }
+
+    @SmallTest
+    public void testGetTrackingEnabledReturnsStoredValue(){
+        // Given
+        boolean value = true;
+        sharedPreferences.edit().putBoolean(TRACKING_ENABLED, value).commit();
+
+        // When
+        boolean trackingEnabled = service.getTrackingEnabled();
+
+        // Then
+        assertEquals(trackingEnabled, value);
+    }
 }

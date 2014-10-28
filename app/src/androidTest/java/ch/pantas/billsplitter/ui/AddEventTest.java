@@ -12,7 +12,9 @@ import org.mockito.Mock;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.EventService;
 import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.framework.CustomViewAssertions.hasBackgroundColor;
@@ -27,7 +29,6 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static java.util.UUID.randomUUID;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -38,6 +39,9 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
 
     @Mock
     private EventStore eventStore;
+
+    @Mock
+    private EventService eventService;
 
     @Mock
     private ActivityStarter activityStarter;
@@ -75,7 +79,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
         onView(withText(R.string.next)).perform(click());
 
         // Then
-        verify(eventStore, times(1)).persist(argThat(newEventWith(eventName)));
+        verify(eventService, times(1)).createEvent(eq(eventName), any(SupportedCurrency.class));
     }
 
     @LargeTest

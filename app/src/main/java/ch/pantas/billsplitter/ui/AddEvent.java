@@ -14,9 +14,10 @@ import java.util.Currency;
 import java.util.Locale;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
-import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.EventService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
@@ -26,7 +27,6 @@ import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE;
 import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
-import static java.util.Currency.getInstance;
 
 public class AddEvent extends RoboActivity {
 
@@ -42,15 +42,19 @@ public class AddEvent extends RoboActivity {
     private ActivityStarter activityStarter;
 
     @Inject
+    private EventService eventService;
+
+    @Inject
     private SharedPreferenceService sharedPreferenceService;
+
 
     Event event;
 
-    private SupportedCurrency getUserCurrency(){
+    private SupportedCurrency getUserCurrency() {
         Currency userCurrency = Currency.getInstance(Locale.getDefault());
-        try{
+        try {
             return SupportedCurrency.valueOf(userCurrency.getCurrencyCode());
-        } catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return EUR;
         }
     }
@@ -93,17 +97,11 @@ public class AddEvent extends RoboActivity {
 
         SupportedCurrency currency = SupportedCurrency.valueOf(currencySpinner.getSelectedItem().toString());
         if (event == null) {
-            String ownerId = sharedPreferenceService.getUserId();
-            event = new Event(eventName, currency, ownerId);
+            event = eventService.createEvent(eventName, currency);
+            activityStarter.startAddParticipants(this, event);
         } else {
             event.setName(eventName);
             event.setCurrency(currency);
-        }
-
-        if (event.isNew()) {
-            eventStore.persist(event);
-            activityStarter.startAddParticipants(this, event);
-        } else {
             eventStore.persist(event);
         }
 

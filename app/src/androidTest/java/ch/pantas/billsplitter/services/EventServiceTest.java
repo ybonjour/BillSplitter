@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.model.SupportedCurrency;
+import ch.pantas.billsplitter.model.User;
 
 import static ch.pantas.billsplitter.model.SupportedCurrency.CHF;
 import static java.util.Arrays.asList;
@@ -28,6 +30,9 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
 
     @Mock
     private EventStore eventStore;
+
+    @Mock
+    private UserService userService;
 
     @Mock
     private SharedPreferenceService sharedPreferenceService;
@@ -123,5 +128,84 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
         // Then
         verify(sharedPreferenceService, times(1)).storeActiveEventId(null);
         assertNull(result);
+    }
+
+    @SmallTest
+    public void testGetActiveEventReturnsNullIfNoActiveEventIsStored(){
+        // Given
+        when(sharedPreferenceService.getActiveEventId()).thenReturn(null);
+
+        // When
+        Event event = eventService.getActiveEvent();
+
+        // Then
+        assertNull(event);
+    }
+
+    @SmallTest
+    public void testGetActiveEventReturnsNullIfEventForStoredEventIdDoesNotExist(){
+        // Given
+        String eventId = randomUUID().toString();
+        when(sharedPreferenceService.getActiveEventId()).thenReturn(eventId);
+        when(eventStore.getById(event.getId())).thenReturn(null);
+
+        // When
+        Event event = eventService.getActiveEvent();
+
+        // Then
+        assertNull(event);
+    }
+
+    @SmallTest
+    public void testGetActiveEventReturnsStoredEvent(){
+        // Given
+        Event event = new Event(randomUUID().toString(), "An event", CHF, randomUUID().toString());
+        when(sharedPreferenceService.getActiveEventId()).thenReturn(event.getId());
+        when(eventStore.getById(event.getId())).thenReturn(event);
+
+        // When
+        Event result = eventService.getActiveEvent();
+
+        // Then
+        assertEquals(result, event);
+    }
+
+    @SmallTest
+    public void testCreateEventThrowsNullPointerExceptionIfNoNameProvided(){
+        try {
+            eventService.createEvent(null, CHF);
+            fail("No exception has been thrown");
+        } catch (NullPointerException e){
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testCreateEventThrowsIllegalArgumentExceptionIfEmptyNameProvided(){
+        try {
+            eventService.createEvent("", CHF);
+            fail("No exception has been thrown");
+        } catch (IllegalArgumentException e){
+            assertNotNull(e);
+        }
+    }
+
+    @SmallTest
+    public void testCreateEventCreatesEventCorrectly(){
+        // Given
+        String name = "An event";
+        SupportedCurrency currency = CHF;
+        User me = new User(randomUUID().toString(), "Joe");
+        when(userService.getMe()).thenReturn(me);
+
+        // When
+        Event event = eventService.createEvent(name, currency);
+
+        // Then
+        assertNotNull(event);
+        assertEquals(name, event.getName());
+        assertEquals(currency, event.getCurrency());
+        assertEquals(me.getId(), event.getOwnerId());
+        verify(eventStore, times(1)).persist(event);
     }
 }

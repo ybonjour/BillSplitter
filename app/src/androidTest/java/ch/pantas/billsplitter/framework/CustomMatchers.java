@@ -31,6 +31,22 @@ public class CustomMatchers {
         };
     }
 
+    public static Matcher<User> matchesUser(final String name) {
+        return new TypeSafeMatcher<User>() {
+            @Override
+            public boolean matchesSafely(User user) {
+                if (user == null) return false;
+                return user.getName().equals(name);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("User with name ");
+                description.appendText(name);
+            }
+        };
+    }
+
     public static Matcher<Debt> matchesDebt(final User from, final User to, final double amount) {
         return new TypeSafeMatcher<Debt>() {
             @Override

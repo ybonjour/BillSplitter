@@ -11,6 +11,8 @@ import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
+import ch.pantas.billsplitter.model.SupportedCurrency;
+import ch.pantas.billsplitter.model.User;
 
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
@@ -29,6 +31,9 @@ public class EventService {
 
     @Inject
     private AttendeeStore attendeeStore;
+
+    @Inject
+    private UserService userService;
 
     @Inject
     private SharedPreferenceService sharedPreferenceService;
@@ -50,6 +55,22 @@ public class EventService {
         } else {
             return eventStore.getById(activeEventId);
         }
+    }
+
+    public Event getActiveEvent() {
+        String eventId = sharedPreferenceService.getActiveEventId();
+        if (eventId == null) return null;
+        return eventStore.getById(eventId);
+    }
+
+    public Event createEvent(String name, SupportedCurrency currency){
+        checkNotNull(name);
+        checkArgument(!name.isEmpty());
+
+        User me = userService.getMe();
+        Event event = new Event(name, currency, me.getId());
+        eventStore.persist(event);
+        return event;
     }
 
     private void removeEvent(Event event){

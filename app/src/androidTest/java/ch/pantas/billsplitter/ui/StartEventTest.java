@@ -12,6 +12,7 @@ import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -40,7 +41,7 @@ public class StartEventTest extends BaseEspressoTest<StartEvent> {
         getActivity();
 
         // Then
-        onView(withText(R.string.add_event)).check(matches(isDisplayed()));
+        onView(withId(R.id.action_add_event)).check(matches(isDisplayed()));
     }
 
     @LargeTest
@@ -49,9 +50,18 @@ public class StartEventTest extends BaseEspressoTest<StartEvent> {
         getActivity();
 
         // When
-        onView(withText(R.string.add_event)).perform(click());
+        onView(withId(R.id.action_add_event)).perform(click());
 
         // Then
         verify(activityStarter, times(1)).startAddEvent(any(StartEvent.class));
+    }
+
+    @LargeTest
+    public void testHelpTextIsShown() {
+        // When
+        getActivity();
+
+        // Then
+        onView(withText(R.string.add_event_help_text)).check(matches(isDisplayed()));
     }
 }
