@@ -17,6 +17,8 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-20
+    - extra-google-analytics_sdk_v2
+    - extra-android-support
 
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
