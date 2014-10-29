@@ -23,10 +23,12 @@ import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.remote.SimpleBluetoothClient;
 import ch.pantas.billsplitter.services.ActivityStarter;
+import ch.pantas.billsplitter.services.ExportService;
 import ch.pantas.billsplitter.services.ImportService;
 import ch.pantas.billsplitter.services.LoginService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
+import ch.pantas.billsplitter.services.datatransfer.EventDto;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoOperator;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
@@ -71,6 +73,9 @@ public class BeamEventReceiver extends BeamBaseActivity implements BluetoothList
 
     @Inject
     private ImportService importService;
+
+    @Inject
+    private ExportService exportService;
 
     private SimpleBluetoothClient bluetoothClient;
 
@@ -168,7 +173,7 @@ public class BeamEventReceiver extends BeamBaseActivity implements BluetoothList
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     ParticipantDto participantDto = (ParticipantDto) adapterView.getItemAtPosition(i);
-                    boolean success = adapter.select(participantDto.user);
+                    boolean success = adapter.select(participantDto.getUser());
                     joinCheckBox.setChecked(!success);
                     participantsList.invalidateViews();
                     invalidateOptionsMenu();
@@ -212,9 +217,8 @@ public class BeamEventReceiver extends BeamBaseActivity implements BluetoothList
         importService.deepImportEvent(eventDto);
         sharedPreferenceService.storeActiveEventId(eventDto.getEvent().getId());
 
-        EventDtoBuilder builder = getInjector(this).getInstance(EventDtoBuilder.class);
-        builder.withEventId(eventDto.getEvent().getId());
-        bluetoothClient.postMessage(convertToJson(builder.build()));
+        EventDto newEventDto = exportService.exportEvent(eventDto.getEvent().getId());
+        bluetoothClient.postMessage(convertToJson(newEventDto));
 
         // TODO: Server should send ACK before we show success screen
         userSelectionContainer.setVisibility(GONE);

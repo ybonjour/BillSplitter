@@ -14,6 +14,7 @@ import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.remote.SimpleBluetoothServer;
+import ch.pantas.billsplitter.services.ExportService;
 import ch.pantas.billsplitter.services.ImportService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.services.datatransfer.EventDto;
@@ -41,6 +42,9 @@ public class BeamEvent extends BeamBaseActivity implements BluetoothListener {
     private UserService userService;
     @Inject
     private ImportService importService;
+    @Inject
+    private ExportService exportService;
+
 
     private Event event;
 
@@ -111,9 +115,9 @@ public class BeamEvent extends BeamBaseActivity implements BluetoothListener {
 
     @Override
     public void onConnected() {
-        EventDtoBuilder builder = getInjector(this).getInstance(EventDtoBuilder.class);
-        builder.withEventId(event.getId());
-        bluetoothServer.postMessage(convertToJson(builder.build()));
+
+        EventDto eventDto = exportService.exportEvent(event.getId());
+        bluetoothServer.postMessage(convertToJson(eventDto));
         setUpWaitingScreen();
     }
 

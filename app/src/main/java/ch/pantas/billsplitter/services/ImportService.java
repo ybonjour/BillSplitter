@@ -34,7 +34,7 @@ public class ImportService {
     @Inject
     private UserStore userStore;
 
-    public void deepImportEvent(EventDtoOperator eventDto){
+    public void deepImportEvent(EventDtoOperator eventDto) {
 
         User me = userService.getMe();
         Event event = eventDto.getEvent();
@@ -47,26 +47,26 @@ public class ImportService {
 
         importParticipants(eventDto);
 
-        for(ParticipantDto participantDto : eventDto.getParticipants()){
-            Participant participant = participantStore.getById(participantDto.participantId);
+        for (ParticipantDto participantDto : eventDto.getParticipants()) {
+            Participant participant = participantStore.getById(participantDto.getParticipantId());
 
             // Never touch my own expenses
             if (participant.getUserId().equals(me.getId())) continue;
 
-            if(participant.getLastUpdated() < participantDto.lastUpdated){
+            if (participant.getLastUpdated() < participantDto.getLastUpdated()) {
                 removeExpensesOfOwner(eventDto.getEvent(), participant.getUserId());
                 importExpensesOfOwner(eventDto, participant.getUserId());
-                participant.setLastUpdated(participantDto.lastUpdated);
+                participant.setLastUpdated(participantDto.getLastUpdated());
                 participantStore.persist(participant);
             }
         }
     }
 
-    private void removeExpensesOfOwner(Event event, String userId){
-        if(userId == null) return;
+    private void removeExpensesOfOwner(Event event, String userId) {
+        if (userId == null) return;
 
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId(), userId);
-        for(Expense expense : expenses){
+        for (Expense expense : expenses) {
             attendeeStore.removeAll(expense.getId());
         }
 
@@ -75,26 +75,26 @@ public class ImportService {
 
     private void importExpensesOfOwner(EventDtoOperator eventDto, String ownerUserId) {
         for (ExpenseDto expenseDto : eventDto.getExpensesOfOwner(ownerUserId)) {
-            Expense expense = expenseDto.expense;
+            Expense expense = expenseDto.getExpense();
             expenseStore.createExistingModel(expense);
 
-            for (AttendeeDto attendeeDto : expenseDto.attendingParticipants) {
-                Attendee attendee = new Attendee(attendeeDto.attendeeId, expense.getId(), attendeeDto.participantId);
+            for (AttendeeDto attendeeDto : expenseDto.getAttendingParticipants()) {
+                Attendee attendee = new Attendee(attendeeDto.getAttendeeId(), expense.getId(), attendeeDto.getParticipantId());
                 attendeeStore.createExistingModel(attendee);
             }
         }
     }
 
     private User importParticipant(ParticipantDto participantDto, Event event) {
-        User newUser = participantDto.user;
+        User newUser = participantDto.getUser();
         createUserIfNotExists(newUser);
 
-        Participant participant = participantStore.getById(participantDto.participantId);
-        if(participant == null){
-            createParticipant(participantDto.participantId, newUser, event);
+        Participant participant = participantStore.getById(participantDto.getParticipantId());
+        if (participant == null) {
+            createParticipant(participantDto.getParticipantId(), newUser, event);
         } else {
             User oldUser = userStore.getById(participant.getUserId());
-            if(!oldUser.equals(newUser)) {
+            if (!oldUser.equals(newUser)) {
                 removeIfPossible(oldUser);
             }
 
@@ -105,17 +105,17 @@ public class ImportService {
         return newUser;
     }
 
-    private void updateParticipant(Participant participant, ParticipantDto participantDto){
-        participant.setConfirmed(participantDto.confirmed);
-        participant.setUserId(participantDto.user.getId());
+    private void updateParticipant(Participant participant, ParticipantDto participantDto) {
+        participant.setConfirmed(participantDto.isConfirmed());
+        participant.setUserId(participantDto.getUser().getId());
     }
 
-    private void createParticipant(String participantId, User user, Event event){
+    private void createParticipant(String participantId, User user, Event event) {
         Participant newParticipant = new Participant(participantId, user.getId(), event.getId(), true, 0);
         participantStore.createExistingModel(newParticipant);
     }
 
-    private void createUserIfNotExists(User user){
+    private void createUserIfNotExists(User user) {
         User existingUser = userStore.getById(user.getId());
         if (existingUser == null) {
             String username = userService.findBestFreeNameForUser(user);
@@ -134,14 +134,14 @@ public class ImportService {
         return participantStore.getParticipantsForUsers(user.getId()).size() > 1;
     }
 
-    private void createEventIfNotExists(Event event){
+    private void createEventIfNotExists(Event event) {
         Event existingEvent = eventStore.getById(event.getId());
-        if(existingEvent == null) {
+        if (existingEvent == null) {
             eventStore.createExistingModel(event);
         }
     }
 
-    private void importParticipants(EventDtoOperator eventDto){
+    private void importParticipants(EventDtoOperator eventDto) {
         for (ParticipantDto participantDto : eventDto.getParticipants()) {
             importParticipant(participantDto, eventDto.getEvent());
         }

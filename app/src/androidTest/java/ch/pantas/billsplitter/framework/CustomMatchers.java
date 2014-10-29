@@ -11,6 +11,7 @@ import java.util.Map;
 
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 
@@ -112,6 +113,32 @@ public class CustomMatchers {
                     valueMap.put(values[i], values[i + 1]);
                 }
                 return valueMap;
+            }
+        };
+    }
+
+    public static Matcher<ParticipantDto> matchesParticipantDto(final String participantId, final Matcher<User> user, final boolean confirmed, final long lastUpdated) {
+        return new TypeSafeMatcher<ParticipantDto>() {
+            @Override
+            public boolean matchesSafely(ParticipantDto participantDto) {
+                if (participantDto == null) return false;
+
+                return participantDto.getParticipantId().equals(participantId) &&
+                        user.matches(participantDto.getUser()) &&
+                        participantDto.isConfirmed() == confirmed &&
+                        participantDto.getLastUpdated() == lastUpdated;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("ParticipantDto with ");
+                description.appendText("participantId ").appendText(participantId).appendText(",");
+                description.appendText("User ");
+                user.describeTo(description);
+                description.appendText(", ");
+                description.appendText("confirmed ").appendValue(confirmed).appendText(", ");
+                description.appendText("and last updated ").appendValue(lastUpdated);
+
             }
         };
     }

@@ -38,20 +38,19 @@ public class BeamParticipantAdapter extends BaseAdapter {
         this.participants = participants;
     }
 
-    /***
-     *
+    /**
      * @param user
      * @return TRUE if user was selected, FALSE otherwise
      */
-    public boolean select(User user){
+    public boolean select(User user) {
         checkNotNull(user);
-        if(user.equals(selected)){
+        if (user.equals(selected)) {
             selected = null;
             return false;
         }
 
-        for(ParticipantDto participant : participants){
-            if(participant.user.equals(user)){
+        for (ParticipantDto participant : participants) {
+            if (participant.getUser().equals(user)) {
                 selected = user;
                 return true;
             }
@@ -60,14 +59,13 @@ public class BeamParticipantAdapter extends BaseAdapter {
         return false;
     }
 
-    /***
-     *
+    /**
      * @param name
      * @return TRUE if a user was selected, FALSE otherwise
      */
     public boolean selectParticipantByName(String name) {
         for (ParticipantDto participant : participants) {
-            User user = participant.user;
+            User user = participant.getUser();
             if (user.getName().equals(name)) {
                 selected = user;
                 return true;
@@ -78,15 +76,15 @@ public class BeamParticipantAdapter extends BaseAdapter {
     }
 
     public User getSelected() {
-        if(isDisabled) return null;
+        if (isDisabled) return null;
         return selected;
     }
 
-    public void disable(){
+    public void disable() {
         isDisabled = true;
     }
 
-    public void enable(){
+    public void enable() {
         isDisabled = false;
     }
 
@@ -112,7 +110,7 @@ public class BeamParticipantAdapter extends BaseAdapter {
         }
 
         ParticipantDto participantDto = participants.get(i);
-        User user = participantDto.user;
+        User user = participantDto.getUser();
 
         View userView = view.findViewById(R.id.user_item);
 

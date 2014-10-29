@@ -22,16 +22,16 @@ public class EventDtoOperator {
     }
 
     public void replaceUser(User user, User replace) {
-        for (ParticipantDto participant : eventDto.participants) {
-            if (participant.user.equals(user)) {
-                participant.user = replace;
+        for (ParticipantDto participant : eventDto.getParticipants()) {
+            if (participant.getUser().equals(user)) {
+                participant.setUser(replace);
             }
         }
     }
 
     public ParticipantDto getParticipant(User user) {
-        for (ParticipantDto participantDto : eventDto.participants) {
-            if (participantDto.user.equals(user)) {
+        for (ParticipantDto participantDto : eventDto.getParticipants()) {
+            if (participantDto.getUser().equals(user)) {
                 return participantDto;
             }
         }
@@ -40,17 +40,17 @@ public class EventDtoOperator {
     }
 
     public Event getEvent() {
-        return eventDto.event;
+        return eventDto.getEvent();
     }
 
     public List<ParticipantDto> getParticipants() {
-        return eventDto.participants;
+        return eventDto.getParticipants();
     }
 
     public List<ExpenseDto> getExpensesOfOwner(String ownerUserId) {
         List<ExpenseDto> expenses = new LinkedList<ExpenseDto>();
-        for (ExpenseDto expenseDto : eventDto.expenses) {
-            if (expenseDto.expense.getOwnerId().equals(ownerUserId)) {
+        for (ExpenseDto expenseDto : eventDto.getExpenses()) {
+            if (expenseDto.getExpense().getOwnerId().equals(ownerUserId)) {
                 expenses.add(expenseDto);
             }
         }
@@ -63,23 +63,23 @@ public class EventDtoOperator {
         if(dto == null){
             dto = addParticipant(user);
         }
-        dto.confirmed = true;
+        dto.setConfirmed(true);
     }
 
     public ParticipantDto addParticipant(User user) {
         ParticipantDto dtoNew = new ParticipantDto();
-        dtoNew.participantId = randomUUID().toString();
-        dtoNew.user = user;
+        dtoNew.setParticipantId(randomUUID().toString());
+        dtoNew.setUser(user);
 
-        eventDto.participants.add(dtoNew);
+        eventDto.addParticipant(dtoNew);
 
         return dtoNew;
     }
 
     public List<ParticipantDto> getUnconfirmedParticipants() {
         List<ParticipantDto> unconfirmedParticipants = new LinkedList<ParticipantDto>();
-        for (ParticipantDto participantDto : eventDto.participants) {
-            if (!participantDto.confirmed) {
+        for (ParticipantDto participantDto : eventDto.getParticipants()) {
+            if (!participantDto.isConfirmed()) {
                 unconfirmedParticipants.add(participantDto);
             }
         }
