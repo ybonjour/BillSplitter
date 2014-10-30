@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.inject.Inject;
@@ -30,6 +31,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.SELECTED;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.UNSELECTED;
@@ -52,6 +54,9 @@ public class AddParticipants extends RoboActivity {
     @InjectView(R.id.participant_container)
     private LinearLayout participantContainer;
 
+    @InjectView(R.id.cancel_searchmode)
+    private ImageView cancelSearchModeButton;
+
     @Inject
     private EventStore eventStore;
 
@@ -70,6 +75,8 @@ public class AddParticipants extends RoboActivity {
     @Inject
     private ActivityStarter activityStarter;
 
+    private TextWatcher textChangedListener;
+
     private String newUserName;
 
     private Event event;
@@ -81,28 +88,19 @@ public class AddParticipants extends RoboActivity {
         setTitle(R.string.add_event);
 
         User me = userService.getMe();
-        if (!participantManager.getParticipants().contains(me))
-            participantManager.addFixedParticipant(me);
-
-        reloadLists();
+        participantManager.addFixedParticipant(me);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         getWindow().setSoftInputMode(SOFT_INPUT_STATE_HIDDEN);
-
         String eventId = getIntent().getStringExtra(EVENT_ID);
         event = eventStore.getById(eventId);
         checkNotNull(event);
 
-        List<Participant> participants = participantStore.getParticipants(event.getId());
-        for (Participant participant : participants) {
-            User user = userStore.getById(participant.getUserId());
-            participantManager.addParticipant(user);
-        }
-
         reloadLists();
+
         userGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -111,10 +109,11 @@ public class AddParticipants extends RoboActivity {
                     userStore.persist(user);
                 }
                 participantManager.addParticipant(user);
+                disableSearchMode();
                 reloadLists();
-                clearNewUserName();
             }
         });
+
         participantGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -124,7 +123,8 @@ public class AddParticipants extends RoboActivity {
             }
         });
 
-        userNameField.addTextChangedListener(new TextWatcher() {
+
+        textChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
@@ -140,16 +140,19 @@ public class AddParticipants extends RoboActivity {
             public void afterTextChanged(Editable editable) {
 
             }
-        });
+        };
+
+        userNameField.addTextChangedListener(textChangedListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        userNameField.removeTextChangedListener(textChangedListener);
+        textChangedListener = null;
     }
 
     public void onSave() {
-
         User me = userService.getMe();
         participantStore.removeAll(event.getId());
         for (User user : participantManager.getParticipants()) {
@@ -162,17 +165,36 @@ public class AddParticipants extends RoboActivity {
         finish();
     }
 
+    public void onSearchModeCancel(View v) {
+        disableSearchMode();
+        reloadLists();
+        userNameField.clearFocus();
+        // TODO: how to hide software keyboard?
+    }
+
     private void clearNewUserName() {
+        if (textChangedListener == null) return;
+        userNameField.removeTextChangedListener(textChangedListener);
         newUserName = "";
         userNameField.setText("");
+        userNameField.addTextChangedListener(textChangedListener);
     }
 
     private void enableSearchMode() {
         participantContainer.setVisibility(GONE);
+        cancelSearchModeButton.setVisibility(VISIBLE);
+        invalidateOptionsMenu();
     }
 
     private void disableSearchMode() {
-        participantContainer.setVisibility(View.VISIBLE);
+        participantContainer.setVisibility(VISIBLE);
+        cancelSearchModeButton.setVisibility(GONE);
+        clearNewUserName();
+        invalidateOptionsMenu();
+    }
+
+    private boolean isInSearchMode() {
+        return participantContainer.getVisibility() == GONE;
     }
 
     private void reloadParticipantList() {
@@ -208,6 +230,14 @@ public class AddParticipants extends RoboActivity {
     private void reloadLists() {
         reloadParticipantList();
         reloadNonParticipantList();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem saveItem = menu.findItem(R.id.action_save_event);
+        saveItem.setVisible(!isInSearchMode());
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

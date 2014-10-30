@@ -20,6 +20,13 @@ public class ParticipantManager {
         participants.add(user);
     }
 
+    public void removeParticipant(User user) {
+        checkNotNull(user);
+
+        participants.remove(user);
+
+    }
+
     public void addFixedParticipant(User user) {
         checkNotNull(user);
 
@@ -27,6 +34,12 @@ public class ParticipantManager {
 
         participants.remove(user);
         fixedParticipants.add(user);
+    }
+
+    public boolean isFixedParticipant(User user) {
+        checkNotNull(user);
+
+        return fixedParticipants.contains(user);
     }
 
     public List<User> getParticipants() {
@@ -44,6 +57,8 @@ public class ParticipantManager {
     }
 
     public List<User> filterOutParticipants(List<User> input) {
+        checkNotNull(input);
+
         List<User> nonParticipants = new LinkedList<User>();
 
         for (User user : input) {
@@ -55,25 +70,14 @@ public class ParticipantManager {
         return nonParticipants;
     }
 
-    public void removeParticipant(User user) {
-        checkNotNull(user);
-
-        participants.remove(user);
-
-    }
-
-    public boolean isFixedParticipant(User user) {
-        return fixedParticipants.contains(user);
+    public void clear() {
+        participants.clear();
+        fixedParticipants.clear();
     }
 
     private boolean isAlreadyParticipant(User user) {
         if (isFixedParticipant(user)) return true;
 
         return participants.contains(user);
-    }
-
-    public void clear() {
-        participants.clear();
-        fixedParticipants.clear();
     }
 }

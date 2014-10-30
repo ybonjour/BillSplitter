@@ -3,9 +3,9 @@ package ch.pantas.billsplitter.ui;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import org.hamcrest.Matchers;
 import org.mockito.Mock;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -13,20 +13,26 @@ import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
-import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.UserService;
-import ch.pantas.billsplitter.ui.adapter.UserAdapter;
 import ch.pantas.splitty.R;
 
 import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
 import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
-import static org.mockito.Matchers.anyList;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,9 +58,6 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @Mock
     private ParticipantManager participantManager;
 
-    @Mock
-    UserAdapter participantAdapter;
-
     private Event event;
 
     @Override
@@ -66,8 +69,6 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         intent.putExtra(EVENT_ID, event.getId());
         setActivityIntent(intent);
         when(eventStore.getById(event.getId())).thenReturn(event);
-
-        when(participantAdapter.getViewTypeCount()).thenReturn(1);
     }
 
     @LargeTest
@@ -80,36 +81,134 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     }
 
     @LargeTest
-    public void testEditParticipantsExistingParticipantsAreShown() {
+    public void testOnStartUpNormalModeIsDisplayed() {
+        // When
+        getActivity();
+
+        // Then
+        verifyNormalMode();
+    }
+
+    @LargeTest
+    public void testWhenStartingToTypeNameSearchModeIsDisplayed() {
         // Given
-        User me = new User("a", "Me");
-        User userB = new User("b", "Hans");
-        User userC = new User("c", "Fritz");
+        getActivity();
 
-        List<User> userList = new LinkedList<User>();
-        userList.add(me);
-        userList.add(userB);
-        userList.add(userC);
+        // When
+        onView(withId(R.id.user_name)).perform(typeText("J"));
 
-        List<Participant> participantsList = new LinkedList<Participant>();
-        participantsList.add(new Participant("partA", me.getId(), me.getName(), false, 0));
-        participantsList.add(new Participant("partB", userB.getId(), userB.getName(), false, 0));
-        participantsList.add(new Participant("partC", userC.getId(), userC.getName(), false, 0));
+        // Then
+        verifySearchMode();
+    }
 
-        List<User> otherParticipantsList = new LinkedList<User>(userList);
-        otherParticipantsList.remove(0);
+    @LargeTest
+    public void testClickingOnCancelInSearchModeDisablesSearchMode() {
+        // Given
+        getActivity();
+        onView(withId(R.id.user_name)).perform(typeText("J"));
 
-        when(participantStore.getParticipants(event.getId())).thenReturn(participantsList);
-        when(participantManager.getParticipants()).thenReturn(userList);
+        // When
+        onView(withId(R.id.cancel_searchmode)).perform(click());
+
+        // Then
+        verifyNormalMode();
+    }
+
+    @LargeTest
+    public void testClickingOnCancelDoesNotAddParticipant() {
+        // Given
+        getActivity();
+        onView(withId(R.id.user_name)).perform(typeText("J"));
+
+        // When
+        onView(withId(R.id.cancel_searchmode)).perform(click());
+
+        // Then
+        verify(participantManager, never()).addParticipant(any(User.class));
+    }
+
+    @LargeTest
+    public void testMeIsAlwaysAddedAsFixedParticipant() {
+        // Given
+        User me = new User(randomUUID().toString(), "Joe");
         when(userService.getMe()).thenReturn(me);
-        when(participantManager.filterOutParticipants(anyList())).thenReturn(otherParticipantsList);
 
         // When
         getActivity();
 
         // Then
-        verify(participantAdapter, times(2)).setUsers(userList);
+        verify(participantManager, times(1)).addFixedParticipant(me);
     }
 
-    // TODO: Participants UI tests
+    @LargeTest
+    public void testWhenNoUsernameIseEnteredAllNonParticipatingUsersAreShown() {
+        // Given
+        User user = new User(randomUUID().toString(), "Joe");
+        List<User> users = asList(user);
+        when(userStore.getAll()).thenReturn(users);
+        when(participantManager.filterOutParticipants(users)).thenReturn(users);
+
+        // When
+        getActivity();
+
+        // Then
+        onData(Matchers.<Object>equalTo(user)).inAdapterView(withId(R.id.user_grid)).check(matches(isDisplayed()));
+        verify(userStore, times(1)).getAll();
+        verify(participantManager, times(1)).filterOutParticipants(users);
+    }
+
+    @LargeTest
+    public void testClickingOnUserAddsHimAsParticipant() {
+        // Given
+        User user = new User(randomUUID().toString(), "Joe");
+        List<User> users = asList(user);
+        when(userStore.getAll()).thenReturn(users);
+        when(participantManager.filterOutParticipants(users)).thenReturn(users);
+        getActivity();
+
+        // When
+        onData(Matchers.<Object>equalTo(user)).inAdapterView(withId(R.id.user_grid)).perform(click());
+
+        // Then
+        verify(participantManager, times(1)).addParticipant(user);
+    }
+
+    @LargeTest
+    public void testParticipatingUsersAreShownCorrectly(){
+        // Given
+        User user = new User(randomUUID().toString(), "Joe");
+        when(participantManager.getParticipants()).thenReturn(asList(user));
+
+        // When
+        getActivity();
+
+        // Then
+        onData(Matchers.<Object>equalTo(user)).inAdapterView(withId(R.id.participant_grid)).check(matches(isDisplayed()));
+    }
+
+    @LargeTest
+    public void testClickingOnParticipantRemovesItFromParticipants(){
+        // Given
+        User user = new User(randomUUID().toString(), "Joe");
+        when(participantManager.getParticipants()).thenReturn(asList(user));
+        getActivity();
+
+        // When
+        onData(Matchers.<Object>equalTo(user)).inAdapterView(withId(R.id.participant_grid)).perform(click());
+
+        // Then
+        verify(participantManager, times(1)).removeParticipant(user);
+    }
+
+    private void verifyNormalMode() {
+        onView(withId(R.id.action_save_event)).check(matches(isDisplayed()));
+        onView(withId(R.id.participant_container)).check(matches(isDisplayed()));
+        onView(withId(R.id.cancel_searchmode)).check(matches(not(isDisplayed())));
+    }
+
+    private void verifySearchMode() {
+        onView(withId(R.id.action_save_event)).check(doesNotExist());
+        onView(withId(R.id.participant_container)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.cancel_searchmode)).check(matches(isDisplayed()));
+    }
 }

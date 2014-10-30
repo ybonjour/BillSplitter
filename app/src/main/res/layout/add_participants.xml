@@ -32,7 +32,15 @@
             android:inputType="textCapWords"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="5dp"/>
+        <ImageView
+            android:id="@+id/cancel_searchmode"
+            android:src="@drawable/ic_action_cancel"
+            android:visibility="gone"
+            android:onClick="onSearchModeCancel"
+            android:layout_marginRight="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/participant_container"
