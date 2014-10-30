@@ -18,7 +18,6 @@ import ch.pantas.billsplitter.services.ExportService;
 import ch.pantas.billsplitter.services.ImportService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.services.datatransfer.EventDto;
-import ch.pantas.billsplitter.services.datatransfer.EventDtoBuilder;
 import ch.pantas.billsplitter.services.datatransfer.EventDtoOperator;
 import ch.pantas.splitty.R;
 
