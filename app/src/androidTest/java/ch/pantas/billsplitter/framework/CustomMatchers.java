@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.pantas.billsplitter.model.Debt;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 
@@ -139,6 +140,29 @@ public class CustomMatchers {
                 description.appendText("confirmed ").appendValue(confirmed).appendText(", ");
                 description.appendText("and last updated ").appendValue(lastUpdated);
 
+            }
+        };
+    }
+
+    public static Matcher<Participant> matchesParticipant(final String userId, final String eventId, final boolean confirmed, final long lastUpdated) {
+        return new TypeSafeMatcher<Participant>() {
+            @Override
+            public boolean matchesSafely(Participant participant) {
+                if (participant == null) return false;
+
+                return participant.getUserId().equals(userId) &&
+                        participant.getEventId().equals(eventId) &&
+                        participant.isConfirmed() == confirmed &&
+                        participant.getLastUpdated() == lastUpdated;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Participant with ");
+                description.appendText("User ").appendText(userId);
+                description.appendText(", Event ").appendText(eventId);
+                description.appendText(", Confirmed ").appendValue(confirmed);
+                description.appendText(", Last Updated ").appendValue(lastUpdated);
             }
         };
     }

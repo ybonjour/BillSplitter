@@ -17,6 +17,7 @@ import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.splitty.R;
 
+import static ch.pantas.billsplitter.framework.CustomMatchers.matchesParticipant;
 import static ch.pantas.billsplitter.model.SupportedCurrency.EUR;
 import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
@@ -32,6 +33,7 @@ import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -59,6 +61,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     private ParticipantManager participantManager;
 
     private Event event;
+    private User me;
 
     @Override
     public void setUp() throws Exception {
@@ -69,6 +72,13 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         intent.putExtra(EVENT_ID, event.getId());
         setActivityIntent(intent);
         when(eventStore.getById(event.getId())).thenReturn(event);
+
+        me = new User(randomUUID().toString(), "Dave");
+        when(userService.getMe()).thenReturn(me);
+
+        // This is needed that when Add Participant finishes EventDetails can
+        // be started correctly
+        when(eventStore.getAll()).thenReturn(asList(event));
     }
 
     @LargeTest
@@ -174,7 +184,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     }
 
     @LargeTest
-    public void testParticipatingUsersAreShownCorrectly(){
+    public void testParticipatingUsersAreShownCorrectly() {
         // Given
         User user = new User(randomUUID().toString(), "Joe");
         when(participantManager.getParticipants()).thenReturn(asList(user));
@@ -187,7 +197,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     }
 
     @LargeTest
-    public void testClickingOnParticipantRemovesItFromParticipants(){
+    public void testClickingOnParticipantRemovesItFromParticipants() {
         // Given
         User user = new User(randomUUID().toString(), "Joe");
         when(participantManager.getParticipants()).thenReturn(asList(user));
@@ -199,6 +209,39 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         // Then
         verify(participantManager, times(1)).removeParticipant(user);
     }
+
+    @LargeTest
+    public void testSaveRemovesAllParticipantsAndAddsSelectedOnes() {
+        // Given
+        User user = new User(randomUUID().toString(), "Joe");
+        when(participantManager.getParticipants()).thenReturn(asList(user));
+        getActivity();
+
+        // When
+        onView(withId(R.id.action_save_event)).perform(click());
+
+        // Then
+        verify(participantStore, times(1)).removeAll(event.getId());
+        verify(participantStore, times(1)).persist(argThat(matchesParticipant(user.getId(),
+                event.getId(), false, 0)));
+    }
+
+    @LargeTest
+    public void testSaveAddsMeAsConfirmedParticipant() {
+        // Given
+        User user = new User(randomUUID().toString(), "Joe");
+        when(participantManager.getParticipants()).thenReturn(asList(user));
+        when(userService.getMe()).thenReturn(user);
+        getActivity();
+
+        // When
+        onView(withId(R.id.action_save_event)).perform(click());
+
+        // Then
+        verify(participantStore, times(1)).persist(argThat(matchesParticipant(user.getId(),
+                event.getId(), true, 0)));
+    }
+
 
     private void verifyNormalMode() {
         onView(withId(R.id.action_save_event)).check(matches(isDisplayed()));

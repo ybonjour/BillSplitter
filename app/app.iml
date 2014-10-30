@@ -64,7 +64,6 @@
     <orderEntry type="library" exported="" name="support-v4-21.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="testrunner-1.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="espresso-1.1" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="guava-14.0.1" level="project" />
     <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-6.1.11" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.11" level="project" />
