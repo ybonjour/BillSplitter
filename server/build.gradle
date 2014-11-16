@@ -9,6 +9,8 @@ buildscript {
     }
 }
 
+mainClassName = "ch.pantas.billsplitter.server.Server"
+
 apply plugin: 'java'
 apply plugin: 'spring-boot'
 
