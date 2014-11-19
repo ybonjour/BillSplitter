@@ -9,6 +9,7 @@ import org.hamcrest.TypeSafeMatcher;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
@@ -163,6 +164,26 @@ public class CustomMatchers {
                 description.appendText(", Event ").appendText(eventId);
                 description.appendText(", Confirmed ").appendValue(confirmed);
                 description.appendText(", Last Updated ").appendValue(lastUpdated);
+            }
+        };
+    }
+
+    public static Matcher<Attendee> matchesAttendee(final String expenseId, final String participantId){
+        return new TypeSafeMatcher<Attendee>() {
+            @Override
+            public boolean matchesSafely(Attendee attendee) {
+                if(attendee == null) return false;
+
+                return attendee.getExpense().equals(expenseId) &&
+                        attendee.getParticipant().equals(participantId);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description
+                        .appendText("Attendee with expense Id ")
+                        .appendText(expenseId)
+                        .appendText(" and participant Id ").appendText(participantId);
             }
         };
     }

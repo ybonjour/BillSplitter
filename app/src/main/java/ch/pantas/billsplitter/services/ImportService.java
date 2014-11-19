@@ -19,6 +19,8 @@ import ch.pantas.billsplitter.services.datatransfer.EventDtoOperator;
 import ch.pantas.billsplitter.services.datatransfer.ExpenseDto;
 import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
+
 public class ImportService {
 
     @Inject
@@ -34,7 +36,8 @@ public class ImportService {
     @Inject
     private UserStore userStore;
 
-    public void deepImportEvent(EventDtoOperator eventDto) {
+    public void importEvent(EventDtoOperator eventDto) {
+        checkNotNull(eventDto);
 
         User me = userService.getMe();
         Event event = eventDto.getEvent();
@@ -49,6 +52,7 @@ public class ImportService {
 
         for (ParticipantDto participantDto : eventDto.getParticipants()) {
             Participant participant = participantStore.getById(participantDto.getParticipantId());
+            checkNotNull(participant, "Participants must have been imported.");
 
             // Never touch my own expenses
             if (participant.getUserId().equals(me.getId())) continue;
@@ -91,7 +95,7 @@ public class ImportService {
 
         Participant participant = participantStore.getById(participantDto.getParticipantId());
         if (participant == null) {
-            createParticipant(participantDto.getParticipantId(), newUser, event);
+            createParticipant(participantDto, event);
         } else {
             User oldUser = userStore.getById(participant.getUserId());
             if (!oldUser.equals(newUser)) {
@@ -110,8 +114,8 @@ public class ImportService {
         participant.setUserId(participantDto.getUser().getId());
     }
 
-    private void createParticipant(String participantId, User user, Event event) {
-        Participant newParticipant = new Participant(participantId, user.getId(), event.getId(), true, 0);
+    private void createParticipant(ParticipantDto dto, Event event) {
+        Participant newParticipant = new Participant(dto.getParticipantId(), dto.getUser().getId(), event.getId(), dto.isConfirmed(), 0);
         participantStore.createExistingModel(newParticipant);
     }
 

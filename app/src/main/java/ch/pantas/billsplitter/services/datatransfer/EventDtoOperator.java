@@ -7,6 +7,8 @@ import java.util.List;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 
+import static com.google.inject.internal.util.$Preconditions.checkArgument;
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static java.util.UUID.randomUUID;
 
 public class EventDtoOperator {
@@ -14,14 +16,20 @@ public class EventDtoOperator {
     private final EventDto eventDto;
 
     public EventDtoOperator(EventDto eventDto) {
+        checkNotNull(eventDto);
         this.eventDto = eventDto;
     }
 
     public boolean hasParticipant(User user) {
+        checkNotNull(user);
+
         return getParticipant(user) != null;
     }
 
     public void replaceUser(User user, User replace) {
+        checkNotNull(user);
+        checkNotNull(replace);
+
         for (ParticipantDto participant : eventDto.getParticipants()) {
             if (participant.getUser().equals(user)) {
                 participant.setUser(replace);
@@ -30,6 +38,8 @@ public class EventDtoOperator {
     }
 
     public ParticipantDto getParticipant(User user) {
+        checkNotNull(user);
+
         for (ParticipantDto participantDto : eventDto.getParticipants()) {
             if (participantDto.getUser().equals(user)) {
                 return participantDto;
@@ -48,6 +58,9 @@ public class EventDtoOperator {
     }
 
     public List<ExpenseDto> getExpensesOfOwner(String ownerUserId) {
+        checkNotNull(ownerUserId);
+        checkArgument(!ownerUserId.isEmpty());
+
         List<ExpenseDto> expenses = new LinkedList<ExpenseDto>();
         for (ExpenseDto expenseDto : eventDto.getExpenses()) {
             if (expenseDto.getExpense().getOwnerId().equals(ownerUserId)) {
@@ -59,6 +72,8 @@ public class EventDtoOperator {
     }
 
     public void confirmParticipant(User user){
+        checkNotNull(user);
+
         ParticipantDto dto = getParticipant(user);
         if(dto == null){
             dto = addParticipant(user);
@@ -67,6 +82,8 @@ public class EventDtoOperator {
     }
 
     public ParticipantDto addParticipant(User user) {
+        checkNotNull(user);
+
         ParticipantDto dtoNew = new ParticipantDto();
         dtoNew.setParticipantId(randomUUID().toString());
         dtoNew.setUser(user);

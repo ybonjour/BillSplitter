@@ -383,6 +383,7 @@ public class EventDetails extends RoboFragmentActivity {
 
         if (!editing) {
             String newUserName = userNameEdit.getText().toString();
+            if(newUserName.isEmpty()) return;
 
             userNameView.setText(newUserName);
             sharedPreferenceService.storeUserName(newUserName);

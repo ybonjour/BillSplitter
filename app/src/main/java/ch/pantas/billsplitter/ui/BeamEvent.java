@@ -108,7 +108,7 @@ public class BeamEvent extends BeamBaseActivity implements BluetoothListener {
     public void onMessageReceived(String message) {
         Gson gson = new Gson();
         EventDtoOperator eventDto = new EventDtoOperator(gson.fromJson(message, EventDto.class));
-        importService.deepImportEvent(eventDto);
+        importService.importEvent(eventDto);
         setUpSuccessScreen();
     }
 
