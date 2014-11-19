@@ -15,6 +15,7 @@ public class SharedPreferenceService {
     public static final String USER_ID = "USE_ID";
     public static final String ACTIVE_EVENT_ID = "ACTIVE_EVENT_ID";
     public static final String TRACKING_ENABLED = "TRACKING_ENABLED";
+    public static final String CURRENT_VERSION_CODE = "CURRENT_VERSION_CODE";
 
     @Inject
     private SharedPreferences preferences;
@@ -62,6 +63,17 @@ public class SharedPreferenceService {
 
     public String getActiveEventId() {
         return preferences.getString(ACTIVE_EVENT_ID, null);
+    }
+
+    public Integer getCurrentVersionCode() {
+        if(!preferences.contains(CURRENT_VERSION_CODE)) return null;
+        return preferences.getInt(CURRENT_VERSION_CODE, -1);
+    }
+
+    public void storeCurrentVersionCode(int versionCode) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(ACTIVE_EVENT_ID, versionCode);
+        editor.apply();
     }
 
     public void registerTrackingEnabledListener(final TrackingEnabledListener trackingEnabledListener) {

@@ -79,5 +79,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.pantas.billsplitter.ui.EventDetails" />
         </activity>
+
+        <receiver android:name="ch.pantas.billsplitter.receivers.UpdateReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -45,20 +45,6 @@ public class PayerAdapter extends BaseAdapter{
         return selectedUser;
     }
 
-    public List<User> filterOutSelectedUser(List<User> users) {
-        List<User> result = new LinkedList<User>();
-
-        if(selectedUser == null) return result;
-
-        for(User user : users) {
-            if(!isSelected(user)){
-                result.add(user);
-            }
-        }
-
-        return result;
-    }
-
     @Override
     public int getCount() {
         return users.size();

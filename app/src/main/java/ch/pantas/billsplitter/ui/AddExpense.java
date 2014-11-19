@@ -117,12 +117,12 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_expense);
-        Tracker t = ((BillSplitterApplication) getApplication()).getTracker(
+        Tracker tracker = ((BillSplitterApplication) getApplication()).getTracker(
                 BillSplitterApplication.TrackerName.APP_TRACKER);
 
-        t.setScreenName("ch.pantas.billsplitter.ui.AddExpense");
+        tracker.setScreenName("ch.pantas.billsplitter.ui.AddExpense");
 
-        t.send(new HitBuilders.AppViewBuilder().build());
+        tracker.send(new HitBuilders.AppViewBuilder().build());
     }
 
     @Override
@@ -398,7 +398,6 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
             attendingUsers.add(userStore.getById(participant.getUserId()));
         }
 
-        attendingUsers = payerAdapter.filterOutSelectedUser(attendingUsers);
         attendeeAdapter.setUsers(attendingUsers);
         attendeesGrid.setAdapter(attendeeAdapter);
     }

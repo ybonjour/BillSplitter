@@ -93,7 +93,36 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testCalculateDebtsReturnsExpenseCorrectly() {
+    public void testCalculateDebtsReturnsExpenseCorrectlyWithPayerAsAttendee() {
+        // Given
+        User payer = new User(randomUUID().toString(), "David");
+        when(userStore.getById(payer.getId())).thenReturn(payer);
+
+        User attendee = new User(randomUUID().toString(), "Joe");
+        when(userStore.getById(attendee.getId())).thenReturn(attendee);
+
+        Participant participantPayer = new Participant(randomUUID().toString(), payer.getId(), "eventId", false, 0);
+        Participant participant = new Participant(randomUUID().toString(), attendee.getId(), "eventId", false, 0);
+        when(participantStore.getById(participantPayer.getId())).thenReturn(participantPayer);
+        when(participantStore.getById(participant.getId())).thenReturn(participant);
+
+        int amount = 20;
+        Expense expense = new Expense(randomUUID().toString(), event.getId(), participantPayer.getId(), "Food", amount, randomUUID().toString());
+        when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
+
+        when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(asList(participant, participantPayer));
+
+        // When
+        List<Debt> result = debtCalculator.calculateDebts(event);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertThat(result, hasItem(matchesDebt(attendee, payer, amount / 2)));
+    }
+
+    @SmallTest
+    public void testCalculateDebtsReturnsExpenseCorrectlyWithoutPayerAsAttendee() {
         // Given
         User payer = new User(randomUUID().toString(), "David");
         when(userStore.getById(payer.getId())).thenReturn(payer);
@@ -118,7 +147,7 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
         // Then
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertThat(result, hasItem(matchesDebt(attendee, payer, amount / 2)));
+        assertThat(result, hasItem(matchesDebt(attendee, payer, amount)));
     }
 
     @SmallTest

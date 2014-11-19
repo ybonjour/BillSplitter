@@ -47,10 +47,11 @@ public class DebtCalculator {
         for (Expense expense : expenses) {
             Participant toParticipant = participantStore.getById(expense.getPayerId());
             List<Participant> fromParticipants = attendeeStore.getAttendingParticipants(expense.getId());
-            int amount = expense.getAmount() / (fromParticipants.size() + 1);
+            int amount = expense.getAmount() / fromParticipants.size();
             for (Participant fromParticipant : fromParticipants) {
                 User fromUser = userStore.getById(fromParticipant.getUserId());
                 User toUser = userStore.getById(toParticipant.getUserId());
+                if (fromUser.equals(toUser)) continue;
                 debts.add(new Debt(fromUser, toUser, amount, event.getCurrency()));
             }
         }
