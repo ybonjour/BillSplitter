@@ -386,7 +386,6 @@ public class EventDetails extends RoboFragmentActivity {
             if(newUserName.isEmpty()) return;
 
             userNameView.setText(newUserName);
-            sharedPreferenceService.storeUserName(newUserName);
             userService.changeMyUsername(newUserName);
 
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
