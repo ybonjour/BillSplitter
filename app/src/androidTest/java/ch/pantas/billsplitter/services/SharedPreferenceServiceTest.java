@@ -11,7 +11,6 @@ import static ch.pantas.billsplitter.services.SharedPreferenceService.ACTIVE_EVE
 import static ch.pantas.billsplitter.services.SharedPreferenceService.CURRENT_VERSION_CODE;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.TRACKING_ENABLED;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_ID;
-import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_NAME;
 import static java.util.UUID.randomUUID;
 
 public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest {
@@ -22,7 +21,6 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     @Inject
     private SharedPreferences sharedPreferences;
 
-    private String cachedUsername;
     private String cachedUserId;
     private String cachedActiveEventId;
     private boolean cachedTrackingEnabled;
@@ -31,14 +29,11 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        cachedUsername = sharedPreferences.getString(USER_NAME, null);
         cachedUserId = sharedPreferences.getString(USER_ID, null);
         cachedActiveEventId = sharedPreferences.getString(ACTIVE_EVENT_ID, null);
         cachedTrackingEnabled = sharedPreferences.getBoolean(TRACKING_ENABLED, false);
         cachedVersionCode = sharedPreferences.getInt(CURRENT_VERSION_CODE, 0);
 
-
-        sharedPreferences.edit().remove(USER_NAME).commit();
         sharedPreferences.edit().remove(USER_ID).commit();
         sharedPreferences.edit().remove(ACTIVE_EVENT_ID).commit();
         sharedPreferences.edit().remove(TRACKING_ENABLED).commit();
@@ -48,9 +43,6 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
-        if (cachedUsername != null) {
-            sharedPreferences.edit().putString(USER_NAME, cachedUsername).commit();
-        }
 
         if (cachedUserId != null) {
             sharedPreferences.edit().putString(USER_ID, cachedUserId).commit();
@@ -62,7 +54,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
 
         sharedPreferences.edit().putBoolean(TRACKING_ENABLED, cachedTrackingEnabled).commit();
 
-        if(cachedVersionCode != 0) {
+        if (cachedVersionCode != 0) {
             sharedPreferences.edit().putInt(CURRENT_VERSION_CODE, cachedVersionCode).commit();
         }
     }

@@ -11,7 +11,6 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 @Singleton
 public class SharedPreferenceService {
 
-    public static final String USER_NAME = "USER_NAME";
     public static final String USER_ID = "USE_ID";
     public static final String ACTIVE_EVENT_ID = "ACTIVE_EVENT_ID";
     public static final String TRACKING_ENABLED = "TRACKING_ENABLED";
@@ -46,7 +45,7 @@ public class SharedPreferenceService {
     }
 
     public Integer getCurrentVersionCode() {
-        if(!preferences.contains(CURRENT_VERSION_CODE)) return null;
+        if (!preferences.contains(CURRENT_VERSION_CODE)) return null;
         return preferences.getInt(CURRENT_VERSION_CODE, -1);
     }
 
