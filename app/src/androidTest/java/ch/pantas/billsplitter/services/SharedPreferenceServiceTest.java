@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 
 import static ch.pantas.billsplitter.services.SharedPreferenceService.ACTIVE_EVENT_ID;
+import static ch.pantas.billsplitter.services.SharedPreferenceService.CURRENT_VERSION_CODE;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.TRACKING_ENABLED;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_ID;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_NAME;
@@ -25,6 +26,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     private String cachedUserId;
     private String cachedActiveEventId;
     private boolean cachedTrackingEnabled;
+    private int cachedVersionCode;
 
     @Override
     public void setUp() throws Exception {
@@ -32,12 +34,15 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
         cachedUsername = sharedPreferences.getString(USER_NAME, null);
         cachedUserId = sharedPreferences.getString(USER_ID, null);
         cachedActiveEventId = sharedPreferences.getString(ACTIVE_EVENT_ID, null);
-        boolean cachedTrackingEnabled = sharedPreferences.getBoolean(TRACKING_ENABLED, false);
+        cachedTrackingEnabled = sharedPreferences.getBoolean(TRACKING_ENABLED, false);
+        cachedVersionCode = sharedPreferences.getInt(CURRENT_VERSION_CODE, 0);
+
 
         sharedPreferences.edit().remove(USER_NAME).commit();
         sharedPreferences.edit().remove(USER_ID).commit();
         sharedPreferences.edit().remove(ACTIVE_EVENT_ID).commit();
         sharedPreferences.edit().remove(TRACKING_ENABLED).commit();
+        sharedPreferences.edit().remove(CURRENT_VERSION_CODE).commit();
     }
 
     @Override
@@ -56,60 +61,10 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
         }
 
         sharedPreferences.edit().putBoolean(TRACKING_ENABLED, cachedTrackingEnabled).commit();
-    }
 
-    @SmallTest
-    public void testStoreUserNameThrowsNullPointerExceptionIfNoUserNameProvided() {
-        try {
-            service.storeUserName(null);
-            fail("No exception has been thrown");
-        } catch (NullPointerException e) {
-            assertNotNull(e);
+        if(cachedVersionCode != 0) {
+            sharedPreferences.edit().putInt(CURRENT_VERSION_CODE, cachedVersionCode).commit();
         }
-    }
-
-    @SmallTest
-    public void testStoreUserNameThrowsIllegalArgumentExceptionIfEmptyUserNameProvided() {
-        try {
-            service.storeUserName("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
-    public void testGetUsernameReturnsNullIfNoUserNamePresent() {
-        // When
-        String userName = service.getUserName();
-
-        // Then
-        assertNull(userName);
-    }
-
-    @SmallTest
-    public void testStoreAndRetrieveUserNameCorrectly() {
-        // Given
-        String userName = "Joe";
-
-        // When
-        service.storeUserName(userName);
-
-        // Then
-        assertEquals(userName, service.getUserName());
-    }
-
-    @SmallTest
-    public void testRemoveUserNameRemovesUserName() {
-        // Given
-        String userName = "Joe";
-        service.storeUserName(userName);
-
-        // When
-        service.removeUserName();
-
-        // Then
-        assertNull(service.getUserName());
     }
 
     @SmallTest

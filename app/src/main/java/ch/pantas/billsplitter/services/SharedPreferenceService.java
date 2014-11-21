@@ -22,26 +22,6 @@ public class SharedPreferenceService {
 
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
 
-    // TODO: remove username setters and getters, once everyone has updated to version 0.2
-    public void removeUserName(){
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(USER_NAME);
-        editor.apply();
-    }
-
-    public void storeUserName(String userName) {
-        checkNotNull(userName);
-        checkArgument(!userName.isEmpty());
-
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(USER_NAME, userName);
-        editor.apply();
-    }
-
-    public String getUserName() {
-        return preferences.getString(USER_NAME, null);
-    }
-
     public String getUserId() {
         return preferences.getString(USER_ID, null);
     }

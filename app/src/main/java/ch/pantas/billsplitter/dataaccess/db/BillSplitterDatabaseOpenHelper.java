@@ -72,16 +72,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
             );
         }
 
-        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
-            if (oldVersion < 3) {
-                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + CURRENCY + " TEXT;");
-                db.execSQL("UPDATE " + TABLE + " SET " + CURRENCY + "='EUR';");
-            }
-            if (oldVersion < 4) {
-                // owner is set in migration service
-                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + OWNER + " TEXT  DEFAULT 'foo';");
-            }
-        }
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {  }
     }
 
     public static class UserTable {
@@ -99,8 +90,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
             );
         }
 
-        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
-        }
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {  }
     }
 
     public static class ExpenseTable extends Table {
@@ -125,33 +115,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_SQL);
         }
 
-        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
-            if (oldVersion < 4) {
-                // Owner is set in MigrationService
-                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + OWNER + " TEXT DEFAULT 'foo';");
-
-                // Add participant column
-                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + PARTICIPANT + " TEXT;");
-
-                // Migrate data
-                db.execSQL("BEGIN TRANSACTION;");
-                db.execSQL("CREATE TABLE tempMig (Expense TEXT, Participant TEXT);");
-                db.execSQL("INSERT INTO tempMig SELECT DISTINCT EX._id, P._id FROM Expense EX INNER JOIN Event EV ON EX.event=EV._id INNER JOIN Participant P ON P.event=EV._id AND P.user=EX.user;");
-                db.execSQL("UPDATE Expense SET participant=(SELECT Participant FROM tempMig WHERE Expense=Expense._id);");
-                db.execSQL("DROP TABLE tempMig;");
-                db.execSQL("COMMIT TRANSACTION;");
-
-                // remove user column
-                db.execSQL("BEGIN TRANSACTION;");
-                db.execSQL("CREATE TABLE tempMig (_id TEXT, event TEXT, user TEXT, description TEXT, amount INTEGER, owner TEXT, participant TEXT);");
-                db.execSQL("INSERT INTO tempMig SELECT _id, event, user, description, amount, owner, participant FROM Expense;");
-                db.execSQL("DROP TABLE Expense;");
-                db.execSQL(CREATE_SQL);
-                db.execSQL("INSERT INTO Expense SELECT _id, event, participant, description, amount, owner FROM tempMig;");
-                db.execSQL("DROP TABLE tempMig;");
-                db.execSQL("COMMIT TRANSACTION;");
-            }
-        }
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {  }
     }
 
     public static class AttendeeTable extends Table {
@@ -170,29 +134,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_SQL);
         }
 
-        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
-            if(oldVersion < 4) {
-                // Add participant column
-                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + PARTICIPANT + " TEXT;");
-
-                // Migrate data
-                db.execSQL("BEGIN TRANSACTION;");
-                db.execSQL("CREATE TABLE tempMig (Attendee TEXT, Participant TEXT);");
-                db.execSQL("INSERT INTO tempMig SELECT DISTINCT A._id, P._id FROM Attendee A INNER JOIN Expense EX ON A.expense=EX._id INNER JOIN Event EV ON EX.event=EV._id INNER JOIN Participant P ON P.event=EV._id AND P.user=A.user;\"");
-                db.execSQL("UPDATE Attendee SET participant=(SELECT Participant FROM tempMig WHERE Attendee=Attendee._id);");
-                db.execSQL("DROP TABLE tempMig;");
-                db.execSQL("COMMIT TRANSACTION;");
-                // remove user column
-                db.execSQL("BEGIN TRANSACTION;");
-                db.execSQL("CREATE TABLE tempMig (_id TEXT, expense TEXT, participant TEXT, user TEXT);");
-                db.execSQL("INSERT INTO tempMig SELECT _id, expense, participant, user FROM Attendee;");
-                db.execSQL("DROP TABLE Attendee;");
-                db.execSQL(CREATE_SQL);
-                db.execSQL("INSERT INTO Attendee SELECT _id, expense, participant FROM tempMig;");
-                db.execSQL("DROP TABLE tempMig;");
-                db.execSQL("COMMIT TRANSACTION;");
-            }
-        }
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) { }
     }
 
     public static class ParticipantTable extends Table {
@@ -214,13 +156,7 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
             );
         }
 
-        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
-            if (oldVersion < 4) {
-                // Value for all participants that are me will be set to true in MigrationService
-                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + CONFIRMED + " INTEGER DEFAULT 0");
-                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + LAST_UPDATED + " LONG DEFAULT 0");
-            }
-        }
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {  }
     }
 
     public static class TagTable extends Table {
@@ -237,10 +173,6 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
             );
         }
 
-        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
-            if (oldVersion < 2) {
-                onCreate(db);
-            }
-        }
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {   }
     }
 }
