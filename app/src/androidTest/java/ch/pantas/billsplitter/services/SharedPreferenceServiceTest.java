@@ -199,6 +199,28 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
+    public void testStoreAndRetrieveVersionCodeCorrectly(){
+        // Given
+        int versionCode = 300;
+
+        // When
+        service.storeCurrentVersionCode(versionCode);
+        Integer result = service.getCurrentVersionCode();
+
+        // Then
+        assertEquals(versionCode, result.intValue());
+    }
+
+    @SmallTest
+    public void testGetCurrentVersionCodeReturnsNullIfVersionCodeNotAvailable(){
+        // When
+        Integer result = service.getCurrentVersionCode();
+
+        // Then
+        assertNull(result);
+    }
+
+    @SmallTest
     public void testGetTrackingEnabledReturnsStoredValue(){
         // Given
         boolean value = true;

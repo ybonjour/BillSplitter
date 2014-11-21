@@ -72,7 +72,7 @@ public class SharedPreferenceService {
 
     public void storeCurrentVersionCode(int versionCode) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(ACTIVE_EVENT_ID, versionCode);
+        editor.putInt(CURRENT_VERSION_CODE, versionCode);
         editor.apply();
     }
 
