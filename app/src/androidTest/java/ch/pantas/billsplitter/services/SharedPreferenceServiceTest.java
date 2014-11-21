@@ -9,12 +9,9 @@ import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 
 import static ch.pantas.billsplitter.services.SharedPreferenceService.ACTIVE_EVENT_ID;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.TRACKING_ENABLED;
-import static ch.pantas.billsplitter.services.SharedPreferenceService.TrackingEnabledListener;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_ID;
 import static ch.pantas.billsplitter.services.SharedPreferenceService.USER_NAME;
 import static java.util.UUID.randomUUID;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest {
 
@@ -103,7 +100,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testRemoveUserNameRemovesUserName(){
+    public void testRemoveUserNameRemovesUserName() {
         // Given
         String userName = "Joe";
         service.storeUserName(userName);
@@ -178,7 +175,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testStoreAndRetrieveActiveEventIdNull(){
+    public void testStoreAndRetrieveActiveEventIdNull() {
         // Given
         service.storeActiveEventId("eventId");
 
@@ -190,7 +187,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testGetTrackingEnabledReturnsFalseIfNoFlagPresent(){
+    public void testGetTrackingEnabledReturnsFalseIfNoFlagPresent() {
         // When
         boolean trackingEnabled = service.getTrackingEnabled();
 
@@ -199,7 +196,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testStoreAndRetrieveVersionCodeCorrectly(){
+    public void testStoreAndRetrieveVersionCodeCorrectly() {
         // Given
         int versionCode = 300;
 
@@ -212,7 +209,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testGetCurrentVersionCodeReturnsNullIfVersionCodeNotAvailable(){
+    public void testGetCurrentVersionCodeReturnsNullIfVersionCodeNotAvailable() {
         // When
         Integer result = service.getCurrentVersionCode();
 
@@ -221,7 +218,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testGetTrackingEnabledReturnsStoredValue(){
+    public void testGetTrackingEnabledReturnsStoredValue() {
         // Given
         boolean value = true;
         sharedPreferences.edit().putBoolean(TRACKING_ENABLED, value).commit();
