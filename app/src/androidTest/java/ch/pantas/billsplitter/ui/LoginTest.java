@@ -161,23 +161,4 @@ public class LoginTest extends BaseEspressoTest<Login> {
         // Then
         verify(activityStarter, times(1)).startEventDetails(any(Context.class), eq(event), eq(true));
     }
-
-    // TODO: Remove once everyone has updated to version 0.2
-    @LargeTest
-    public void testMigrationLogicIsPerformedCorrectly(){
-        // Given
-        String username = "Joe";
-        when(userService.getMe()).thenReturn(null);
-        when(preferenceService.getUserName()).thenReturn(username);
-        Event event = mock(Event.class);
-        when(eventService.getActiveEvent()).thenReturn(event);
-
-        // When
-        getActivity();
-
-        // Then
-        verify(migrationService, times(1)).migrateToVersion200();
-        verify(preferenceService, times(1)).removeUserName();
-        verify(activityStarter, times(1)).startEventDetails(any(Login.class), eq(event), eq(true));
-    }
 }
