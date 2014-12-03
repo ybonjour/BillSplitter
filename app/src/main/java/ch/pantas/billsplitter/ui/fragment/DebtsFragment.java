@@ -17,11 +17,8 @@ import java.util.List;
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
-import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
-import ch.pantas.billsplitter.model.Expense;
-import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.DebtCalculator;
 import ch.pantas.billsplitter.services.ExpenseService;
@@ -75,7 +72,7 @@ public class DebtsFragment extends BaseEventDetailsFragment {
                 final Debt debt = (Debt) adapterView.getItemAtPosition(position);
                 User me = userService.getMe();
 
-                if(!me.equals(debt.getTo())) return;
+                if (!me.equals(debt.getTo())) return;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage(R.string.mark_debt_as_paid)
