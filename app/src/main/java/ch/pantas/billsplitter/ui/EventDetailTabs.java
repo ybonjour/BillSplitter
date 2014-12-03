@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.ui.adapter.EventDetailPagerAdapter;
 import ch.pantas.billsplitter.ui.fragment.DebtsFragment;
 import ch.pantas.billsplitter.ui.fragment.ExpensesFragment;
 import ch.pantas.billsplitter.ui.fragment.ParticipantsFragment;
@@ -50,15 +51,15 @@ public class EventDetailTabs {
         return labels.get(position);
     }
 
-    public Fragment getFragment(int position) {
+    public Fragment getFragment(int position, EventDetailPagerAdapter pagerAdapter) {
         checkNotNull(event);
         switch (position) {
             case 0:
-                return getInjector(context).getInstance(DebtsFragment.class).init(event);
+                return getInjector(context).getInstance(DebtsFragment.class).init(event, pagerAdapter);
             case 1:
-                return getInjector(context).getInstance(ExpensesFragment.class).init(event);
+                return getInjector(context).getInstance(ExpensesFragment.class).init(event, pagerAdapter);
             case 2:
-                return getInjector(context).getInstance(ParticipantsFragment.class).init(event);
+                return getInjector(context).getInstance(ParticipantsFragment.class).init(event, pagerAdapter);
             default:
                 throw new IllegalArgumentException("position");
         }

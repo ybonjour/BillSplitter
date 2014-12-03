@@ -14,9 +14,6 @@ import com.google.inject.Inject;
 
 import java.util.List;
 
-import ch.pantas.billsplitter.dataaccess.AttendeeStore;
-import ch.pantas.billsplitter.dataaccess.ExpenseStore;
-import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
@@ -37,16 +34,7 @@ public class DebtsFragment extends BaseEventDetailsFragment {
     private UserService userService;
 
     @Inject
-    private ExpenseStore expenseStore;
-
-    @Inject
     private ExpenseService expenseService;
-
-    @Inject
-    private AttendeeStore attendeeStore;
-
-    @Inject
-    private ParticipantStore participantStore;
 
     @Inject
     private Context context;

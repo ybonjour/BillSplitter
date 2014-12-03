@@ -76,8 +76,8 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
         me = new User(randomUUID().toString(), "Dave");
         when(userService.getMe()).thenReturn(me);
 
-        // This is needed that when Add Participant finishes EventDetails can
-        // be started correctly
+        // This is needed to ensure, that when Add Participant finishes
+        // EventDetails can be started correctly
         when(eventStore.getAll()).thenReturn(asList(event));
     }
 

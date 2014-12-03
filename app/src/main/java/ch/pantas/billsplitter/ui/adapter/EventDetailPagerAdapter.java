@@ -46,7 +46,7 @@ public class EventDetailPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return tabs.getFragment(position);
+        return tabs.getFragment(position, this);
     }
 
     @Override

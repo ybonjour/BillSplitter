@@ -86,10 +86,10 @@ public class EventDetails extends RoboFragmentActivity {
     private UserService userService;
 
     @Inject
-    private ActionProvider actionProvider;
+    private DebtCalculator debtCalculator;
 
     @Inject
-    private DebtCalculator debtCalculator;
+    private ActionProvider actionProvider;
 
     private EventDetailPagerAdapter pagerAdapter;
 
@@ -270,8 +270,8 @@ public class EventDetails extends RoboFragmentActivity {
         menu.findItem(R.id.action_delete_event).setVisible(!drawerOpen);
         menu.findItem(R.id.action_share).setVisible(!drawerOpen);
 
-        String userId = sharedPreferenceService.getUserId();
-        if (userId.equals(event.getOwnerId())) {
+        User me = userService.getMe();
+        if (me.getId().equals(event.getOwnerId())) {
             menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
         } else {
             menu.findItem(R.id.action_edit_event).setVisible(false);
@@ -377,7 +377,7 @@ public class EventDetails extends RoboFragmentActivity {
         editUserName(switcher.getDisplayedChild() == 1);
     }
 
-    public void editUserName(boolean editing) {
+    private void editUserName(boolean editing) {
         EditText userNameEdit = (EditText) findViewById(R.id.hidden_edit_view);
         TextView userNameView = (TextView) findViewById(R.id.nav_drawer_username);
 
