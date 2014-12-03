@@ -70,4 +70,9 @@
     <string name="beam_enable_nfc">Turn on NFC</string>
     <string name="beam_enable_nfc_beam">Turn on Android Beam</string>
     <string name="connection_problem">Connection Problem!</string>
+    <string name="mark_debt_as_paid">Do you want to mark this debt as paid?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="mark_debt_as_paid_title">Mark as paid</string>
+    <string name="paid_debt">Paid debt</string>
 </resources>

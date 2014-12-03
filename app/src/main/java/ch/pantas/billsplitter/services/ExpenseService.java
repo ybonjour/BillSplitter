@@ -13,11 +13,14 @@ import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.dataaccess.UserStore;
+import ch.pantas.billsplitter.model.Attendee;
+import ch.pantas.billsplitter.model.Debt;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.ExpensePresentation;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
+import ch.pantas.splitty.R;
 
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
@@ -61,5 +64,20 @@ public class ExpenseService {
         }
 
         return result;
+    }
+
+    public void createPaybackExpense(Debt debt, Event event){
+        checkNotNull(debt);
+
+        Participant payer = participantStore.getParticipant(event.getId(), debt.getFrom().getId());
+        Participant attendeeParticipant = participantStore.getParticipant(event.getId(), debt.getTo().getId());
+        int amount = debt.getAmount();
+        String description = context.getResources().getString(R.string.paid_debt);
+
+        Expense expense = new Expense(event.getId(), payer.getId(), description, amount, debt.getTo().getId());
+        expenseStore.persist(expense);
+
+        Attendee attendee = new Attendee(expense.getId(), attendeeParticipant.getId());
+        attendeeStore.persist(attendee);
     }
 }

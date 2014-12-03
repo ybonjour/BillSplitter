@@ -49,7 +49,7 @@
     <string name="expenses">Ausgaben</string>
     <string name="edit_template">Bearbeiten: %s</string>
     <string name="settings_google_analytics">Google Analytics</string>
-    <string name="settings_google_analytics_description">Schalten Sie Google Analytics ein um uns dabei zu helfen Splitty zu verbesseren.</string>
+    <string name="settings_google_analytics_description">Schalte Google Analytics ein um uns dabei zu helfen Splitty zu verbesseren.</string>
     <string name="settings">Einstellungen</string>
     <string name="beam_event">Gruppe beamen</string>
     <string name="beam_event_title_template">Gruppe %s beamen</string>
@@ -70,4 +70,9 @@
     <string name="beam_enable_nfc">NFC aktivieren</string>
     <string name="beam_enable_nfc_beam">Android Beam aktivieren</string>
     <string name="connection_problem">Verbindungsfehler!</string>
+    <string name="mark_debt_as_paid">Willst du die Bezahlung dieser Schuld bestätigen?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="mark_debt_as_paid_title">Schuldtilgung</string>
+    <string name="paid_debt">Schuldtilgung</string>
 </resources>

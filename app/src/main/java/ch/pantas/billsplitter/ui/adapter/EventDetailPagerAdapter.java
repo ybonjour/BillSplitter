@@ -36,6 +36,7 @@ public class EventDetailPagerAdapter extends FragmentPagerAdapter {
                     if (!(fragment instanceof BaseEventDetailsFragment)) continue;
                     BaseEventDetailsFragment eventFragment = (BaseEventDetailsFragment) fragment;
                     eventFragment.setCurrentEvent(tabs.getEvent());
+                    eventFragment.setPagerAdapter(this);
                 }
             }
         }
