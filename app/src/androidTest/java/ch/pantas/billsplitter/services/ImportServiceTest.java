@@ -2,31 +2,19 @@ package ch.pantas.billsplitter.services;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.google.inject.Inject;
-
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 
 import java.util.List;
 
-import ch.pantas.billsplitter.dataaccess.AttendeeStore;
-import ch.pantas.billsplitter.dataaccess.EventStore;
-import ch.pantas.billsplitter.dataaccess.ExpenseStore;
-import ch.pantas.billsplitter.dataaccess.ParticipantStore;
-import ch.pantas.billsplitter.dataaccess.UserStore;
-import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Attendee;
-import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Participant;
-import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.datatransfer.AttendeeDto;
 import ch.pantas.billsplitter.services.datatransfer.EventDto;
-import ch.pantas.billsplitter.services.datatransfer.EventDtoOperator;
 import ch.pantas.billsplitter.services.datatransfer.ExpenseDto;
-import ch.pantas.billsplitter.services.datatransfer.ParticipantDto;
 
 import static ch.pantas.billsplitter.framework.CustomMatchers.matchesAttendee;
 import static ch.pantas.billsplitter.framework.CustomMatchers.matchesParticipant;
@@ -43,56 +31,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-public class ImportServiceTest extends BaseMockitoInstrumentationTest {
+public class ImportServiceTest extends ImportServiceBaseTest {
 
     @Mock
     private UserService userService;
 
-    @Mock
-    private EventStore eventStore;
-
-    @Mock
-    private ExpenseStore expenseStore;
-
-    @Mock
-    private AttendeeStore attendeeStore;
-
-    @Mock
-    private ParticipantStore participantStore;
-
-    @Mock
-    private UserStore userStore;
-
-    @Inject
-    private ImportService importService;
-
-    private User me;
-    private Event event;
-    private EventDto eventDto;
-    private EventDtoOperator eventDtoOperator;
-    private User user;
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
-
-        me = new User(randomUUID().toString(), "Me");
         when(userService.getMe()).thenReturn(me);
-        when(userStore.getById(me.getId())).thenReturn(me);
-
-        eventDto = new EventDto();
-
-        String ownerId = randomUUID().toString();
-        event = new Event(randomUUID().toString(), "An event", SupportedCurrency.CHF, ownerId);
-        when(eventStore.getById(event.getId())).thenReturn(event);
-        eventDto.setEvent(event);
-
-        user = new User(randomUUID().toString(), "Joe");
-        when(userStore.getById(user.getId())).thenReturn(user);
-
-        eventDtoOperator = new EventDtoOperator(eventDto);
-
-
     }
 
     @SmallTest
@@ -362,22 +309,6 @@ public class ImportServiceTest extends BaseMockitoInstrumentationTest {
 
         // Then
         verifyZeroInteractions(attendeeStore, expenseStore);
-    }
-
-    private Participant addParticipant(EventDto eventDto, User user) {
-        return addParticipant(eventDto, user, false, 0);
-    }
-
-    private Participant addParticipant(EventDto eventDto, User user, boolean confirmed, long lastUpdated) {
-        Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId(), confirmed, lastUpdated);
-        ParticipantDto participantDto = new ParticipantDto();
-        participantDto.setUser(user);
-        participantDto.setParticipantId(participant.getId());
-        participantDto.setLastUpdated(participant.getLastUpdated());
-        participantDto.setConfirmed(participant.isConfirmed());
-        eventDto.addParticipant(participantDto);
-
-        return participant;
     }
 
     private Expense addExpense(EventDto eventDto, User payer) {

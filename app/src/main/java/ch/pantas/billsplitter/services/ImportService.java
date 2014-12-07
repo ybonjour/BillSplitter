@@ -90,33 +90,41 @@ public class ImportService {
     }
 
     private User importParticipant(ParticipantDto participantDto, Event event) {
+        Participant participant = participantStore.getById(participantDto.getParticipantId());
+
+        if (participant == null) {
+            return createParticipant(participantDto, event);
+        } else {
+            return updateParticipant(participant, participantDto);
+        }
+    }
+
+    private User updateParticipant(Participant participant, ParticipantDto participantDto) {
+
         User newUser = participantDto.getUser();
+
+        User oldUser = userStore.getById(participant.getUserId());
+        if (!oldUser.equals(newUser)) {
+            removeIfPossible(oldUser);
+        }
+
         createUserIfNotExists(newUser);
 
-        Participant participant = participantStore.getById(participantDto.getParticipantId());
-        if (participant == null) {
-            createParticipant(participantDto, event);
-        } else {
-            User oldUser = userStore.getById(participant.getUserId());
-            if (!oldUser.equals(newUser)) {
-                removeIfPossible(oldUser);
-            }
-
-            updateParticipant(participant, participantDto);
-            participantStore.persist(participant);
-        }
+        participant.setConfirmed(participantDto.isConfirmed());
+        participant.setUserId(participantDto.getUser().getId());
+        participantStore.persist(participant);
 
         return newUser;
     }
 
-    private void updateParticipant(Participant participant, ParticipantDto participantDto) {
-        participant.setConfirmed(participantDto.isConfirmed());
-        participant.setUserId(participantDto.getUser().getId());
-    }
+    private User createParticipant(ParticipantDto dto, Event event) {
+        User newUser = dto.getUser();
+        createUserIfNotExists(newUser);
 
-    private void createParticipant(ParticipantDto dto, Event event) {
         Participant newParticipant = new Participant(dto.getParticipantId(), dto.getUser().getId(), event.getId(), dto.isConfirmed(), 0);
         participantStore.createExistingModel(newParticipant);
+
+        return newUser;
     }
 
     private void createUserIfNotExists(User user) {
