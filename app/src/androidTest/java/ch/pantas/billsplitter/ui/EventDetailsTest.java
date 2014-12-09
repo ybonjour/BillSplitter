@@ -254,7 +254,6 @@ public class EventDetailsTest extends BaseEspressoTest<EventDetails> {
     }
 
     @SmallTest
-    @Suppress
     public void testOpenDrawerEditName() {
         // TODO: test is failing
         // When
@@ -268,9 +267,23 @@ public class EventDetailsTest extends BaseEspressoTest<EventDetails> {
         verify(userService, times(1)).changeMyUsername(eq("newname"));
     }
 
+    @SmallTest
+    public void testOpenDrawerEditNameToEmptyName() {
+        // TODO: test is failing
+        // When
+        getActivity();
+        onView(withId(R.id.drawer_layout)).perform(actionOpenDrawer());
+        onView(withText(user.getName())).perform(click());
+        onView(withId(R.id.hidden_edit_view)).perform(clearText());
+        onView(withId(R.id.drawer_layout)).perform(actionCloseDrawer(), actionOpenDrawer());
+
+        // Then
+        verify(userService, times(0)).changeMyUsername(any(String.class));
+    }
+
     private static void waitABit() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

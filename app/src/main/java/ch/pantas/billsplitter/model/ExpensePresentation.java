@@ -8,23 +8,19 @@ import java.util.List;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class ExpensePresentation {
-
-    private final Context context;
     private final User payer;
     private final Expense expense;
     private final SupportedCurrency currency;
     private final List<User> attendees;
 
-    public ExpensePresentation(User payer, Expense expense, SupportedCurrency currency, List<User> attendees, Context context) {
+    public ExpensePresentation(User payer, Expense expense, SupportedCurrency currency, List<User> attendees) {
         checkNotNull(payer);
         checkNotNull(expense);
         checkNotNull(attendees);
-        checkNotNull(context);
 
         this.payer = payer;
         this.expense = expense;
         this.currency = currency;
-        this.context = context;
         this.attendees = attendees;
     }
 

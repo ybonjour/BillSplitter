@@ -60,7 +60,7 @@ public class ExpenseService {
                 User user = userStore.getById(participant.getUserId());
                 attendingUsers.add(user);
             }
-            result.add(new ExpensePresentation(payingUser, expense, event.getCurrency(), attendingUsers, context));
+            result.add(new ExpensePresentation(payingUser, expense, event.getCurrency(), attendingUsers));
         }
 
         return result;
