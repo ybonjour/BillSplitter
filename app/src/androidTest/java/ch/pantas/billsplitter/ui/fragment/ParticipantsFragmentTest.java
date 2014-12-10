@@ -3,7 +3,6 @@ package ch.pantas.billsplitter.ui.fragment;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.android.apps.common.testing.ui.espresso.DataInteraction;
-import com.google.inject.Inject;
 
 import org.hamcrest.Matchers;
 import org.mockito.Mock;
@@ -24,12 +23,20 @@ import ch.pantas.splitty.R;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.swipeLeft;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.text.StringStartsWith.startsWith;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ParticipantsFragmentTest extends BaseEventDetailsFragmentTest {
@@ -51,16 +58,20 @@ public class ParticipantsFragmentTest extends BaseEventDetailsFragmentTest {
     @Mock
     private ExpenseService expenseService;
 
+    Participant participantJoe;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
         when(sharedPreferenceService.getUserId()).thenReturn(me.getId());
 
         // Given
-        Participant participantMe = new Participant(me.getId(), event.getId());
-        Participant participantJoe = new Participant(JOE.getId(), event.getId());
-        Participant participantMary = new Participant(MARY.getId(), event.getId());
+        Participant participantMe = new Participant("meId", me.getId(), event.getId(), true, 0);
+        participantJoe = new Participant("joeId", JOE.getId(), event.getId(), true, 0);
         when(participantStore.getParticipants(event.getId())).thenReturn(asList(participantMe, participantJoe));
+        when(participantStore.getParticipant(event.getId(), me.getId())).thenReturn(participantMe);
+        when(participantStore.getParticipant(event.getId(), JOE.getId())).thenReturn(participantJoe);
+
         when(userStore.getById(me.getId())).thenReturn(me);
         when(userStore.getById(JOE.getId())).thenReturn(JOE);
         when(userStore.getById(MARY.getId())).thenReturn(MARY);
@@ -73,12 +84,53 @@ public class ParticipantsFragmentTest extends BaseEventDetailsFragmentTest {
     }
 
     @SmallTest
-    public void testCorrectParticipantsAreShown() {
-
+     public void testCorrectParticipantsAreShown() {
         // Then
         onParticipant(me).check(matches(isDisplayed()));
         onParticipant(JOE).check(matches(isDisplayed()));
         onNonParticipant(MARY).check(matches(isDisplayed()));
+    }
+
+    @SmallTest
+    public void testAddNonParticipantToParticipants() {
+        // When
+        onNonParticipant(MARY).perform(click());
+
+        // Then
+        onParticipant(MARY).check(matches(isDisplayed()));
+        verify(participantStore, times(1)).persist(eq(new Participant(MARY.getId(), event.getId())));
+    }
+
+    @SmallTest
+    public void testRemoveParticipant() {
+        // When
+        onParticipant(JOE).perform(click());
+
+        // Then
+        onNonParticipant(JOE).check(matches(isDisplayed()));
+        verify(participantStore, times(1)).removeBy(eq(event.getId()), eq(JOE.getId()));
+    }
+
+    @SmallTest
+    public void testRemovingParticipantInExpenseNotPossible() {
+        // When
+        when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(asList(participantJoe));
+        onParticipant(JOE).perform(click());
+
+        // Then
+        onParticipant(JOE).check(matches(isDisplayed()));
+        verify(participantStore, times(0)).removeBy(eq(event.getId()), eq(JOE.getId()));
+    }
+
+    @SmallTest
+    public void testCantRemoveMe() {
+        // When
+        when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(asList(participantJoe));
+        onParticipant(me).perform(click());
+
+        // Then
+        onParticipant(me).check(matches(isDisplayed()));
+        verify(participantStore, times(0)).removeBy(eq(event.getId()), eq(me.getId()));
     }
 
     private DataInteraction onParticipant(User participant){

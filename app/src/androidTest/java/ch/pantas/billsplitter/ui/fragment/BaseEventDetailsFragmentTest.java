@@ -48,6 +48,8 @@ public abstract class BaseEventDetailsFragmentTest extends BaseEspressoTest<Even
 
     protected User me;
 
+    protected Expense expense;
+
     public BaseEventDetailsFragmentTest() {
         super(EventDetails.class);
     }
@@ -67,7 +69,7 @@ public abstract class BaseEventDetailsFragmentTest extends BaseEspressoTest<Even
         setActivityIntent(intent);
 
         // Ensures that help text is not shown
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), me.getId(), "An expense", 100, me.getId());
+        expense = new Expense(randomUUID().toString(), event.getId(), me.getId(), "An expense", 100, me.getId());
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
     }
 }
