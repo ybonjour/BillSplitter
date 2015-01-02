@@ -21,11 +21,6 @@
         <activity
             android:name="ch.pantas.billsplitter.ui.Login"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="ch.pantas.billsplitter.ui.StartEvent"
@@ -40,6 +35,11 @@
             android:name="ch.pantas.billsplitter.ui.EventDetails"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="ch.pantas.billsplitter.ui.AddExpense"

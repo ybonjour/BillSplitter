@@ -13,6 +13,7 @@ import ch.pantas.billsplitter.ui.AddExpense;
 import ch.pantas.billsplitter.ui.BeamEvent;
 import ch.pantas.billsplitter.ui.BillSplitterSettings;
 import ch.pantas.billsplitter.ui.EventDetails;
+import ch.pantas.billsplitter.ui.Login;
 import ch.pantas.billsplitter.ui.StartEvent;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
@@ -24,6 +25,13 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 @Singleton
 public class ActivityStarter {
+
+    public void startLogin(Context context) {
+        checkNotNull(context);
+
+        Intent intent = new Intent(context, Login.class);
+        context.startActivity(intent);
+    }
 
     public void startAddEvent(Context context) {
         checkNotNull(context);

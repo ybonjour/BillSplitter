@@ -110,6 +110,13 @@ public class EventDetails extends RoboFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (userService.getMe() == null) {
+            activityStarter.startLogin(this);
+            return;
+        }
+
+
         setContentView(R.layout.event_details);
         drawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -224,12 +231,6 @@ public class EventDetails extends RoboFragmentActivity {
         pagerAdapter.notifyDataSetChanged();
 
         return true;
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
     }
 
     @Override
