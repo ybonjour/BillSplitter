@@ -22,7 +22,7 @@ public class ParticipantManagerTest extends BaseMockitoInstrumentationTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        user = new User(randomUUID().toString());
+        user = new User(randomUUID(), "Hans");
     }
 
     @SmallTest
@@ -217,7 +217,7 @@ public class ParticipantManagerTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetParticipantsReturnsFixedParticipantAndNonFixedParticipant() {
         // Given
-        User user2 = new User(randomUUID().toString(), "Mary");
+        User user2 = new User(randomUUID(), "Mary");
         participantManager.addFixedParticipant(user);
         participantManager.addParticipant(user2);
 

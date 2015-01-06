@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 
 import java.util.Currency;
 import java.util.Locale;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.model.Event;
@@ -68,7 +69,7 @@ public class AddEvent extends RoboActivity {
         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(currencyAdapter);
 
-        String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
+        UUID eventId = (UUID) getIntent().getSerializableExtra(ARGUMENT_EVENT_ID);
         if (eventId == null) {
             setTitle(R.string.add_event);
             currencySpinner.setSelection(currencyAdapter.getPosition(getUserCurrency().toString()));

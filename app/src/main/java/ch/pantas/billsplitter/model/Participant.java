@@ -1,12 +1,14 @@
 package ch.pantas.billsplitter.model;
 
+import java.util.UUID;
+
 public class Participant extends Model {
-    private String userId;
-    private String eventId;
+    private UUID userId;
+    private UUID eventId;
     private boolean confirmed;
     private long lastUpdated;
 
-    public Participant(String id, String userId, String eventId, boolean confirmed, long lastUpdated) {
+    public Participant(UUID id, UUID userId, UUID eventId, boolean confirmed, long lastUpdated) {
         super(id);
         this.userId = userId;
         this.eventId = eventId;
@@ -14,11 +16,11 @@ public class Participant extends Model {
         this.lastUpdated = lastUpdated;
     }
 
-    public Participant(String userId, String eventId) {
+    public Participant(UUID userId, UUID eventId) {
         this(userId, eventId, false, 0);
     }
 
-    public Participant(String userId, String eventId, boolean confirmed, long lastUpdated) {
+    public Participant(UUID userId, UUID eventId, boolean confirmed, long lastUpdated) {
         this.userId = userId;
         this.eventId = eventId;
         this.confirmed = confirmed;
@@ -41,19 +43,19 @@ public class Participant extends Model {
         return confirmed;
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
-    public String getEventId() {
+    public UUID getEventId() {
         return eventId;
     }
 
-    public void setEventId(String eventId) {
+    public void setEventId(UUID eventId) {
         this.eventId = eventId;
     }
 

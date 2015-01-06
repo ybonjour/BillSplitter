@@ -1,18 +1,20 @@
 package ch.pantas.billsplitter.services.datatransfer;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.model.User;
 
 public class ParticipantDto {
-    private String participantId;
+    private UUID participantId;
     private User user;
     private boolean confirmed;
     private long lastUpdated;
 
-    public String getParticipantId() {
+    public UUID getParticipantId() {
         return participantId;
     }
 
-    public void setParticipantId(String participantId) {
+    public void setParticipantId(UUID participantId) {
         this.participantId = participantId;
     }
 

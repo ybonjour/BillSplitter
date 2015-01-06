@@ -3,6 +3,8 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.Event;
 
@@ -23,10 +25,10 @@ public class EventRowMapper implements RowMapper<Event> {
         int currencyIdx = cursor.getColumnIndex(CURRENCY);
         int ownerIdx = cursor.getColumnIndex(OWNER);
 
-        String id = cursor.getString(idIdx);
+        UUID id = UUID.fromString(cursor.getString(idIdx));
         String name = cursor.getString(nameIdx);
         SupportedCurrency currency = SupportedCurrency.valueOf(cursor.getString(currencyIdx));
-        String ownerId = cursor.getString(ownerIdx);
+        UUID ownerId = UUID.fromString(cursor.getString(ownerIdx));
 
         return new Event(id, name, currency, ownerId);
     }
@@ -37,10 +39,10 @@ public class EventRowMapper implements RowMapper<Event> {
 
         ContentValues values = new ContentValues();
 
-        if (event.getId() != null) values.put(ID, event.getId());
+        if (event.getId() != null) values.put(ID, event.getId().toString());
         values.put(NAME, event.getName());
         values.put(CURRENCY, event.getCurrency().toString());
-        values.put(OWNER, event.getOwnerId());
+        values.put(OWNER, event.getOwnerId().toString());
 
         return values;
     }

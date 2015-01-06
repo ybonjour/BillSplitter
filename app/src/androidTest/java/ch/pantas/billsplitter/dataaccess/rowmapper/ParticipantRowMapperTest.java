@@ -51,9 +51,9 @@ public class ParticipantRowMapperTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertNotNull(participant);
-        assertEquals(id, participant.getId());
-        assertEquals(user, participant.getUserId());
-        assertEquals(event, participant.getEventId());
+        assertEquals(id, participant.getId().toString());
+        assertEquals(user, participant.getUserId().toString());
+        assertEquals(event, participant.getEventId().toString());
         assertEquals(confirmed, participant.isConfirmed());
         assertEquals(lastUpdated, participant.getLastUpdated());
     }
@@ -61,9 +61,9 @@ public class ParticipantRowMapperTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetValuesReturnsCorrectValues() {
         // Given
-        String id = UUID.randomUUID().toString();
-        String user = UUID.randomUUID().toString();
-        String event = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
+        UUID user = UUID.randomUUID();
+        UUID event = UUID.randomUUID();
         boolean confirmed = true;
         long lastUpdated = currentTimeMillis();
         Participant participant = new Participant(id, user, event, confirmed, lastUpdated);
@@ -74,9 +74,9 @@ public class ParticipantRowMapperTest extends BaseMockitoInstrumentationTest {
         // Then
         assertNotNull(values);
         assertEquals(5, values.size());
-        assertEquals(id, values.get(ID));
-        assertEquals(user, values.get(USER));
-        assertEquals(event, values.get(EVENT));
+        assertEquals(id.toString(), values.get(ID));
+        assertEquals(user.toString(), values.get(USER));
+        assertEquals(event.toString(), values.get(EVENT));
         assertEquals(1, values.get(CONFIRMED));
         assertEquals(lastUpdated, values.get(LAST_UPDATED));
     }

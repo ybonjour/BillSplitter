@@ -30,9 +30,9 @@ public class GenericStore<M extends Model> {
         this.mapper = mapper;
     }
 
-    public M getById(String id) {
+    public M getById(UUID id) {
         Map<String, String> where = new HashMap<String, String>();
-        where.put(ID, id);
+        where.put(ID, id.toString());
         List<M> models = getModelsByQuery(where);
 
         if (models.size() == 0) {
@@ -52,7 +52,7 @@ public class GenericStore<M extends Model> {
         BillSplitterDatabase db = dbHelper.getDatabase();
 
         if (model.isNew()) {
-            String id = UUID.randomUUID().toString();
+            UUID id = UUID.randomUUID();
             model.setId(id);
             db.insert(mapper.getTableName(), mapper.getValues(model));
         } else {
@@ -69,12 +69,11 @@ public class GenericStore<M extends Model> {
         db.insert(mapper.getTableName(), mapper.getValues(model));
     }
 
-    public void removeById(String id){
+    public void removeById(UUID id){
         checkNotNull(id);
-        checkArgument(!id.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(ID, id);
+        where.put(ID, id.toString());
 
         removeAll(where);
     }

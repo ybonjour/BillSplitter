@@ -48,9 +48,9 @@ public class ExpenseRowMapperTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertNotNull(expense);
-        assertEquals(id, expense.getId());
-        assertEquals(eventId, expense.getEventId());
-        assertEquals(payerId, expense.getPayerId());
+        assertEquals(id, expense.getId().toString());
+        assertEquals(eventId, expense.getEventId().toString());
+        assertEquals(payerId, expense.getPayerId().toString());
         assertEquals(description, expense.getDescription());
         assertEquals(amount, expense.getAmount());
     }

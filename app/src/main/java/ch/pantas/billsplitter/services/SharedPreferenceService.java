@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.util.UUID;
+
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
@@ -21,27 +23,35 @@ public class SharedPreferenceService {
 
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
 
-    public String getUserId() {
-        return preferences.getString(USER_ID, null);
+    public UUID getUserId() {
+        try{
+            return UUID.fromString(preferences.getString(USER_ID, ""));
+        } catch(IllegalArgumentException e) {
+            return null;
+        }
     }
 
-    public void storeUserId(String userId) {
+    public void storeUserId(UUID userId) {
         checkNotNull(userId);
-        checkArgument(!userId.isEmpty());
 
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(USER_ID, userId);
+        editor.putString(USER_ID, userId.toString());
         editor.apply();
     }
 
-    public void storeActiveEventId(String eventId) {
+    public void storeActiveEventId(UUID eventId) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(ACTIVE_EVENT_ID, eventId);
+        if (eventId == null) editor.putString(ACTIVE_EVENT_ID, null);
+        else editor.putString(ACTIVE_EVENT_ID, eventId.toString());
         editor.apply();
     }
 
-    public String getActiveEventId() {
-        return preferences.getString(ACTIVE_EVENT_ID, null);
+    public UUID getActiveEventId() {
+        try{
+            return UUID.fromString(preferences.getString(ACTIVE_EVENT_ID, ""));
+        } catch(IllegalArgumentException e) {
+            return null;
+        }
     }
 
     public Integer getCurrentVersionCode() {

@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -53,9 +54,8 @@ public class ExportService {
     @Inject
     private Context context;
 
-    public EventDto exportEvent(String eventId) {
+    public EventDto exportEvent(UUID eventId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
 
         EventDtoBuilder builder = getInjector(context).getInstance(EventDtoBuilder.class);
 
@@ -69,7 +69,7 @@ public class ExportService {
         return builder.build();
     }
 
-    private List<ExpenseDto> getExpenseDtos(String eventId) {
+    private List<ExpenseDto> getExpenseDtos(UUID eventId) {
         List<ExpenseDto> expenseDtos = new LinkedList<ExpenseDto>();
         List<Expense> expenses = expenseStore.getExpensesOfEvent(eventId);
         for(Expense expense : expenses){
@@ -82,7 +82,7 @@ public class ExportService {
         return expenseDtos;
     }
 
-    private List<AttendeeDto> getAttendeeDtos(String expenseId){
+    private List<AttendeeDto> getAttendeeDtos(UUID expenseId){
         List<AttendeeDto> attendingParticipants = new LinkedList<AttendeeDto>();
         List<Attendee> attendees = attendeeStore.getAttendees(expenseId);
         for (Attendee attendee : attendees) {
@@ -95,7 +95,7 @@ public class ExportService {
         return attendingParticipants;
     }
 
-    private List<ParticipantDto> getParticipantDtos(String eventId) {
+    private List<ParticipantDto> getParticipantDtos(UUID eventId) {
 
         List<ParticipantDto> participantDtos = new LinkedList<ParticipantDto>();
         User me = userService.getMe();

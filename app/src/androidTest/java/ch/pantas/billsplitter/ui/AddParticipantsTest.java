@@ -67,13 +67,13 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     public void setUp() throws Exception {
         super.setUp();
 
-        event = new Event("abcd", "An Event", EUR, randomUUID().toString());
+        event = new Event(randomUUID(), "An Event", EUR, randomUUID());
         Intent intent = new Intent();
         intent.putExtra(EVENT_ID, event.getId());
         setActivityIntent(intent);
         when(eventStore.getById(event.getId())).thenReturn(event);
 
-        me = new User(randomUUID().toString(), "Dave");
+        me = new User(randomUUID(), "Dave");
         when(userService.getMe()).thenReturn(me);
 
         // This is needed to ensure, that when Add Participant finishes
@@ -140,7 +140,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @LargeTest
     public void testMeIsAlwaysAddedAsFixedParticipant() {
         // Given
-        User me = new User(randomUUID().toString(), "Joe");
+        User me = new User(randomUUID(), "Joe");
         when(userService.getMe()).thenReturn(me);
 
         // When
@@ -153,7 +153,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @LargeTest
     public void testWhenNoUsernameIseEnteredAllNonParticipatingUsersAreShown() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         List<User> users = asList(user);
         when(userStore.getAll()).thenReturn(users);
         when(participantManager.filterOutParticipants(users)).thenReturn(users);
@@ -170,7 +170,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @LargeTest
     public void testClickingOnUserAddsHimAsParticipant() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         List<User> users = asList(user);
         when(userStore.getAll()).thenReturn(users);
         when(participantManager.filterOutParticipants(users)).thenReturn(users);
@@ -186,7 +186,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @LargeTest
     public void testParticipatingUsersAreShownCorrectly() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(participantManager.getParticipants()).thenReturn(asList(user));
 
         // When
@@ -199,7 +199,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @LargeTest
     public void testClickingOnParticipantRemovesItFromParticipants() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(participantManager.getParticipants()).thenReturn(asList(user));
         getActivity();
 
@@ -213,7 +213,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @LargeTest
     public void testSaveRemovesAllParticipantsAndAddsSelectedOnes() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(participantManager.getParticipants()).thenReturn(asList(user));
         getActivity();
 
@@ -229,7 +229,7 @@ public class AddParticipantsTest extends BaseEspressoTest<AddParticipants> {
     @LargeTest
     public void testSaveAddsMeAsConfirmedParticipant() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(participantManager.getParticipants()).thenReturn(asList(user));
         when(userService.getMe()).thenReturn(user);
         getActivity();

@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import org.mockito.Mock;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
@@ -17,6 +18,7 @@ import ch.pantas.billsplitter.model.User;
 import static ch.pantas.billsplitter.model.SupportedCurrency.CHF;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -42,7 +44,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        event = new Event(randomUUID().toString(), "Event name", CHF, randomUUID().toString());
+        event = new Event(randomUUID(), "Event name", CHF, randomUUID());
         when(sharedPreferenceService.getActiveEventId()).thenReturn(null);
     }
 
@@ -59,7 +61,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveEventThrowsIllegalArgumentExceptionIfNewEventProvided() {
         try {
-            Event event = new Event("Name", CHF, randomUUID().toString());
+            Event event = new Event("Name", CHF, randomUUID());
             eventService.removeEventAndGetActiveEvent(event);
             fail("No exception has been thrown");
         } catch (IllegalArgumentException e) {
@@ -79,7 +81,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveEventSetsNewActiveEventAndReturnsIt(){
         // Given
-        Event newActiveEvent = new Event(randomUUID().toString(), "Name", CHF, randomUUID().toString());
+        Event newActiveEvent = new Event(randomUUID(), "Name", CHF, randomUUID());
         when(sharedPreferenceService.getActiveEventId()).thenReturn(event.getId());
         when(eventStore.getAll()).thenReturn(asList(newActiveEvent));
 
@@ -97,14 +99,14 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
         Event result = eventService.removeEventAndGetActiveEvent(event);
 
         // Then
-        verify(sharedPreferenceService, never()).storeActiveEventId(anyString());
+        verify(sharedPreferenceService, never()).storeActiveEventId(any(UUID.class));
         assertNull(result);
     }
 
     @SmallTest
     public void testRemoveEventDoesNotSetNewActiveEventWhenActiveEventWasNotProvidedEvent(){
         // Given
-        Event activeEvent = new Event(randomUUID().toString(), "Name", CHF, randomUUID().toString());
+        Event activeEvent = new Event(randomUUID(), "Name", CHF, randomUUID());
         when(sharedPreferenceService.getActiveEventId()).thenReturn(activeEvent.getId());
         when(eventStore.getById(activeEvent.getId())).thenReturn(activeEvent);
 
@@ -112,7 +114,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
         Event result = eventService.removeEventAndGetActiveEvent(event);
 
         // Then
-        verify(sharedPreferenceService, never()).storeActiveEventId(anyString());
+        verify(sharedPreferenceService, never()).storeActiveEventId(any(UUID.class));
         assertEquals(activeEvent, result);
     }
 
@@ -145,7 +147,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetActiveEventReturnsNullIfEventForStoredEventIdDoesNotExist(){
         // Given
-        String eventId = randomUUID().toString();
+        UUID eventId = randomUUID();
         when(sharedPreferenceService.getActiveEventId()).thenReturn(eventId);
         when(eventStore.getById(event.getId())).thenReturn(null);
 
@@ -159,7 +161,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetActiveEventReturnsStoredEvent(){
         // Given
-        Event event = new Event(randomUUID().toString(), "An event", CHF, randomUUID().toString());
+        Event event = new Event(randomUUID(), "An event", CHF, randomUUID());
         when(sharedPreferenceService.getActiveEventId()).thenReturn(event.getId());
         when(eventStore.getById(event.getId())).thenReturn(event);
 
@@ -195,7 +197,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
         // Given
         String name = "An event";
         SupportedCurrency currency = CHF;
-        User me = new User(randomUUID().toString(), "Joe");
+        User me = new User(randomUUID(), "Joe");
         when(userService.getMe()).thenReturn(me);
 
         // When

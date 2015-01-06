@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.ExpensePresentation;
@@ -79,7 +80,7 @@ public class ExpenseAdapter extends BaseAdapter {
         textField.setText(format(attendeeTemplate, expensePresentation.getAttendeesCommaSeparated()));
         textField.setTextSize(view.getResources().getDimension(R.dimen.expense_item_text));
 
-        String userId = sharedPreferenceService.getUserId();
+        UUID userId = sharedPreferenceService.getUserId();
         if (!userId.equals(expense.getOwnerId())) {
             view.setAlpha(0.5f);
         } else {

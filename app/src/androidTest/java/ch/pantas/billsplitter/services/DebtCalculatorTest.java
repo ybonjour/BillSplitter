@@ -60,7 +60,7 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        event = new Event(randomUUID().toString(), "My Event", EUR, randomUUID().toString());
+        event = new Event(randomUUID(), "My Event", EUR, randomUUID());
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -95,19 +95,19 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testCalculateDebtsReturnsExpenseCorrectlyWithPayerAsAttendee() {
         // Given
-        User payer = new User(randomUUID().toString(), "David");
+        User payer = new User(randomUUID(), "David");
         when(userStore.getById(payer.getId())).thenReturn(payer);
 
-        User attendee = new User(randomUUID().toString(), "Joe");
+        User attendee = new User(randomUUID(), "Joe");
         when(userStore.getById(attendee.getId())).thenReturn(attendee);
 
-        Participant participantPayer = new Participant(randomUUID().toString(), payer.getId(), "eventId", false, 0);
-        Participant participant = new Participant(randomUUID().toString(), attendee.getId(), "eventId", false, 0);
+        Participant participantPayer = new Participant(randomUUID(), payer.getId(), event.getId(), false, 0);
+        Participant participant = new Participant(randomUUID(), attendee.getId(), event.getId(), false, 0);
         when(participantStore.getById(participantPayer.getId())).thenReturn(participantPayer);
         when(participantStore.getById(participant.getId())).thenReturn(participant);
 
         int amount = 20;
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), participantPayer.getId(), "Food", amount, randomUUID().toString());
+        Expense expense = new Expense(randomUUID(), event.getId(), participantPayer.getId(), "Food", amount, randomUUID());
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
 
         when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(asList(participant, participantPayer));
@@ -124,19 +124,19 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testCalculateDebtsReturnsExpenseCorrectlyWithoutPayerAsAttendee() {
         // Given
-        User payer = new User(randomUUID().toString(), "David");
+        User payer = new User(randomUUID(), "David");
         when(userStore.getById(payer.getId())).thenReturn(payer);
 
-        User attendee = new User(randomUUID().toString(), "Joe");
+        User attendee = new User(randomUUID(), "Joe");
         when(userStore.getById(attendee.getId())).thenReturn(attendee);
 
-        Participant participantPayer = new Participant(randomUUID().toString(), payer.getId(), "eventId", false, 0);
-        Participant participant = new Participant(randomUUID().toString(), attendee.getId(), "eventId", false, 0);
+        Participant participantPayer = new Participant(randomUUID(), payer.getId(), event.getId(), false, 0);
+        Participant participant = new Participant(randomUUID(), attendee.getId(), event.getId(), false, 0);
         when(participantStore.getById(participantPayer.getId())).thenReturn(participantPayer);
         when(participantStore.getById(participant.getId())).thenReturn(participant);
 
         int amount = 20;
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), participantPayer.getId(), "Food", amount, randomUUID().toString());
+        Expense expense = new Expense(randomUUID(), event.getId(), participantPayer.getId(), "Food", amount, randomUUID());
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
 
         when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(asList(participant));
@@ -153,19 +153,19 @@ public class DebtCalculatorTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testCalculateDebtsOptimizesDebts() {
         // Given
-        User payer = new User(randomUUID().toString(), "David");
+        User payer = new User(randomUUID(), "David");
         when(userStore.getById(payer.getId())).thenReturn(payer);
 
-        User attendee = new User(randomUUID().toString(), "Joe");
+        User attendee = new User(randomUUID(), "Joe");
         when(userStore.getById(attendee.getId())).thenReturn(attendee);
 
-        Participant participantPayer = new Participant(randomUUID().toString(), payer.getId(), "eventId", false, 0);
-        Participant participant = new Participant(randomUUID().toString(), attendee.getId(), "eventId", false, 0);
+        Participant participantPayer = new Participant(randomUUID(), payer.getId(), event.getId(), false, 0);
+        Participant participant = new Participant(randomUUID(), attendee.getId(), event.getId(), false, 0);
         when(participantStore.getById(participantPayer.getId())).thenReturn(participantPayer);
         when(participantStore.getById(participant.getId())).thenReturn(participant);
 
         int amount = 20;
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), participantPayer.getId(), "Food", amount, randomUUID().toString());
+        Expense expense = new Expense(randomUUID(), event.getId(), participantPayer.getId(), "Food", amount, randomUUID());
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
 
         when(attendeeStore.getAttendingParticipants(expense.getId())).thenReturn(asList(participant));

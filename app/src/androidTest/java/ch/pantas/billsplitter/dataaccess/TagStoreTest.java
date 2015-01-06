@@ -56,7 +56,7 @@ public class TagStoreTest extends BaseMockitoInstrumentationTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        tag = new Tag(randomUUID().toString());
+        tag = new Tag(randomUUID(), "testTag");
     }
 
     @SmallTest

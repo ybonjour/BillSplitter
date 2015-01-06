@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 
 import org.mockito.Mock;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
@@ -50,17 +52,17 @@ public class ImportServiceBaseTest extends BaseMockitoInstrumentationTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        me = new User(randomUUID().toString(), "Me");
+        me = new User(randomUUID(), "Me");
         when(userStore.getById(me.getId())).thenReturn(me);
 
         eventDto = new EventDto();
 
-        String ownerId = randomUUID().toString();
-        event = new Event(randomUUID().toString(), "An event", SupportedCurrency.CHF, ownerId);
+        UUID ownerId = randomUUID();
+        event = new Event(randomUUID(), "An event", SupportedCurrency.CHF, ownerId);
         when(eventStore.getById(event.getId())).thenReturn(event);
         eventDto.setEvent(event);
 
-        user = new User(randomUUID().toString(), "Joe");
+        user = new User(randomUUID(), "Joe");
         when(userStore.getById(user.getId())).thenReturn(user);
 
         eventDtoOperator = new EventDtoOperator(eventDto);
@@ -71,7 +73,7 @@ public class ImportServiceBaseTest extends BaseMockitoInstrumentationTest {
     }
 
     protected Participant addParticipant(EventDto eventDto, User user, boolean confirmed, long lastUpdated) {
-        Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId(), confirmed, lastUpdated);
+        Participant participant = new Participant(randomUUID(), user.getId(), event.getId(), confirmed, lastUpdated);
         ParticipantDto participantDto = new ParticipantDto();
         participantDto.setUser(user);
         participantDto.setParticipantId(participant.getId());

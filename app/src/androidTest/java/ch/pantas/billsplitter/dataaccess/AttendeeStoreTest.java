@@ -11,6 +11,7 @@ import org.mockito.Mock;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.AttendeeRowMapper;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
@@ -71,19 +72,9 @@ public class AttendeeStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testGetAttendeesThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
-        try {
-            store.getAttendees("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testGetAttendeesReturnsResultOfGenericStore() {
         // Given
-        String expenseId = randomUUID().toString();
+        UUID expenseId = randomUUID();
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
@@ -96,14 +87,14 @@ public class AttendeeStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetAttendeesUsesCorrectWhereParameters() {
         // Given
-        String expenseId = randomUUID().toString();
+        UUID expenseId = randomUUID();
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
         store.getAttendees(expenseId);
 
         // Then
-        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(EXPENSE, expenseId))));
+        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(EXPENSE, expenseId.toString()))));
     }
 
     @SmallTest
@@ -117,19 +108,9 @@ public class AttendeeStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testGetAttendingParticipantsThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
-        try {
-            store.getAttendingParticipants("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testGetAttendingParticipantsReturnsEmptyListIfNoAttendeesExist() {
         // Given
-        String expenseId = randomUUID().toString();
+        UUID expenseId = randomUUID();
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
@@ -143,11 +124,11 @@ public class AttendeeStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetAttendingParticipantsReturnsCorrectParticipant() {
         // Given
-        String expenseId = randomUUID().toString();
-        Attendee attendee = new Attendee(randomUUID().toString(), randomUUID().toString(), randomUUID().toString());
+        UUID expenseId = randomUUID();
+        Attendee attendee = new Attendee(randomUUID(), randomUUID(), randomUUID());
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(asList(attendee));
 
-        Participant participant = new Participant(attendee.getParticipant(), randomUUID().toString(), randomUUID().toString(), false, 0);
+        Participant participant = new Participant(attendee.getParticipant(), randomUUID(), randomUUID(), false, 0);
         when(participantStore.getById(participant.getId())).thenReturn(participant);
 
         // When
@@ -162,8 +143,8 @@ public class AttendeeStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetAttendingParticipantsDoesNotReturnParticipantIfItDoesNotExist() {
         // Given
-        String expenseId = randomUUID().toString();
-        Attendee attendee = new Attendee(randomUUID().toString(), randomUUID().toString(), randomUUID().toString());
+        UUID expenseId = randomUUID();
+        Attendee attendee = new Attendee(randomUUID(), randomUUID(), randomUUID());
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(asList(attendee));
 
         when(participantStore.getById(attendee.getParticipant())).thenReturn(null);
@@ -180,7 +161,7 @@ public class AttendeeStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveAllThrowsNullPointerExceptionIfNoExpenseIdProvided() {
         try {
-            store.removeAll((String) null);
+            store.removeAll((UUID) null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -188,24 +169,14 @@ public class AttendeeStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testRemoveAllThrowsIllegalArgumentExceptionIfEmptyExpenseIdProvided() {
-        try {
-            store.removeAll("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testRemoveAllCallsRemoveAllWithCorrectWhereArgument() {
         // Given
-        String expenseId = randomUUID().toString();
+        UUID expenseId = randomUUID();
 
         // When
         store.removeAll(expenseId);
 
         // Then
-        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(1), hasEntry(EXPENSE, expenseId))));
+        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(1), hasEntry(EXPENSE, expenseId.toString()))));
     }
 }

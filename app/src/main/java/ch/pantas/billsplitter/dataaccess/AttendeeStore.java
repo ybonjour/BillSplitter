@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.AttendeeRowMapper;
 import ch.pantas.billsplitter.model.Attendee;
@@ -28,18 +29,16 @@ public class AttendeeStore extends BaseStore<Attendee> {
         super(mapper, genericStore);
     }
 
-    public List<Attendee> getAttendees(String expenseId) {
+    public List<Attendee> getAttendees(UUID expenseId) {
         checkNotNull(expenseId);
-        checkArgument(!expenseId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EXPENSE, expenseId);
+        where.put(EXPENSE, expenseId.toString());
         return genericStore.getModelsByQuery(where);
     }
 
-    public List<Participant> getAttendingParticipants(String expenseId) {
+    public List<Participant> getAttendingParticipants(UUID expenseId) {
         checkNotNull(expenseId);
-        checkArgument(!expenseId.isEmpty());
 
         List<Attendee> attendees = getAttendees(expenseId);
         List<Participant> participants = new LinkedList<Participant>();
@@ -51,12 +50,11 @@ public class AttendeeStore extends BaseStore<Attendee> {
         return participants;
     }
 
-    public void removeAll(String expenseId) {
+    public void removeAll(UUID expenseId) {
         checkNotNull(expenseId);
-        checkArgument(!expenseId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EXPENSE, expenseId);
+        where.put(EXPENSE, expenseId.toString());
         genericStore.removeAll(where);
     }
 }

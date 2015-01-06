@@ -11,6 +11,7 @@ import org.mockito.Mock;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.ExpenseRowMapper;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
@@ -63,22 +64,12 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testGetExpensesOfEventThrowsIllegalArgumentExceptionIfEmptyEventProvided() {
-        try {
-            store.getExpensesOfEvent("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testGetExpensesOfEventReturnsResultFromGenericStore() {
         // Given
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        List<Expense> expenses = store.getExpensesOfEvent(randomUUID().toString());
+        List<Expense> expenses = store.getExpensesOfEvent(randomUUID());
 
         // Then
         assertEquals(EMPTY_LIST, expenses);
@@ -87,7 +78,7 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetExpensesQueriesWithCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
+        UUID eventId = randomUUID();
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
@@ -95,13 +86,13 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertEquals(EMPTY_LIST, expenses);
-        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(EVENT, eventId))));
+        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(EVENT, eventId.toString()))));
     }
 
     @SmallTest
     public void testGetExpensesOfEventWithOwnerIdThrowsNullPointerExceptionIfNoEventProvided() {
         try {
-            store.getExpensesOfEvent(null, randomUUID().toString());
+            store.getExpensesOfEvent(null, randomUUID());
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -111,29 +102,9 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetExpensesOfEventWithOwnerIdThrowsNullPointerExceptionIfNoOwnerProvided() {
         try {
-            store.getExpensesOfEvent(randomUUID().toString(), null);
+            store.getExpensesOfEvent(randomUUID(), null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
-    public void testGetExpensesOfEventWithOwnerIdThrowsIllegalArgumentExceptionIfEmptyEventProvided() {
-        try {
-            store.getExpensesOfEvent("", randomUUID().toString());
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
-    public void testGetExpensesOfEventWithOwnerIdThrowsIllegalArgumentExceptionIfEmptyOwnerProvided() {
-        try {
-            store.getExpensesOfEvent(randomUUID().toString(), "");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
     }
@@ -144,7 +115,7 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        List<Expense> expenses = store.getExpensesOfEvent(randomUUID().toString(), randomUUID().toString());
+        List<Expense> expenses = store.getExpensesOfEvent(randomUUID(), randomUUID());
 
         // Then
         assertEquals(EMPTY_LIST, expenses);
@@ -153,8 +124,8 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetExpensesOfEventWithOwnerIdQueriesWithCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
-        String ownerId = randomUUID().toString();
+        UUID eventId = randomUUID();
+        UUID ownerId = randomUUID();
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
@@ -162,13 +133,13 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertEquals(EMPTY_LIST, expenses);
-        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(2), hasEntry(EVENT, eventId), hasEntry(OWNER, ownerId))));
+        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(2), hasEntry(EVENT, eventId.toString()), hasEntry(OWNER, ownerId.toString()))));
     }
 
     @SmallTest
     public void testRemoveAllThrowsNullPointerExceptionIfNoEventProvided() {
         try {
-            store.removeAll((String) null);
+            store.removeAll((UUID) null);
             fail("No exception has been thrown.");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -176,31 +147,21 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testRemoveAllThrowsIllegalArgumentExceptionIfEmptyEventProvided() {
-        try {
-            store.removeAll("");
-            fail("No exception has been thrown.");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testRemoveAllRemovesWithCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
+        UUID eventId = randomUUID();
 
         // When
         store.removeAll(eventId);
 
         // Then
-        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(1), hasEntry(EVENT, eventId))));
+        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(1), hasEntry(EVENT, eventId.toString()))));
     }
 
     @SmallTest
     public void testRemoveAllWithOwnerThrowsNullPointerExceptionIfNoEventProvided() {
         try {
-            store.removeAll(null, randomUUID().toString());
+            store.removeAll(null, randomUUID());
             fail("No exception has been thrown.");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -210,7 +171,7 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveAllWithOwnerThrowsNullPointerExceptionIfNoOwnerProvided() {
         try {
-            store.removeAll(randomUUID().toString(), null);
+            store.removeAll(randomUUID(), null);
             fail("No exception has been thrown.");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -218,36 +179,15 @@ public class ExpenseStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testRemoveAllWithOwnerThrowsIllegalArgumentExceptionIfEmptyEventProvided() {
-        try {
-            store.removeAll("", randomUUID().toString());
-            fail("No exception has been thrown.");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-
-    @SmallTest
-    public void testRemoveAllWithOwnerThrowsIllegalArgumentExceptionIfEmptyOwnerProvided() {
-        try {
-            store.removeAll(randomUUID().toString(), "");
-            fail("No exception has been thrown.");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testRemoveAllWithOwnerRemovesWithCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
-        String ownerId = randomUUID().toString();
+        UUID eventId = randomUUID();
+        UUID ownerId = randomUUID();
 
         // When
         store.removeAll(eventId, ownerId);
 
         // Then
-        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(2), hasEntry(EVENT, eventId), hasEntry(OWNER, ownerId))));
+        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(2), hasEntry(EVENT, eventId.toString()), hasEntry(OWNER, ownerId.toString()))));
     }
 }

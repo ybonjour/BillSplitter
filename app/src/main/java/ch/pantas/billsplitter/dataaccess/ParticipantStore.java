@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.ParticipantRowMapper;
 import ch.pantas.billsplitter.model.Participant;
@@ -25,36 +26,32 @@ public class ParticipantStore extends BaseStore<Participant> {
         super(mapper, genericStore);/**/
     }
 
-    public List<Participant> getParticipants(String eventId) {
+    public List<Participant> getParticipants(UUID eventId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, eventId);
+        where.put(EVENT, eventId.toString());
         List<Participant> participants = genericStore.getModelsByQuery(where);
 
         return participants;
     }
 
-    public List<Participant> getParticipantsForUsers(String userId) {
+    public List<Participant> getParticipantsForUsers(UUID userId) {
         checkNotNull(userId);
-        checkArgument(!userId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(USER, userId);
+        where.put(USER, userId.toString());
 
         return genericStore.getModelsByQuery(where);
     }
 
-    public Participant getParticipant(String eventId, String userId) {
+    public Participant getParticipant(UUID eventId, UUID userId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
         checkNotNull(userId);
-        checkArgument(!userId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, eventId);
-        where.put(USER, userId);
+        where.put(EVENT, eventId.toString());
+        where.put(USER, userId.toString());
         List<Participant> participants = genericStore.getModelsByQuery(where);
 
         checkState(participants.size() <= 1);
@@ -62,24 +59,21 @@ public class ParticipantStore extends BaseStore<Participant> {
         return participants.size() > 0 ? participants.get(0) : null;
     }
 
-    public void removeAll(String eventId) {
+    public void removeAll(UUID eventId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, eventId);
+        where.put(EVENT, eventId.toString());
         genericStore.removeAll(where);
     }
 
-    public void removeBy(String eventId, String userId) {
+    public void removeBy(UUID eventId, UUID userId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
         checkNotNull(userId);
-        checkArgument(!userId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, eventId);
-        where.put(USER, userId);
+        where.put(EVENT, eventId.toString());
+        where.put(USER, userId.toString());
         removeAll(where);
     }
 }

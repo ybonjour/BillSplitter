@@ -5,9 +5,12 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
@@ -63,7 +66,7 @@ public class BeamEvent extends BeamBaseActivity implements BluetoothListener {
     @Override
     protected void onResume() {
         super.onResume();
-        String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
+        UUID eventId = (UUID) getIntent().getSerializableExtra(ARGUMENT_EVENT_ID);
         event = eventStore.getById(eventId);
         String titleTemplate = getString(R.string.beam_event_title_template);
         setTitle(String.format(titleTemplate, event.getName()));

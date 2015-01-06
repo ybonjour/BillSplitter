@@ -3,6 +3,8 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
 import ch.pantas.billsplitter.model.Participant;
 
@@ -26,9 +28,9 @@ public class ParticipantRowMapper implements RowMapper<Participant> {
         int confirmedIdx = cursor.getColumnIndex(CONFIRMED);
         int lastUpdatedIdx = cursor.getColumnIndex(LAST_UPDATED);
 
-        String id = cursor.getString(idIdx);
-        String user = cursor.getString(userIdx);
-        String event = cursor.getString(eventIdx);
+        UUID id = UUID.fromString(cursor.getString(idIdx));
+        UUID user =  UUID.fromString(cursor.getString(userIdx));
+        UUID event =  UUID.fromString(cursor.getString(eventIdx));
         boolean confirmed = cursor.getInt(confirmedIdx) == 1;
         long lastUpdated = cursor.getLong(lastUpdatedIdx);
 
@@ -40,9 +42,9 @@ public class ParticipantRowMapper implements RowMapper<Participant> {
         checkNotNull(participant);
 
         ContentValues values = new ContentValues();
-        values.put(ID, participant.getId());
-        values.put(USER, participant.getUserId());
-        values.put(EVENT, participant.getEventId());
+        values.put(ID, participant.getId().toString());
+        values.put(USER, participant.getUserId().toString());
+        values.put(EVENT, participant.getEventId().toString());
         values.put(CONFIRMED, participant.isConfirmed() ? 1 : 0);
         values.put(LAST_UPDATED, participant.getLastUpdated());
 

@@ -5,6 +5,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import org.mockito.Mock;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
@@ -138,7 +140,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     @LargeTest
     public void testStartEventIsStartedWhenUserAlreadyLoggedInButNoActiveEventIsSet() {
         // Given
-        when(userService.getMe()).thenReturn(new User("a", "Joe"));
+        when(userService.getMe()).thenReturn(new User(UUID.randomUUID(), "Joe"));
         when(eventService.getActiveEvent()).thenReturn(null);
 
         // When
@@ -151,7 +153,7 @@ public class LoginTest extends BaseEspressoTest<Login> {
     @LargeTest
     public void testEventDetailIsStartedWhenUserIsLoggedInAndActiveEventIsSet() {
         // Given
-        when(userService.getMe()).thenReturn(new User("a", "joe"));
+        when(userService.getMe()).thenReturn(new User(UUID.randomUUID(), "joe"));
         Event event = mock(Event.class);
         when(eventService.getActiveEvent()).thenReturn(event);
 

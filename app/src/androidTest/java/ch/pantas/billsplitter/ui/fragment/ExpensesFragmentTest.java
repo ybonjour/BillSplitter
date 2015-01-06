@@ -34,8 +34,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ExpensesFragmentTest extends BaseEventDetailsFragmentTest {
-    private static final User JOE = new User(randomUUID().toString(), "Joe");
-    private static final User MARY = new User(randomUUID().toString(), "Mary");
+    private static final User JOE = new User(randomUUID(), "Joe");
+    private static final User MARY = new User(randomUUID(), "Mary");
 
     @Mock
     private AttendeeStore attendeeStore;
@@ -57,8 +57,8 @@ public class ExpensesFragmentTest extends BaseEventDetailsFragmentTest {
         when(sharedPreferenceService.getUserId()).thenReturn(me.getId());
 
         // Given
-        expenseA = new Expense("expenseAId", event.getId(), me.getId(), "expenseA", 123, me.getId());
-        expenseB = new Expense("expenseBId", event.getId(), me.getId(), "expenseB", 321, JOE.getId());
+        expenseA = new Expense(randomUUID(), event.getId(), me.getId(), "expenseA", 123, me.getId());
+        expenseB = new Expense(randomUUID(), event.getId(), me.getId(), "expenseB", 321, JOE.getId());
         expensePresentationA = new ExpensePresentation(me, expenseA, SupportedCurrency.CHF, asList(me, JOE));
         expensePresentationB = new ExpensePresentation(JOE, expenseB, SupportedCurrency.CHF, asList(me, JOE));
         when(expenseService.getExpensePresentations(event.getId())).thenReturn(asList(expensePresentationA, expensePresentationB));

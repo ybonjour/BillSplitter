@@ -1,34 +1,36 @@
 package ch.pantas.billsplitter.model;
 
+import java.util.UUID;
+
 public class Attendee extends Model {
 
-    private String expense;
-    private String participant;
+    private UUID expense;
+    private UUID participant;
 
-    public Attendee(String id, String expense, String participant) {
+    public Attendee(UUID id, UUID expense, UUID participant) {
         super(id);
         this.expense = expense;
         this.participant = participant;
     }
 
-    public Attendee(String expense, String participant) {
+    public Attendee(UUID expense, UUID participant) {
         this.expense = expense;
         this.participant = participant;
     }
 
-    public String getExpense() {
+    public UUID getExpense() {
         return expense;
     }
 
-    public void setExpense(String expense) {
+    public void setExpense(UUID expense) {
         this.expense = expense;
     }
 
-    public String getParticipant() {
+    public UUID getParticipant() {
         return participant;
     }
 
-    public void setParticipant(String participant) {
+    public void setParticipant(UUID participant) {
         this.participant = participant;
     }
 }

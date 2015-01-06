@@ -46,9 +46,9 @@ public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertNotNull(attendee);
-        assertEquals(id, attendee.getId());
-        assertEquals(expense, attendee.getExpense());
-        assertEquals(participant, attendee.getParticipant());
+        assertEquals(id, attendee.getId().toString());
+        assertEquals(expense, attendee.getExpense().toString());
+        assertEquals(participant, attendee.getParticipant().toString());
     }
 
     @SmallTest
@@ -64,9 +64,9 @@ public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetValuesReturnsCorrectValues() {
         // Given
-        String id = UUID.randomUUID().toString();
-        String expense = UUID.randomUUID().toString();
-        String participant = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
+        UUID expense = UUID.randomUUID();
+        UUID participant = UUID.randomUUID();
         Attendee attendee = new Attendee(id, expense, participant);
 
         // When
@@ -75,9 +75,9 @@ public class AttendeeRowMapperTest extends BaseMockitoInstrumentationTest {
         // Then
         assertNotNull(values);
         assertEquals(3, values.size());
-        assertEquals(id, values.get(ID));
-        assertEquals(expense, values.get(EXPENSE));
-        assertEquals(participant, values.get(PARTICIPANT));
+        assertEquals(id.toString(), values.get(ID));
+        assertEquals(expense.toString(), values.get(EXPENSE));
+        assertEquals(participant.toString(), values.get(PARTICIPANT));
     }
 
     private Cursor createAttendeeCursor(String id, String expense, String user) {

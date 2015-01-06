@@ -11,6 +11,7 @@ import org.mockito.Mock;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.ParticipantRowMapper;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
@@ -69,22 +70,12 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testGetParticipantsThrowsIllegalArgumentExceptionIfEmptyEventIdProvided() {
-        try {
-            store.getParticipants("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testGetParticipantsReturnsResultOfGenericStore() {
         // Given
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        List<Participant> participants = store.getParticipants("someEventId");
+        List<Participant> participants = store.getParticipants(randomUUID());
 
         // Then
         assertEquals(EMPTY_LIST, participants);
@@ -93,14 +84,14 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetParticipantsQueriesWithCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
+        UUID eventId = randomUUID();
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
         store.getParticipants(eventId);
 
         // Then
-        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(EVENT, eventId))));
+        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(EVENT, eventId.toString()))));
     }
 
     @SmallTest
@@ -114,22 +105,12 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testGetParticipantsForUserThrowsIllegalArgumentExceptionIfEmptyUserIdProvided() {
-        try {
-            store.getParticipants("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testGetParticipantsForUserReturnsResultOfGenericStore() {
         // Given
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        List<Participant> participants = store.getParticipantsForUsers("someUserid");
+        List<Participant> participants = store.getParticipantsForUsers(randomUUID());
 
         // Then
         assertEquals(EMPTY_LIST, participants);
@@ -138,20 +119,20 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetParticipantForUsersQueriesWithCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
+        UUID eventId = randomUUID();
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
         store.getParticipantsForUsers(eventId);
 
         // Then
-        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(USER, eventId))));
+        verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(1), hasEntry(USER, eventId.toString()))));
     }
 
     @SmallTest
     public void testGetParticipantsForEventAndUserThrowsNullPointerExceptionIfNoEventIdProvided() {
         try {
-            store.getParticipant(null, randomUUID().toString());
+            store.getParticipant(null, randomUUID());
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -161,29 +142,9 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetParticipantForEventAndUserThrowsNullPointerExceptionIfNoUserIdProvided() {
         try {
-            store.getParticipant(randomUUID().toString(), null);
+            store.getParticipant(randomUUID(), null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
-    public void testGetParticipantForEventAndUserThrowsIllegalArgumentExceptionIfEmptyEventProvided() {
-        try {
-            store.getParticipant("", randomUUID().toString());
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
-    public void testGetParticipantForEventAndUserThrowsIllegalArgumentExceptionIfEmptyUserProvided() {
-        try {
-            store.getParticipant(randomUUID().toString(), "");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
     }
@@ -196,7 +157,7 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(asList(participant1, participant2));
 
         try {
-            store.getParticipant(randomUUID().toString(), randomUUID().toString());
+            store.getParticipant(randomUUID(), randomUUID());
             fail("No exception has been thrown");
         } catch (IllegalStateException e) {
             assertNotNull(e);
@@ -206,8 +167,8 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetParticipantForEventAndUserQueriesWithCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
-        String userId = randomUUID().toString();
+        UUID eventId = randomUUID();
+        UUID userId = randomUUID();
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
@@ -215,7 +176,7 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
 
         // Then
         verify(genericStore, times(1)).getModelsByQuery(argThat(allOf(hasSize(2),
-                hasEntry(EVENT, eventId), hasEntry(USER, userId))));
+                hasEntry(EVENT, eventId.toString()), hasEntry(USER, userId.toString()))));
     }
 
     @SmallTest
@@ -225,7 +186,7 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(asList(participant));
 
         // When
-        Participant result = store.getParticipant("eventId", "userId");
+        Participant result = store.getParticipant(randomUUID(), randomUUID());
 
         // Then
         assertEquals(participant, result);
@@ -238,7 +199,7 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
         when(genericStore.getModelsByQuery(anyMap())).thenReturn(EMPTY_LIST);
 
         // When
-        Participant result = store.getParticipant("eventId", "userId");
+        Participant result = store.getParticipant(randomUUID(), randomUUID());
 
         // Then
         assertNull(result);
@@ -247,7 +208,7 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveAllThrowsNullPointerExceptionIfNoEventProvided() {
         try {
-            store.removeAll((String) null);
+            store.removeAll((UUID) null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -255,31 +216,21 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testRemoveAllThrowsIllegalArgumentExceptionIfEmptyEventProvided() {
-        try {
-            store.removeAll("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testRemoveAllUsesCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
+        UUID eventId = randomUUID();
 
         // When
         store.removeAll(eventId);
 
         // Then
-        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(1), hasEntry(EVENT, eventId))));
+        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(1), hasEntry(EVENT, eventId.toString()))));
     }
 
     @SmallTest
     public void testRemoveByThrowsNullPointerExceptionIfNoEventProvided() {
         try {
-            store.removeBy(null, randomUUID().toString());
+            store.removeBy(null, randomUUID());
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -289,7 +240,7 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testRemoveByThrowsNullPointerExceptionIfNoUserProvided() {
         try {
-            store.removeBy(randomUUID().toString(), null);
+            store.removeBy(randomUUID(), null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
             assertNotNull(e);
@@ -297,36 +248,16 @@ public class ParticipantStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testRemoveByThrowsIllegalArgumentExceptionIfEmptyEventIdProvided() {
-        try {
-            store.removeBy("", randomUUID().toString());
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
-    public void testRemoveByThrowsIllegalArgumentExceptionIfEmptyUserIdProvided() {
-        try {
-            store.removeBy(randomUUID().toString(), "");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testRemoveByUsesCorrectWhereArguments() {
         // Given
-        String eventId = randomUUID().toString();
-        String userId = randomUUID().toString();
+        UUID eventId = randomUUID();
+        UUID userId = randomUUID();
 
         // When
         store.removeBy(eventId, userId);
 
         // Then
-        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(2), hasEntry(EVENT, eventId), hasEntry(USER, userId))));
+        verify(genericStore, times(1)).removeAll(argThat(allOf(hasSize(2), hasEntry(EVENT, eventId.toString()), hasEntry(USER, userId.toString()))));
     }
 
 

@@ -5,6 +5,8 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 
 import static ch.pantas.billsplitter.services.SharedPreferenceService.ACTIVE_EVENT_ID;
@@ -70,28 +72,18 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     }
 
     @SmallTest
-    public void testStoreUserIdThrowsIllegalArgumentExceptionIfEmptyUserIdProvided() {
-        try {
-            service.storeUserId("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testGetUserIdReturnsNullIfNoUserIdPresent() {
         // When
-        String userName = service.getUserId();
+        UUID userId = service.getUserId();
 
         // Then
-        assertNull(userName);
+        assertNull(userId);
     }
 
     @SmallTest
     public void testStoreAndRetrieveUserIdCorrectly() {
         // Given
-        String userId = randomUUID().toString();
+        UUID userId = randomUUID();
 
         // When
         service.storeUserId(userId);
@@ -103,7 +95,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     @SmallTest
     public void testGetActiveEventIdReturnsNullIfNoEventIdPresent() {
         // When
-        String eventId = service.getActiveEventId();
+        UUID eventId = service.getActiveEventId();
 
         // Then
         assertNull(eventId);
@@ -112,7 +104,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     @SmallTest
     public void testStoreAndRetrieveActiveEventIdCorrectly() {
         // Given
-        String eventId = "eventId";
+        UUID eventId = randomUUID();
 
         // When
         service.storeActiveEventId(eventId);
@@ -124,7 +116,7 @@ public class SharedPreferenceServiceTest extends BaseMockitoInstrumentationTest 
     @SmallTest
     public void testStoreAndRetrieveActiveEventIdNull() {
         // Given
-        service.storeActiveEventId("eventId");
+        service.storeActiveEventId(randomUUID());
 
         // When
         service.storeActiveEventId(null);

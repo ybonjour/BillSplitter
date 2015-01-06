@@ -1,26 +1,27 @@
 package ch.pantas.billsplitter.model;
 
+import java.util.UUID;
+
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class Event extends Model {
     private String name;
     private SupportedCurrency currency;
-    private String ownerId;
+    private UUID ownerId;
 
-    public Event(String id, String name, SupportedCurrency currency, String ownerId) {
+    public Event(UUID id, String name, SupportedCurrency currency, UUID ownerId) {
         super(id);
         checkNotNull(name);
         checkArgument(!name.isEmpty());
         checkNotNull(ownerId);
-        checkArgument(!ownerId.isEmpty());
 
         this.name = name;
         this.currency = currency;
         this.ownerId = ownerId;
     }
 
-    public Event(String name, SupportedCurrency currency, String ownerId) {
+    public Event(String name, SupportedCurrency currency, UUID ownerId) {
         checkNotNull(name);
         checkArgument(!name.isEmpty());
 
@@ -45,9 +46,9 @@ public class Event extends Model {
         this.currency = currency;
     }
 
-    public String getOwnerId() { return ownerId; }
+    public UUID getOwnerId() { return ownerId; }
 
-    public void setOwnerId(String ownerId) {
+    public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -66,6 +67,8 @@ public class Event extends Model {
 
         if(getId() == null && event.getId() == null){
             return getName().equals(event.getName()) && getCurrency().equals(event.getCurrency());
+        } else if (getId() == null) {
+            return false;
         } else {
             return getId().equals(event.getId());
         }

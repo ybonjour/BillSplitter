@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.BillSplitterApplication;
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
@@ -328,11 +329,11 @@ public class AddExpense extends RoboActivity implements TagDeletedListener {
     private void extractDataFromIntent(Intent intent) {
         checkNotNull(intent);
 
-        String eventId;
+        UUID eventId;
         if (intent.hasExtra(ARGUMENT_EVENT_ID)) {
-            eventId = intent.getStringExtra(ARGUMENT_EVENT_ID);
+            eventId = (UUID) intent.getSerializableExtra(ARGUMENT_EVENT_ID);
         } else if (intent.hasExtra(ARGUMENT_EXPENSE_ID)) {
-            String expenseId = intent.getStringExtra(ARGUMENT_EXPENSE_ID);
+            UUID expenseId = (UUID) intent.getSerializableExtra(ARGUMENT_EXPENSE_ID);
             expense = expenseStore.getById(expenseId);
             eventId = expense.getEventId();
         } else {

@@ -1,12 +1,14 @@
 package ch.pantas.billsplitter.model;
 
+import java.util.UUID;
+
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class Tag extends Model {
 
     private final String name;
 
-    public Tag(String id, String name) {
+    public Tag(UUID id, String name) {
         super(id);
         checkNotNull(name);
 

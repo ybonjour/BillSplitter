@@ -76,7 +76,7 @@ public class ImportServiceTest extends ImportServiceBaseTest {
     @SmallTest
     public void testImportEventOverridesEventIfMeIsNotTheEventOwner() {
         // Given
-        eventDto.getEvent().setOwnerId(randomUUID().toString());
+        eventDto.getEvent().setOwnerId(randomUUID());
 
         // When
         importService.importEvent(eventDtoOperator);
@@ -171,7 +171,7 @@ public class ImportServiceTest extends ImportServiceBaseTest {
         // Given
         Participant participant = addParticipant(eventDto, user, false, currentTimeMillis());
 
-        User existingUser = new User(randomUUID().toString(), "Mary");
+        User existingUser = new User(randomUUID(), "Mary");
         when(userStore.getById(existingUser.getId())).thenReturn(existingUser);
         participant.setUserId(existingUser.getId());
         when(participantStore.getById(participant.getId())).thenReturn(participant);
@@ -188,7 +188,7 @@ public class ImportServiceTest extends ImportServiceBaseTest {
         // Given
         Participant participant = addParticipant(eventDto, user, false, currentTimeMillis());
 
-        User existingUser = new User(randomUUID().toString(), "Mary");
+        User existingUser = new User(randomUUID(), "Mary");
         when(userStore.getById(existingUser.getId())).thenReturn(existingUser);
         participant.setUserId(existingUser.getId());
         when(participantStore.getById(participant.getId())).thenReturn(participant);
@@ -207,12 +207,12 @@ public class ImportServiceTest extends ImportServiceBaseTest {
         // Given
         Participant participant = addParticipant(eventDto, user, false, currentTimeMillis());
 
-        User existingUser = new User(randomUUID().toString(), "Mary");
+        User existingUser = new User(randomUUID(), "Mary");
         when(userStore.getById(existingUser.getId())).thenReturn(existingUser);
         participant.setUserId(existingUser.getId());
         when(participantStore.getById(participant.getId())).thenReturn(participant);
 
-        Participant participantOtherEvent = new Participant(randomUUID().toString(), user.getId(), randomUUID().toString(), false, 0);
+        Participant participantOtherEvent = new Participant(randomUUID(), user.getId(), randomUUID(), false, 0);
         when(participantStore.getParticipantsForUsers(existingUser.getId())).thenReturn(asList(participant, participantOtherEvent));
 
         // When
@@ -313,7 +313,7 @@ public class ImportServiceTest extends ImportServiceBaseTest {
 
     private Expense addExpense(EventDto eventDto, User payer) {
         ExpenseDto expenseDto = new ExpenseDto();
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), payer.getId(), "An expense", 200, payer.getId());
+        Expense expense = new Expense(randomUUID(), event.getId(), payer.getId(), "An expense", 200, payer.getId());
         expenseDto.setExpense(expense);
 
         eventDto.addExpense(expenseDto);
@@ -322,7 +322,7 @@ public class ImportServiceTest extends ImportServiceBaseTest {
     }
 
     private Attendee addAttendee(ExpenseDto expenseDto, Participant attendingParticipant) {
-        Attendee attendee = new Attendee(randomUUID().toString(), expenseDto.getExpense().getId(), attendingParticipant.getId());
+        Attendee attendee = new Attendee(randomUUID(), expenseDto.getExpense().getId(), attendingParticipant.getId());
 
         AttendeeDto attendeeDto = new AttendeeDto();
         attendeeDto.setParticipantId(attendingParticipant.getId());

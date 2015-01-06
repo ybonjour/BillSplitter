@@ -6,6 +6,8 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.SupportedCurrency;
@@ -48,10 +50,10 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertNotNull(event);
-        assertEquals(id, event.getId());
-        assertEquals(name, event.getName());
+        assertEquals(id, event.getId().toString());
+        assertEquals(name, event.getName().toString());
         assertEquals(currency, event.getCurrency());
-        assertEquals(owner, event.getOwnerId());
+        assertEquals(owner, event.getOwnerId().toString());
     }
 
     @SmallTest
@@ -67,27 +69,27 @@ public class EventRowMapperTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testValuesReturnsCorrectValues() {
         // Given
-        String id = randomUUID().toString();
+        UUID id = randomUUID();
         String name = "Event 1";
         SupportedCurrency currency = CHF;
-        String owner = randomUUID().toString();
+        UUID owner = randomUUID();
         Event event = new Event(id, name, CHF, owner);
 
         // When
         ContentValues values = mapper.getValues(event);
 
         // Then
-        assertEquals(id, values.getAsString(ID));
+        assertEquals(id.toString(), values.getAsString(ID));
         assertEquals(name, values.getAsString(NAME));
         assertEquals(currency.toString(), values.getAsString(CURRENCY));
-        assertEquals(owner, values.getAsString(OWNER));
+        assertEquals(owner.toString(), values.getAsString(OWNER));
     }
 
     @SmallTest
     public void testValuesDoesNotReturnIdIfIdIsNull() {
         // Given
         String name = "Event 1";
-        Event event = new Event(name, CHF, "owner");
+        Event event = new Event(name, CHF, randomUUID());
 
         // When
         ContentValues values = mapper.getValues(event);

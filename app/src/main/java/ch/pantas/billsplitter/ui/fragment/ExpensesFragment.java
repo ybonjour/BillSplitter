@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.google.inject.Inject;
 
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
@@ -59,7 +60,7 @@ public class ExpensesFragment extends BaseEventDetailsFragment {
         expensesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String userId = sharedPreferenceService.getUserId();
+                UUID userId = sharedPreferenceService.getUserId();
                 ExpensePresentation expensePresentation = (ExpensePresentation) adapterView.getItemAtPosition(i);
                 Expense expense = expensePresentation.getExpense();
 

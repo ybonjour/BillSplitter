@@ -1,27 +1,27 @@
 package ch.pantas.billsplitter.model;
 
+import java.util.UUID;
+
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public abstract class Model {
 
-    private String id;
+    private UUID id;
 
     public Model(){ }
 
-    public Model(String id) {
+    public Model(UUID id) {
         checkNotNull(id);
-        checkArgument(!id.isEmpty());
         this.id = id;
     }
 
-    public String getId(){
+    public UUID getId(){
         return this.id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         checkNotNull(id);
-        checkArgument(!id.isEmpty());
         this.id = id;
     }
 

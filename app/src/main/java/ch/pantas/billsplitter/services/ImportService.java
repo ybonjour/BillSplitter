@@ -3,6 +3,7 @@ package ch.pantas.billsplitter.services;
 import com.google.inject.Inject;
 
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -66,7 +67,7 @@ public class ImportService {
         }
     }
 
-    private void removeExpensesOfOwner(Event event, String userId) {
+    private void removeExpensesOfOwner(Event event, UUID userId) {
         if (userId == null) return;
 
         List<Expense> expenses = expenseStore.getExpensesOfEvent(event.getId(), userId);
@@ -77,7 +78,7 @@ public class ImportService {
         expenseStore.removeAll(event.getId(), userId);
     }
 
-    private void importExpensesOfOwner(EventDtoOperator eventDto, String ownerUserId) {
+    private void importExpensesOfOwner(EventDtoOperator eventDto, UUID ownerUserId) {
         for (ExpenseDto expenseDto : eventDto.getExpensesOfOwner(ownerUserId)) {
             Expense expense = expenseDto.getExpense();
             expenseStore.createExistingModel(expense);

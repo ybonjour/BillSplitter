@@ -13,6 +13,7 @@ import org.mockito.stubbing.Answer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabase;
 import ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper;
@@ -64,7 +65,7 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
         when(database.queryWithLike(anyString(), anyMap())).thenReturn(cursor);
 
         store.setRowMapper(mapper);
-        model = new DummyModel(randomUUID().toString());
+        model = new DummyModel(randomUUID());
         when(mapper.map(cursor)).thenReturn(model);
         when(mapper.getTableName()).thenReturn(DUMMY_TABLE_NAME);
 
@@ -74,7 +75,7 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
                 DummyModel model = (DummyModel) invocation.getArguments()[0];
 
                 ContentValues values = new ContentValues();
-                values.put(ID, model.getId());
+                values.put(ID, model.getId().toString());
 
                 return values;
             }
@@ -122,7 +123,7 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
     public void testGetByIdReturnsNullIfModelDoesNotExist() {
         // Given
         when(cursor.moveToNext()).thenReturn(false);
-        String id = "abc";
+        UUID id = UUID.randomUUID();
 
         // When
         Model result = store.getById(id);
@@ -135,7 +136,7 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
     public void testGetByIdReturnsCorrectModelIfItExists() {
         // Given
         when(cursor.moveToNext()).thenReturn(true).thenReturn(false);
-        String id = "abc";
+        UUID id = UUID.randomUUID();
 
         // When
         Model result = store.getById(id);
@@ -171,7 +172,7 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testPersistWithExistingModel() {
         // Given
-        String id = "abc";
+        UUID id = UUID.randomUUID();
         DummyModel model = new DummyModel(id);
 
         // When
@@ -179,7 +180,7 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertEquals(id, model.getId());
-        verify(database, times(1)).update(anyString(), argThat(matchesContentValues(ID, id)));
+        verify(database, times(1)).update(anyString(), argThat(matchesContentValues(ID, id.toString())));
     }
 
     @SmallTest
@@ -206,14 +207,14 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testCreateExistingModelInsertsModelWithValuesFromRowMapper() {
         // Given
-        DummyModel model = new DummyModel(randomUUID().toString());
+        DummyModel model = new DummyModel(randomUUID());
 
         // When
         store.createExistingModel(model);
 
         // Then
         verify(database, times(1)).insert(eq(DUMMY_TABLE_NAME),
-                argThat(matchesContentValues(ID, model.getId())));
+                argThat(matchesContentValues(ID, model.getId().toString())));
 
     }
 
@@ -228,25 +229,15 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testRemoveByIdThrowsIllegalArgumentExceptionIfEmptyIdProvided() {
-        try {
-            store.removeById("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testRemoveByIdCallsRemoveAllWithCorrectWhereArgument() {
         // Given
-        DummyModel model = new DummyModel(randomUUID().toString());
+        DummyModel model = new DummyModel(randomUUID());
 
         // When
         store.removeById(model.getId());
 
         // Then
-        verify(database, times(1)).removeAll(eq(DUMMY_TABLE_NAME), argThat(allOf(hasSize(1), hasEntry(ID, model.getId()))));
+        verify(database, times(1)).removeAll(eq(DUMMY_TABLE_NAME), argThat(allOf(hasSize(1), hasEntry(ID, model.getId().toString()))));
     }
 
     @SmallTest
@@ -383,7 +374,7 @@ public class GenericStoreTest extends BaseMockitoInstrumentationTest {
         public DummyModel() {
         }
 
-        public DummyModel(String id) {
+        public DummyModel(UUID id) {
             super(id);
         }
     }

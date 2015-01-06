@@ -4,6 +4,8 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
@@ -21,7 +23,7 @@ public class EditEventAction implements EventDetailsAction {
     public boolean execute(EventDetails activity) {
         Event event = activity.getEvent();
 
-        String userId = sharedPreferenceService.getUserId();
+        UUID userId = sharedPreferenceService.getUserId();
 
         if (userId.equals(event.getOwnerId())) {
             activityStarter.startEditEvent(activity, event);

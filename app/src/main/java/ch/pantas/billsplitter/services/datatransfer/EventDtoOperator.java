@@ -3,6 +3,7 @@ package ch.pantas.billsplitter.services.datatransfer;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
@@ -57,9 +58,8 @@ public class EventDtoOperator {
         return eventDto.getParticipants();
     }
 
-    public List<ExpenseDto> getExpensesOfOwner(String ownerUserId) {
+    public List<ExpenseDto> getExpensesOfOwner(UUID ownerUserId) {
         checkNotNull(ownerUserId);
-        checkArgument(!ownerUserId.isEmpty());
 
         List<ExpenseDto> expenses = new LinkedList<ExpenseDto>();
         for (ExpenseDto expenseDto : eventDto.getExpenses()) {
@@ -85,7 +85,7 @@ public class EventDtoOperator {
         checkNotNull(user);
 
         ParticipantDto dtoNew = new ParticipantDto();
-        dtoNew.setParticipantId(randomUUID().toString());
+        dtoNew.setParticipantId(randomUUID());
         dtoNew.setUser(user);
 
         eventDto.addParticipant(dtoNew);

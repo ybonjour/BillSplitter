@@ -20,8 +20,8 @@ public class EventDtoOperatorTest extends BaseMockitoInstrumentationTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        user = new User(randomUUID().toString(), "Joe");
-        event = new Event(randomUUID().toString(), "An event", SupportedCurrency.CHF, user.getId());
+        user = new User(randomUUID(), "Joe");
+        event = new Event(randomUUID(), "An event", SupportedCurrency.CHF, user.getId());
     }
 
     @SmallTest
@@ -95,7 +95,7 @@ public class EventDtoOperatorTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testReplaceUserReplacesUserIfItExists() {
         // Given
-        User replacement = new User(randomUUID().toString(), "Replacement");
+        User replacement = new User(randomUUID(), "Replacement");
         EventDto dto = createEventDtoWithParticipant(user);
         EventDtoOperator operator = new EventDtoOperator(dto);
 
@@ -110,8 +110,8 @@ public class EventDtoOperatorTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testReplaceUserDoesNotReplaceUserIfItDoesExists() {
         // Given
-        User other = new User(randomUUID().toString(), "Another user");
-        User replacement = new User(randomUUID().toString(), "Replacement");
+        User other = new User(randomUUID(), "Another user");
+        User replacement = new User(randomUUID(), "Replacement");
         EventDto dto = createEventDtoWithParticipant(other);
         EventDtoOperator operator = new EventDtoOperator(dto);
 
@@ -151,7 +151,7 @@ public class EventDtoOperatorTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetParticipantReturnsNullIfUserIsNotParticipant() {
         // Given
-        User other = new User(randomUUID().toString(), "Another user");
+        User other = new User(randomUUID(), "Another user");
         EventDto dto = createEventDtoWithParticipant(other);
         EventDtoOperator operator = new EventDtoOperator(dto);
 
@@ -174,17 +174,6 @@ public class EventDtoOperatorTest extends BaseMockitoInstrumentationTest {
     }
 
     @SmallTest
-    public void testGetExpensesOfOwnerThrowsIllegalArgumentExceptionIfEmptyOwnerUserIdIsProvided() {
-        EventDtoOperator operator = new EventDtoOperator(createEventDtoWithEvent(event));
-        try {
-            operator.getExpensesOfOwner("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
     public void testGetExpensesOfOwnerReturnsExpenseIfItIsOfOwner() {
         // Given
         EventDto dto = createEventDtoWithExpensePayedBy(user);
@@ -201,7 +190,7 @@ public class EventDtoOperatorTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetExpensesOfOwnerDoesNotReturnExpenseIfItIsOfOtherOwner() {
         // Given
-        User other = new User(randomUUID().toString(), "Another user");
+        User other = new User(randomUUID(), "Another user");
         EventDto dto = createEventDtoWithExpensePayedBy(user);
         EventDtoOperator operator = new EventDtoOperator(dto);
 
@@ -328,7 +317,7 @@ public class EventDtoOperatorTest extends BaseMockitoInstrumentationTest {
 
     private EventDto createEventDtoWithExpensePayedBy(User user) {
         EventDto eventDto = createEventDtoWithParticipant(user);
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), user.getId(), "An expense", 2200, user.getId());
+        Expense expense = new Expense(randomUUID(), event.getId(), user.getId(), "An expense", 2200, user.getId());
         ExpenseDto expenseDto = new ExpenseDto();
         expenseDto.setExpense(expense);
         eventDto.addExpense(expenseDto);

@@ -112,7 +112,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     @LargeTest
     public void testEditEventCurrentEventNameDisplayed() {
         // Given
-        Event event = new Event("abc", "testname", EUR, randomUUID().toString());
+        Event event = new Event(randomUUID(), "testname", EUR, randomUUID());
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);
@@ -129,7 +129,7 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     @LargeTest
     public void testEditParticipantsIsNotStartedIfNextButtonIsPressed() {
         // Given
-        Event event = new Event("abc", "testname", EUR, randomUUID().toString());
+        Event event = new Event(randomUUID(), "testname", EUR, randomUUID());
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);

@@ -2,6 +2,7 @@ package ch.pantas.billsplitter.dataaccess;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.RowMapper;
 import ch.pantas.billsplitter.model.Model;
@@ -18,7 +19,7 @@ public abstract class BaseStore<M extends Model> {
         this.genericStore.setRowMapper(mapper);
     }
 
-    public M getById(String id) {
+    public M getById(UUID id) {
         return genericStore.getById(id);
     }
 
@@ -34,7 +35,7 @@ public abstract class BaseStore<M extends Model> {
         genericStore.createExistingModel(model);
     }
 
-    public void removeById(String id) {
+    public void removeById(UUID id) {
         genericStore.removeById(id);
     }
 

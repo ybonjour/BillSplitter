@@ -3,6 +3,8 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.model.Tag;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.Table.ID;
@@ -18,7 +20,7 @@ public class TagRowMapper implements RowMapper<Tag> {
         int idxId = cursor.getColumnIndex(ID);
         int idxName = cursor.getColumnIndex(NAME);
 
-        String id = cursor.getString(idxId);
+        UUID id = UUID.fromString(cursor.getString(idxId));
         String name = cursor.getString(idxName);
 
         return new Tag(id, name);
@@ -29,7 +31,7 @@ public class TagRowMapper implements RowMapper<Tag> {
         checkNotNull(tag);
 
         ContentValues values = new ContentValues();
-        values.put(ID, tag.getId());
+        values.put(ID, tag.getId().toString());
         values.put(NAME, tag.getName());
 
         return values;

@@ -91,14 +91,14 @@ public class AddExpenseTest extends BaseEspressoTest<AddExpense> {
     public void setUp() throws Exception {
         super.setUp();
 
-        event = new Event("abcd", "An Event", EUR, randomUUID().toString());
+        event = new Event(randomUUID(), "An Event", EUR, randomUUID());
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);
         when(eventStore.getById(event.getId())).thenReturn(event);
-        me = new User(randomUUID().toString(), "Me");
+        me = new User(randomUUID(), "Me");
         when(userService.getMe()).thenReturn(me);
-        participantMe = new Participant(randomUUID().toString(), me.getId(), event.getId(), true, 0);
+        participantMe = new Participant(randomUUID(), me.getId(), event.getId(), true, 0);
         when(participantStore.getParticipant(event.getId(), me.getId())).thenReturn(participantMe);
         when(userStore.getUserWithName(me.getName())).thenReturn(me);
         when(payerAdapter.getSelectedUser()).thenReturn(me);

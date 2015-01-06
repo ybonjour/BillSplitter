@@ -1,22 +1,24 @@
 package ch.pantas.billsplitter.services.datatransfer;
 
-public class AttendeeDto {
-    private String attendeeId;
-    private String participantId;
+import java.util.UUID;
 
-    public String getAttendeeId() {
+public class AttendeeDto {
+    private UUID attendeeId;
+    private UUID participantId;
+
+    public UUID getAttendeeId() {
         return attendeeId;
     }
 
-    public void setAttendeeId(String attendeeId) {
+    public void setAttendeeId(UUID attendeeId) {
         this.attendeeId = attendeeId;
     }
 
-    public String getParticipantId() {
+    public UUID getParticipantId() {
         return participantId;
     }
 
-    public void setParticipantId(String participantId) {
+    public void setParticipantId(UUID participantId) {
         this.participantId = participantId;
     }
 }

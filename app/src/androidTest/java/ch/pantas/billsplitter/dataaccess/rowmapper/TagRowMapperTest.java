@@ -6,6 +6,8 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.inject.Inject;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.Tag;
 
@@ -42,7 +44,7 @@ public class TagRowMapperTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertNotNull(tag);
-        assertEquals(id, tag.getId());
+        assertEquals(id, tag.getId().toString());
         assertEquals(name, tag.getName());
     }
 
@@ -59,7 +61,7 @@ public class TagRowMapperTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetValuesReturnsCorrectValues() {
         // Given
-        String id = randomUUID().toString();
+        UUID id = randomUUID();
         String name = "Food";
         Tag tag = new Tag(id, name);
 
@@ -68,7 +70,7 @@ public class TagRowMapperTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertNotNull(values);
-        assertEquals(id, values.get(ID));
+        assertEquals(id.toString(), values.get(ID));
         assertEquals(name, values.get(NAME));
     }
 

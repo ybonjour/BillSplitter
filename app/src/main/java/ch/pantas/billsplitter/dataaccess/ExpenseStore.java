@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.rowmapper.ExpenseRowMapper;
 import ch.pantas.billsplitter.model.Expense;
@@ -21,45 +22,39 @@ public class ExpenseStore extends BaseStore<Expense> {
         super(mapper, genericStore);
     }
 
-    public List<Expense> getExpensesOfEvent(String eventId) {
+    public List<Expense> getExpensesOfEvent(UUID eventId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, eventId);
+        where.put(EVENT, eventId.toString());
         return genericStore.getModelsByQuery(where);
     }
 
-    public List<Expense> getExpensesOfEvent(String eventId, String ownerId) {
+    public List<Expense> getExpensesOfEvent(UUID eventId, UUID ownerId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
         checkNotNull(ownerId);
-        checkArgument(!ownerId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, eventId);
-        where.put(OWNER, ownerId);
+        where.put(EVENT, eventId.toString());
+        where.put(OWNER, ownerId.toString());
         return genericStore.getModelsByQuery(where);
     }
 
-    public void removeAll(String eventId) {
+    public void removeAll(UUID eventId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, eventId);
+        where.put(EVENT, eventId.toString());
         removeAll(where);
     }
 
-    public void removeAll(String eventId, String ownerId) {
+    public void removeAll(UUID eventId, UUID ownerId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
         checkNotNull(ownerId);
-        checkArgument(!ownerId.isEmpty());
 
         Map<String, String> where = new HashMap<String, String>();
-        where.put(EVENT, eventId);
-        where.put(OWNER, ownerId);
+        where.put(EVENT, eventId.toString());
+        where.put(OWNER, ownerId.toString());
         removeAll(where);
     }
 }

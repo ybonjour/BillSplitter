@@ -27,6 +27,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
@@ -168,10 +169,10 @@ public class EventDetails extends RoboFragmentActivity {
 
     private boolean init() {
         if (getIntent().hasExtra(ARGUMENT_EVENT_ID)) {
-            String eventId = getIntent().getStringExtra(ARGUMENT_EVENT_ID);
+            UUID eventId = (UUID) getIntent().getSerializableExtra(ARGUMENT_EVENT_ID);
             event = eventStore.getById(eventId);
         } else {
-            String eventId = sharedPreferenceService.getActiveEventId();
+            UUID eventId = sharedPreferenceService.getActiveEventId();
             if (eventId == null) return false;
             event = eventStore.getById(eventId);
         }

@@ -3,6 +3,8 @@ package ch.pantas.billsplitter.services;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.model.User;
 
@@ -19,7 +21,7 @@ public class UserService {
     private SharedPreferenceService sharedPreferenceService;
 
     public User getMe(){
-        String userId = sharedPreferenceService.getUserId();
+        UUID userId = sharedPreferenceService.getUserId();
         if(userId == null) return null;
         return userStore.getById(userId);
     }

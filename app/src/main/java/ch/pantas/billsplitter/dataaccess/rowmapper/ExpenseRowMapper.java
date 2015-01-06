@@ -3,6 +3,8 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.model.Expense;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.ExpenseTable.AMOUNT;
@@ -26,12 +28,12 @@ public class ExpenseRowMapper implements RowMapper<Expense> {
         int amountIdx = cursor.getColumnIndex(AMOUNT);
         int ownerIdx = cursor.getColumnIndex(OWNER);
 
-        String id = cursor.getString(idIdx);
-        String eventId = cursor.getString(eventIdx);
-        String payerId = cursor.getString(payerIdx);
+        UUID id = UUID.fromString(cursor.getString(idIdx));
+        UUID eventId = UUID.fromString(cursor.getString(eventIdx));
+        UUID payerId = UUID.fromString(cursor.getString(payerIdx));
         String description = cursor.getString(descriptionIdx);
         int amount = cursor.getInt(amountIdx);
-        String ownerId = cursor.getString(ownerIdx);
+        UUID ownerId = UUID.fromString(cursor.getString(ownerIdx));
 
         return new Expense(id, eventId, payerId, description, amount, ownerId);
     }
@@ -39,12 +41,12 @@ public class ExpenseRowMapper implements RowMapper<Expense> {
     @Override
     public ContentValues getValues(Expense expense) {
         ContentValues values = new ContentValues();
-        values.put(ID, expense.getId());
-        values.put(EVENT, expense.getEventId());
-        values.put(PARTICIPANT, expense.getPayerId());
+        values.put(ID, expense.getId().toString());
+        values.put(EVENT, expense.getEventId().toString());
+        values.put(PARTICIPANT, expense.getPayerId().toString());
         values.put(DESCRIPTION, expense.getDescription());
         values.put(AMOUNT, expense.getAmount());
-        values.put(OWNER, expense.getOwnerId());
+        values.put(OWNER, expense.getOwnerId().toString());
 
         return values;
     }

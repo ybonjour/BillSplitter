@@ -41,7 +41,7 @@ public class UserRowMapperTest extends BaseMockitoInstrumentationTest {
 
         // Then
         assertNotNull(user);
-        assertEquals(id, user.getId());
+        assertEquals(id, user.getId().toString());
         assertEquals(name, user.getName());
     }
 

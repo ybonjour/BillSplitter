@@ -3,6 +3,8 @@ package ch.pantas.billsplitter.dataaccess.rowmapper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.model.Attendee;
 
 import static ch.pantas.billsplitter.dataaccess.db.BillSplitterDatabaseOpenHelper.AttendeeTable.EXPENSE;
@@ -20,9 +22,9 @@ public class AttendeeRowMapper implements RowMapper<Attendee> {
         int expenseIdx = cursor.getColumnIndex(EXPENSE);
         int participantIdx = cursor.getColumnIndex(PARTICIPANT);
 
-        String id = cursor.getString(idIdx);
-        String expense = cursor.getString(expenseIdx);
-        String participant = cursor.getString(participantIdx);
+        UUID id = UUID.fromString(cursor.getString(idIdx));
+        UUID expense = UUID.fromString(cursor.getString(expenseIdx));
+        UUID participant = UUID.fromString(cursor.getString(participantIdx));
 
         return new Attendee(id, expense, participant);
     }
@@ -30,9 +32,9 @@ public class AttendeeRowMapper implements RowMapper<Attendee> {
     @Override
     public ContentValues getValues(Attendee attendee) {
         ContentValues values = new ContentValues();
-        values.put(ID, attendee.getId());
-        values.put(EXPENSE, attendee.getExpense());
-        values.put(PARTICIPANT, attendee.getParticipant());
+        values.put(ID, attendee.getId().toString());
+        values.put(EXPENSE, attendee.getExpense().toString());
+        values.put(PARTICIPANT, attendee.getParticipant().toString());
 
         return values;
     }

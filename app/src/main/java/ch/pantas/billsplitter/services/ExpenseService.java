@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -42,9 +43,8 @@ public class ExpenseService {
     private Context context;
 
 
-    public List<ExpensePresentation> getExpensePresentations(String eventId) {
+    public List<ExpensePresentation> getExpensePresentations(UUID eventId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
 
         Event event = eventStore.getById(eventId);
         List<Expense> expenses = expenseStore.getExpensesOfEvent(eventId);

@@ -62,10 +62,10 @@ public class ExportServiceTest extends BaseMockitoInstrumentationTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        event = new Event(randomUUID().toString(), "An event", EUR, randomUUID().toString());
+        event = new Event(randomUUID(), "An event", EUR, randomUUID());
         when(eventStore.getById(event.getId())).thenReturn(event);
 
-        user = new User(randomUUID().toString(), "Joe");
+        user = new User(randomUUID(), "Joe");
         when(userStore.getById(user.getId())).thenReturn(user);
     }
 
@@ -75,16 +75,6 @@ public class ExportServiceTest extends BaseMockitoInstrumentationTest {
             exportService.exportEvent(null);
             fail("No exception has been thrown");
         } catch (NullPointerException e) {
-            assertNotNull(e);
-        }
-    }
-
-    @SmallTest
-    public void testExportEventThrowsIllegalArgumentExceptionIfEmptyEventIdProvided() {
-        try {
-            exportService.exportEvent("");
-            fail("No exception has been thrown");
-        } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
     }
@@ -102,10 +92,10 @@ public class ExportServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testExportEventReturnsEventDtoWithCorrectParticipants() {
         // Given
-        Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId(), false, 0);
+        Participant participant = new Participant(randomUUID(), user.getId(), event.getId(), false, 0);
         List<Participant> participants = asList(participant);
         when(participantStore.getParticipants(event.getId())).thenReturn(participants);
-        User otherUser = new User(randomUUID().toString(), "Joe");
+        User otherUser = new User(randomUUID(), "Joe");
         when(userService.getMe()).thenReturn(otherUser);
 
         // When
@@ -136,7 +126,7 @@ public class ExportServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testExportEventReturnsMeAsParticipantWithCorrectLastUpdatedValue(){
         // Given
-        Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId(), false, 0);
+        Participant participant = new Participant(randomUUID(), user.getId(), event.getId(), false, 0);
         List<Participant> participants = asList(participant);
         when(participantStore.getParticipants(event.getId())).thenReturn(participants);
         when(userService.getMe()).thenReturn(user);
@@ -168,7 +158,7 @@ public class ExportServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testExportEventReturnsExpenseCorrectlyWithoutAttendees(){
         // Given
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), user.getId(), "An event", 1000, user.getId());
+        Expense expense = new Expense(randomUUID(), event.getId(), user.getId(), "An event", 1000, user.getId());
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
         when(attendeeStore.getAttendees(expense.getId())).thenReturn(new LinkedList<Attendee>());
 
@@ -187,10 +177,10 @@ public class ExportServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testExportEventReturnsExpenseCorrectlyWithAttendee(){
         // Given
-        Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId(), false, 0);
-        Expense expense = new Expense(randomUUID().toString(), event.getId(), user.getId(), "An event", 1000, user.getId());
+        Participant participant = new Participant(randomUUID(), user.getId(), event.getId(), false, 0);
+        Expense expense = new Expense(randomUUID(), event.getId(), user.getId(), "An event", 1000, user.getId());
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
-        Attendee attendee = new Attendee(randomUUID().toString(), expense.getId(), participant.getId());
+        Attendee attendee = new Attendee(randomUUID(), expense.getId(), participant.getId());
         when(attendeeStore.getAttendees(expense.getId())).thenReturn(asList(attendee));
 
         // When

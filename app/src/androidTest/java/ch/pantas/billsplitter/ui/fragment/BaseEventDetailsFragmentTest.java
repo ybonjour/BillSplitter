@@ -58,10 +58,10 @@ public abstract class BaseEventDetailsFragmentTest extends BaseEspressoTest<Even
     public void setUp() throws Exception {
         super.setUp();
 
-        me = new User(randomUUID().toString(), "Me");
+        me = new User(randomUUID(), "Me");
         when(userService.getMe()).thenReturn(me);
 
-        event = new Event(randomUUID().toString(), "An event", SupportedCurrency.CHF, randomUUID().toString());
+        event = new Event(randomUUID(), "An event", SupportedCurrency.CHF, randomUUID());
         when(eventStore.getById(event.getId())).thenReturn(event);
 
         Intent intent = new Intent();
@@ -69,7 +69,7 @@ public abstract class BaseEventDetailsFragmentTest extends BaseEspressoTest<Even
         setActivityIntent(intent);
 
         // Ensures that help text is not shown
-        expense = new Expense(randomUUID().toString(), event.getId(), me.getId(), "An expense", 100, me.getId());
+        expense = new Expense(randomUUID(), event.getId(), me.getId(), "An expense", 100, me.getId());
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
     }
 }

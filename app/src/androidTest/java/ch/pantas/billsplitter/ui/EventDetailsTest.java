@@ -15,6 +15,8 @@ import com.google.android.apps.common.testing.ui.espresso.ViewAction;
 import org.hamcrest.Matcher;
 import org.mockito.Mock;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.framework.BaseEspressoTest;
@@ -104,9 +106,9 @@ public class EventDetailsTest extends BaseEspressoTest<EventDetails> {
         super.setUp();
 
         // Given
-        user = new User("userId", "userName");
-        event = new Event("eventId", "EventName", SupportedCurrency.CHF, user.getId());
-        expense = new Expense("expenseId", event.getId(), event.getOwnerId(), "expense description", 1000, event.getOwnerId());
+        user = new User(UUID.randomUUID(), "userName");
+        event = new Event(UUID.randomUUID(), "EventName", SupportedCurrency.CHF, user.getId());
+        expense = new Expense(UUID.randomUUID(), event.getId(), event.getOwnerId(), "expense description", 1000, event.getOwnerId());
 
         when(eventStore.getById(event.getId())).thenReturn(event);
         when(expenseStore.getById(expense.getId())).thenReturn(expense);

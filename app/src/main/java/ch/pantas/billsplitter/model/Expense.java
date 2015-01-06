@@ -1,25 +1,24 @@
 package ch.pantas.billsplitter.model;
 
+import java.util.UUID;
+
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class Expense extends Model {
-    private final String eventId;
+    private final UUID eventId;
 
-    private String payerId;
+    private UUID payerId;
     private String description;
     private int amount;
-    private String ownerId;
+    private UUID ownerId;
 
-    public Expense(String id, String eventId, String payerId, String description, int amount, String ownerId) {
+    public Expense(UUID id, UUID eventId, UUID payerId, String description, int amount, UUID ownerId) {
         super(id);
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
         checkNotNull(payerId);
-        checkArgument(!payerId.isEmpty());
         checkArgument(amount > 0);
         checkNotNull(ownerId);
-        checkArgument(!ownerId.isEmpty());
 
         this.eventId = eventId;
         this.payerId = payerId;
@@ -28,14 +27,11 @@ public class Expense extends Model {
         this.ownerId = ownerId;
     }
 
-    public Expense(String eventId, String payerId, String description, int amount, String ownerId) {
+    public Expense(UUID eventId, UUID payerId, String description, int amount, UUID ownerId) {
         checkNotNull(eventId);
-        checkArgument(!eventId.isEmpty());
         checkNotNull(payerId);
-        checkArgument(!payerId.isEmpty());
         checkArgument(amount > 0);
         checkNotNull(ownerId);
-        checkArgument(!ownerId.isEmpty());
 
         this.eventId = eventId;
         this.payerId = payerId;
@@ -44,9 +40,9 @@ public class Expense extends Model {
         this.ownerId = ownerId;
     }
 
-    public String getEventId() { return eventId; }
+    public UUID getEventId() { return eventId; }
 
-    public String getPayerId() { return payerId; }
+    public UUID getPayerId() { return payerId; }
 
     public String getDescription() { return description; }
 
@@ -60,13 +56,13 @@ public class Expense extends Model {
         this.amount = amount;
     }
 
-    public void setPayerId(String payerId) {
+    public void setPayerId(UUID payerId) {
         this.payerId = payerId;
     }
 
-    public String getOwnerId() { return ownerId; }
+    public UUID getOwnerId() { return ownerId; }
 
-    public void setOwnerId(String ownerId) {
+    public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
 }

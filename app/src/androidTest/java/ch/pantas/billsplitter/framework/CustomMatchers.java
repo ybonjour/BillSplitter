@@ -8,6 +8,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.model.Attendee;
 import ch.pantas.billsplitter.model.Debt;
@@ -119,7 +120,7 @@ public class CustomMatchers {
         };
     }
 
-    public static Matcher<ParticipantDto> matchesParticipantDto(final String participantId, final Matcher<User> user, final boolean confirmed, final long lastUpdated) {
+    public static Matcher<ParticipantDto> matchesParticipantDto(final UUID participantId, final Matcher<User> user, final boolean confirmed, final long lastUpdated) {
         return new TypeSafeMatcher<ParticipantDto>() {
             @Override
             public boolean matchesSafely(ParticipantDto participantDto) {
@@ -134,7 +135,7 @@ public class CustomMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("ParticipantDto with ");
-                description.appendText("participantId ").appendText(participantId).appendText(",");
+                description.appendText("participantId ").appendText(participantId.toString()).appendText(",");
                 description.appendText("User ");
                 user.describeTo(description);
                 description.appendText(", ");
@@ -145,7 +146,7 @@ public class CustomMatchers {
         };
     }
 
-    public static Matcher<Participant> matchesParticipant(final String userId, final String eventId, final boolean confirmed, final long lastUpdated) {
+    public static Matcher<Participant> matchesParticipant(final UUID userId, final UUID eventId, final boolean confirmed, final long lastUpdated) {
         return new TypeSafeMatcher<Participant>() {
             @Override
             public boolean matchesSafely(Participant participant) {
@@ -160,15 +161,15 @@ public class CustomMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("Participant with ");
-                description.appendText("User ").appendText(userId);
-                description.appendText(", Event ").appendText(eventId);
+                description.appendText("User ").appendText(userId.toString());
+                description.appendText(", Event ").appendText(eventId.toString());
                 description.appendText(", Confirmed ").appendValue(confirmed);
                 description.appendText(", Last Updated ").appendValue(lastUpdated);
             }
         };
     }
 
-    public static Matcher<Attendee> matchesAttendee(final String expenseId, final String participantId){
+    public static Matcher<Attendee> matchesAttendee(final UUID expenseId, final UUID participantId){
         return new TypeSafeMatcher<Attendee>() {
             @Override
             public boolean matchesSafely(Attendee attendee) {
@@ -182,8 +183,8 @@ public class CustomMatchers {
             public void describeTo(Description description) {
                 description
                         .appendText("Attendee with expense Id ")
-                        .appendText(expenseId)
-                        .appendText(" and participant Id ").appendText(participantId);
+                        .appendText(expenseId.toString())
+                        .appendText(" and participant Id ").appendText(participantId.toString());
             }
         };
     }

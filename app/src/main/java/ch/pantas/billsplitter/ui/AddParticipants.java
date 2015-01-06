@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import com.google.inject.Inject;
 
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.EventStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
@@ -95,7 +96,7 @@ public class AddParticipants extends RoboActivity {
     protected void onResume() {
         super.onResume();
         getWindow().setSoftInputMode(SOFT_INPUT_STATE_HIDDEN);
-        String eventId = getIntent().getStringExtra(EVENT_ID);
+        UUID eventId = (UUID) getIntent().getSerializableExtra(EVENT_ID);
         event = eventStore.getById(eventId);
         checkNotNull(event);
 

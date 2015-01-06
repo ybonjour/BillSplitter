@@ -32,11 +32,11 @@ public class ImportServiceIntegrationTest extends ImportServiceBaseTest {
     public void testImportEventSameParticipantWithOtherUser() {
         // Given
         final String username = "Joe";
-        User user = new User(randomUUID().toString(), username);
+        User user = new User(randomUUID(), username);
         when(userStore.getUserWithName(user.getName())).thenReturn(user);
         when(userStore.getById(user.getId())).thenReturn(user);
 
-        User newUser = new User(randomUUID().toString(), username);
+        User newUser = new User(randomUUID(), username);
         Participant participant = addParticipant(eventDto, newUser);
         participant.setUserId(user.getId());
         when(participantStore.getById(participant.getId())).thenReturn(participant);

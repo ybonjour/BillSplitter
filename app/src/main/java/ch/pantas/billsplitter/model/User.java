@@ -1,10 +1,12 @@
 package ch.pantas.billsplitter.model;
 
+import java.util.UUID;
+
 public class User extends Model {
 
     private String name;
 
-    public User(String id, String name) {
+    public User(UUID id, String name) {
         super(id);
         this.name = name;
     }

@@ -36,8 +36,8 @@ import static org.mockito.Mockito.when;
 
 public class DebtsFragmentTest extends BaseEventDetailsFragmentTest {
 
-    private static final User JOE = new User(randomUUID().toString(), "Joe");
-    private static final User MARY = new User(randomUUID().toString(), "Mary");
+    private static final User JOE = new User(randomUUID(), "Joe");
+    private static final User MARY = new User(randomUUID(), "Mary");
 
     @Mock
     private ExpenseService expenseService;

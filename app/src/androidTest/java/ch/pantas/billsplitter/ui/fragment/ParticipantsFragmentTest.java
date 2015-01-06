@@ -40,8 +40,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ParticipantsFragmentTest extends BaseEventDetailsFragmentTest {
-    private static final User JOE = new User(randomUUID().toString(), "Joe");
-    private static final User MARY = new User(randomUUID().toString(), "Mary");
+    private static final User JOE = new User(randomUUID(), "Joe");
+    private static final User MARY = new User(randomUUID(), "Mary");
 
     @Mock
     private UserStore userStore;
@@ -66,8 +66,8 @@ public class ParticipantsFragmentTest extends BaseEventDetailsFragmentTest {
         when(sharedPreferenceService.getUserId()).thenReturn(me.getId());
 
         // Given
-        Participant participantMe = new Participant("meId", me.getId(), event.getId(), true, 0);
-        participantJoe = new Participant("joeId", JOE.getId(), event.getId(), true, 0);
+        Participant participantMe = new Participant(randomUUID(), me.getId(), event.getId(), true, 0);
+        participantJoe = new Participant(randomUUID(), JOE.getId(), event.getId(), true, 0);
         when(participantStore.getParticipants(event.getId())).thenReturn(asList(participantMe, participantJoe));
         when(participantStore.getParticipant(event.getId(), me.getId())).thenReturn(participantMe);
         when(participantStore.getParticipant(event.getId(), JOE.getId())).thenReturn(participantJoe);

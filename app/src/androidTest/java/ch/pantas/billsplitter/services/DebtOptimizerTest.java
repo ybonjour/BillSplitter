@@ -29,9 +29,9 @@ public class DebtOptimizerTest extends BaseMockitoInstrumentationTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        joe = new User(randomUUID().toString(), "Joe");
-        dave = new User(randomUUID().toString(), "Dave");
-        mary = new User(randomUUID().toString(), "Mary");
+        joe = new User(randomUUID(), "Joe");
+        dave = new User(randomUUID(), "Dave");
+        mary = new User(randomUUID(), "Mary");
     }
 
     @SmallTest

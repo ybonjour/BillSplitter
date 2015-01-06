@@ -31,8 +31,8 @@ import static org.mockito.Mockito.when;
 
 public class ExpenseServiceTest extends BaseMockitoInstrumentationTest {
 
-    private static final User JOE = new User(randomUUID().toString(), "Joe");
-    private static final User MARY = new User(randomUUID().toString(), "Mary");
+    private static final User JOE = new User(randomUUID(), "Joe");
+    private static final User MARY = new User(randomUUID(), "Mary");
 
     @Inject
     private ExpenseService expenseService;
@@ -99,10 +99,10 @@ public class ExpenseServiceTest extends BaseMockitoInstrumentationTest {
     }
 
     private Event eventWithParticipants(User... users) {
-        Event event = new Event(randomUUID().toString(), "An event", CHF, randomUUID().toString());
+        Event event = new Event(randomUUID(), "An event", CHF, randomUUID());
 
         for (User user : users) {
-            Participant participant = new Participant(randomUUID().toString(), user.getId(), event.getId(), false, 0);
+            Participant participant = new Participant(randomUUID(), user.getId(), event.getId(), false, 0);
             participants.put(user, participant);
             when(participantStore.getParticipant(event.getId(), user.getId())).thenReturn(participant);
         }

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.List;
+import java.util.UUID;
 
 import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
@@ -44,12 +45,12 @@ public class EventService {
 
         removeEvent(event);
 
-        String activeEventId = sharedPreferenceService.getActiveEventId();
+        UUID activeEventId = sharedPreferenceService.getActiveEventId();
         if(activeEventId == null) return null;
 
         if(activeEventId.equals(event.getId())) {
             Event newActiveEvent = getNextActiveEvent();
-            String newActiveEventId = newActiveEvent != null ? newActiveEvent.getId() : null;
+            UUID newActiveEventId = newActiveEvent != null ? newActiveEvent.getId() : null;
             sharedPreferenceService.storeActiveEventId(newActiveEventId);
             return newActiveEvent;
         } else {
@@ -58,7 +59,7 @@ public class EventService {
     }
 
     public Event getActiveEvent() {
-        String eventId = sharedPreferenceService.getActiveEventId();
+        UUID eventId = sharedPreferenceService.getActiveEventId();
         if (eventId == null) return null;
         return eventStore.getById(eventId);
     }

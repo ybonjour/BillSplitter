@@ -6,6 +6,8 @@ import com.google.inject.Inject;
 
 import org.mockito.Mock;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.dataaccess.UserStore;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
 import ch.pantas.billsplitter.model.User;
@@ -29,7 +31,7 @@ public class UserServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetMeReturnsUserFromSharedPreferences() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(sharedPreferenceService.getUserId()).thenReturn(user.getId());
         when(userStore.getById(user.getId())).thenReturn(user);
 
@@ -55,7 +57,7 @@ public class UserServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testGetMeReturnsNullIfStoredUserDoesNotExist() {
         // Given
-        String userId = randomUUID().toString();
+        UUID userId = randomUUID();
         when(sharedPreferenceService.getUserId()).thenReturn(userId);
         when(userStore.getById(userId)).thenReturn(null);
 
@@ -100,7 +102,7 @@ public class UserServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testChangeMyUserNameChangesUsernameAndPersists() {
         // Given
-        User me = new User(randomUUID().toString(), "Joe");
+        User me = new User(randomUUID(), "Joe");
         when(sharedPreferenceService.getUserId()).thenReturn(me.getId());
         when(userStore.getById(me.getId())).thenReturn(me);
         String newUsername = "Dave";
@@ -126,7 +128,7 @@ public class UserServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testFindBestFreeNameForUserReturnsUsernameIfNoOtherUserExists() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(userStore.getUserWithName(user.getName())).thenReturn(null);
 
         // When
@@ -139,7 +141,7 @@ public class UserServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testFindBestFreeNameForUserReturnsUserNameIfUserIsPersistedAndOnlyThisUserHasThisName() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(userStore.getUserWithName(user.getName())).thenReturn(user);
 
         // When
@@ -152,7 +154,7 @@ public class UserServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testFindBestFreeNameForUserReturnsNextFreeNameForNewUser() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(userStore.getUserWithName(user.getName())).thenReturn(user);
 
         User newUser = new User(user.getName());
@@ -167,10 +169,10 @@ public class UserServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testFindBestFreeNameForUserReturnsNextFreeNameForPersistedUser() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(userStore.getUserWithName(user.getName())).thenReturn(user);
 
-        User user2 = new User(randomUUID().toString(), user.getName());
+        User user2 = new User(randomUUID(), user.getName());
 
         // When
         String result = userService.findBestFreeNameForUser(user2);
@@ -182,13 +184,13 @@ public class UserServiceTest extends BaseMockitoInstrumentationTest {
     @SmallTest
     public void testFindBestFreeNameIfTwoNamesAreAlreadyTaken() {
         // Given
-        User user = new User(randomUUID().toString(), "Joe");
+        User user = new User(randomUUID(), "Joe");
         when(userStore.getUserWithName(user.getName())).thenReturn(user);
 
-        User user2 = new User(randomUUID().toString(), "Joe 1");
+        User user2 = new User(randomUUID(), "Joe 1");
         when(userStore.getUserWithName(user2.getName())).thenReturn(user2);
 
-        User user3 = new User(randomUUID().toString(), user.getName());
+        User user3 = new User(randomUUID(), user.getName());
 
         // When
         String result = userService.findBestFreeNameForUser(user3);
