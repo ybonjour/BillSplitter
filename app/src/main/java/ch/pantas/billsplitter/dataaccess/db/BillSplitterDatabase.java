@@ -7,6 +7,8 @@ import android.util.Pair;
 
 import com.google.inject.Inject;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Map;
 
 import static android.util.Pair.create;
@@ -90,6 +92,11 @@ public class BillSplitterDatabase {
         }
 
         return create(selection.toString(), selectionArgs);
+    }
+
+    public void close() {
+        checkNotNull(database);
+        database.close();
     }
 
     public enum MatchType{

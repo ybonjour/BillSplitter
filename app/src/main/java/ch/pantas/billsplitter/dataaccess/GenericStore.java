@@ -51,12 +51,16 @@ public class GenericStore<M extends Model> {
 
         BillSplitterDatabase db = dbHelper.getDatabase();
 
-        if (model.isNew()) {
-            UUID id = UUID.randomUUID();
-            model.setId(id);
-            db.insert(mapper.getTableName(), mapper.getValues(model));
-        } else {
-            db.update(mapper.getTableName(), mapper.getValues(model));
+        try {
+            if (model.isNew()) {
+                UUID id = UUID.randomUUID();
+                model.setId(id);
+                db.insert(mapper.getTableName(), mapper.getValues(model));
+            } else {
+                db.update(mapper.getTableName(), mapper.getValues(model));
+            }
+        } finally {
+            db.close();
         }
     }
 
@@ -66,7 +70,12 @@ public class GenericStore<M extends Model> {
 
         BillSplitterDatabase db = dbHelper.getDatabase();
 
-        db.insert(mapper.getTableName(), mapper.getValues(model));
+        try {
+            db.insert(mapper.getTableName(), mapper.getValues(model));
+        }
+        finally {
+                db.close();
+        }
     }
 
     public void removeById(UUID id){
@@ -80,19 +89,39 @@ public class GenericStore<M extends Model> {
 
     public void removeAll(Map<String, String> where) {
         BillSplitterDatabase db = dbHelper.getDatabase();
-        db.removeAll(mapper.getTableName(), where);
+        try {
+            db.removeAll(mapper.getTableName(), where);
+        } finally {
+            db.close();
+        }
     }
 
     protected List<M> getModelsByQuery(Map<String, String> where) {
         BillSplitterDatabase db = dbHelper.getDatabase();
-        Cursor cursor = db.query(mapper.getTableName(), where);
-        return toModelList(cursor, mapper);
+        try {
+            Cursor cursor = db.query(mapper.getTableName(), where);
+            try {
+                return toModelList(cursor, mapper);
+            } finally {
+                cursor.close();
+            }
+        } finally {
+            db.close();
+        }
     }
 
     protected List<M> getModelsByQueryWithLike(Map<String, String> where) {
         BillSplitterDatabase db = dbHelper.getDatabase();
-        Cursor cursor = db.queryWithLike(mapper.getTableName(), where);
-        return toModelList(cursor, mapper);
+        try {
+            Cursor cursor = db.queryWithLike(mapper.getTableName(), where);
+            try {
+                return toModelList(cursor, mapper);
+            } finally {
+                cursor.close();
+            }
+        } finally {
+            db.close();
+        }
     }
 
     private static <M extends Model> List<M> toModelList(Cursor cursor, RowMapper<M> mapper) {

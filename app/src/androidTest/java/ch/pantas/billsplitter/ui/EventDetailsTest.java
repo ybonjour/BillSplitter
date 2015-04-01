@@ -73,9 +73,6 @@ public class EventDetailsTest extends BaseEspressoTest<EventDetails> {
     @Mock
     private UserService userService;
 
-    //@Mock
-    //private ActionProvider actionProvider;
-
     @Mock
     private DebtCalculator debtCalculator;
 
@@ -118,7 +115,7 @@ public class EventDetailsTest extends BaseEspressoTest<EventDetails> {
 
         when(userService.getMe()).thenReturn(user);
 
-        when(eventDetailTabs.init(event)).thenReturn(eventDetailTabs);
+        when(eventDetailTabs.init()).thenReturn(eventDetailTabs);
         when(eventDetailTabs.getFragment(anyInt(), any(EventDetailPagerAdapter.class))).thenReturn(mockFragment);
 
         when(viewPager.getAdapter()).thenReturn(pagerAdapter);
@@ -132,6 +129,8 @@ public class EventDetailsTest extends BaseEspressoTest<EventDetails> {
         Intent intent = new Intent();
         intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
         setActivityIntent(intent);
+
+        when(eventService.getActiveEvent()).thenReturn(event);
     }
 
     @Override

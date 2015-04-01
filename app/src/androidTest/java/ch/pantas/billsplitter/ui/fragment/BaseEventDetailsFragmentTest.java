@@ -15,6 +15,7 @@ import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.DebtCalculator;
+import ch.pantas.billsplitter.services.EventService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.EventDetails;
@@ -44,6 +45,9 @@ public abstract class BaseEventDetailsFragmentTest extends BaseEspressoTest<Even
     @Mock
     protected ExpenseStore expenseStore;
 
+    @Mock
+    protected EventService eventService;
+
     protected Event event;
 
     protected User me;
@@ -71,5 +75,7 @@ public abstract class BaseEventDetailsFragmentTest extends BaseEspressoTest<Even
         // Ensures that help text is not shown
         expense = new Expense(randomUUID(), event.getId(), me.getId(), "An expense", 100, me.getId());
         when(expenseStore.getExpensesOfEvent(event.getId())).thenReturn(asList(expense));
+
+        when(eventService.getActiveEvent()).thenReturn(event);
     }
 }

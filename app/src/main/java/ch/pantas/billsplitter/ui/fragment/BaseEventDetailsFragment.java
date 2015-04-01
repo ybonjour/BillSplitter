@@ -1,8 +1,9 @@
 package ch.pantas.billsplitter.ui.fragment;
 
-import com.google.inject.internal.util.$Preconditions;
+import com.google.inject.Inject;
 
 import ch.pantas.billsplitter.model.Event;
+import ch.pantas.billsplitter.services.EventService;
 import ch.pantas.billsplitter.ui.adapter.EventDetailPagerAdapter;
 import roboguice.fragment.RoboFragment;
 
@@ -10,35 +11,32 @@ import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 public class BaseEventDetailsFragment extends RoboFragment {
 
-    private Event currentEvent;
+    private static final String EVENT_KEY = "fragment_event";
+
     private EventDetailPagerAdapter pagerAdapter;
 
-    public BaseEventDetailsFragment init(Event event, EventDetailPagerAdapter pagerAdapter){
-        checkNotNull(event);
+    @Inject
+    private EventService eventService;
+
+
+    public BaseEventDetailsFragment init(EventDetailPagerAdapter pagerAdapter) {
         checkNotNull(pagerAdapter);
 
-        this.currentEvent = event;
         this.pagerAdapter = pagerAdapter;
         return this;
     }
 
-    public void setCurrentEvent(Event event) {
-        checkNotNull(event);
-
-        this.currentEvent = event;
-    }
-
     protected Event getCurrentEvent() {
-        return currentEvent;
+        return eventService.getActiveEvent();
     }
 
     public void setPagerAdapter(EventDetailPagerAdapter adapter) {
-        checkNotNull(pagerAdapter);
+        checkNotNull(adapter);
 
         this.pagerAdapter = adapter;
     }
 
-    protected EventDetailPagerAdapter getPagerAdapter(){
+    protected EventDetailPagerAdapter getPagerAdapter() {
         return this.pagerAdapter;
     }
 }

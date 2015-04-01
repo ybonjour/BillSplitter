@@ -35,6 +35,7 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.DebtCalculator;
+import ch.pantas.billsplitter.services.EventService;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.actions.ActionProvider;
@@ -87,6 +88,9 @@ public class EventDetails extends RoboFragmentActivity {
     private UserService userService;
 
     @Inject
+    private EventService eventService;
+
+    @Inject
     private DebtCalculator debtCalculator;
 
     @Inject
@@ -116,7 +120,6 @@ public class EventDetails extends RoboFragmentActivity {
             activityStarter.startLogin(this);
             return;
         }
-
 
         setContentView(R.layout.event_details);
         drawerToggle = new ActionBarDrawerToggle(
@@ -162,22 +165,22 @@ public class EventDetails extends RoboFragmentActivity {
         View contentView = findViewById(R.id.event_details_pager);
         contentView.setVisibility(View.VISIBLE);
 
-        sharedPreferenceService.storeActiveEventId(event.getId());
-
         updateHelpText(0, 0.0f);
     }
 
-    private boolean init() {
-        if (getIntent().hasExtra(ARGUMENT_EVENT_ID)) {
-            UUID eventId = (UUID) getIntent().getSerializableExtra(ARGUMENT_EVENT_ID);
-            event = eventStore.getById(eventId);
-        } else {
-            UUID eventId = sharedPreferenceService.getActiveEventId();
-            if (eventId == null) return false;
-            event = eventStore.getById(eventId);
-        }
+    private void persistNewEvent() {
+        if (!getIntent().hasExtra(ARGUMENT_EVENT_ID)) return;
 
-        setTitle(event.getName());
+        UUID eventId = (UUID) getIntent().getSerializableExtra(ARGUMENT_EVENT_ID);
+        sharedPreferenceService.storeActiveEventId(eventId);
+        event = eventService.getActiveEvent();
+    }
+
+    private boolean init() {
+        persistNewEvent();
+        if(getEvent() == null) return false;
+
+        setTitle(getEvent().getName());
         setUpNavigationDrawer();
 
         final TextView usernameView = (TextView) findViewById(R.id.nav_drawer_username);
@@ -199,7 +202,7 @@ public class EventDetails extends RoboFragmentActivity {
             }
         });
 
-        tabs = getInjector(this).getInstance(EventDetailTabs.class).init(event);
+        tabs = getInjector(this).getInstance(EventDetailTabs.class).init();
         pagerAdapter = getInjector(this).getInstance(EventDetailPagerAdapter.class).init(tabs);
 
 
@@ -273,7 +276,7 @@ public class EventDetails extends RoboFragmentActivity {
         menu.findItem(R.id.action_share).setVisible(!drawerOpen);
 
         User me = userService.getMe();
-        if (me.getId().equals(event.getOwnerId())) {
+        if (me.getId().equals(getEvent().getOwnerId())) {
             menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
         } else {
             menu.findItem(R.id.action_edit_event).setVisible(false);
@@ -290,7 +293,7 @@ public class EventDetails extends RoboFragmentActivity {
         drawerList.setAdapter(new ArrayAdapter<Event>(this,
                 R.layout.drawer_list_item, navEventsList));
 
-        int position = navEventsList.indexOf(event);
+        int position = navEventsList.indexOf(getEvent());
         drawerList.setItemChecked(position, true);
 
         drawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
@@ -318,6 +321,9 @@ public class EventDetails extends RoboFragmentActivity {
     }
 
     public Event getEvent() {
+        if(event == null) {
+            event = eventService.getActiveEvent();
+        }
         return event;
     }
 
@@ -340,7 +346,7 @@ public class EventDetails extends RoboFragmentActivity {
 
     private void selectDrawerItem(int position) {
         newEvent = navEventsList.get(position);
-        if (!newEvent.equals(event)) {
+        if (!newEvent.equals(getEvent())) {
             setTitle(newEvent.getName());
             View contentView = findViewById(R.id.event_details_pager);
             contentView.setVisibility(View.INVISIBLE);
@@ -353,7 +359,7 @@ public class EventDetails extends RoboFragmentActivity {
     }
 
     private void updateHelpText(int i, float v) {
-        if (expenseStore.getExpensesOfEvent(event.getId()).size() == 0) {
+        if (expenseStore.getExpensesOfEvent(getEvent().getId()).size() == 0) {
 
             View helpView = findViewById(R.id.event_details_help_view);
 

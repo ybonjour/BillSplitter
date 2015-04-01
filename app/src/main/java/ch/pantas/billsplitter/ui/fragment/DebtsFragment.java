@@ -23,6 +23,7 @@ import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.adapter.DebtAdapter;
 import ch.pantas.splitty.R;
 
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 import static roboguice.RoboGuice.getInjector;
 
 public class DebtsFragment extends BaseEventDetailsFragment {
@@ -42,6 +43,7 @@ public class DebtsFragment extends BaseEventDetailsFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Event event = getCurrentEvent();
+        checkNotNull(event);
 
         View rootView = inflater.inflate(R.layout.fragment_debts_list, container, false);
         setUpDebtsList(rootView, event);

@@ -1,11 +1,12 @@
 package ch.pantas.billsplitter.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import static com.google.inject.internal.util.$Preconditions.checkArgument;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
-public abstract class Model {
+public abstract class Model implements Serializable{
 
     private UUID id;
 
