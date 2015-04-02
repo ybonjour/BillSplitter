@@ -142,6 +142,7 @@ public class EventDetails extends RoboFragmentActivity {
                 invalidateOptionsMenu();
             }
         };
+        drawerToggle.syncState();
 
         setupMenuActions();
     }
