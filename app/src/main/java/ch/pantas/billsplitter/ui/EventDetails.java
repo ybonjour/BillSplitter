@@ -118,6 +118,14 @@ public class EventDetails extends RoboFragmentActivity {
 
         if (userService.getMe() == null) {
             activityStarter.startLogin(this);
+            finish();
+            return;
+        }
+
+        persistNewEvent();
+        if (eventService.getActiveEvent() == null) {
+            activityStarter.startStartEvent(this);
+            finish();
             return;
         }
 
@@ -269,18 +277,21 @@ public class EventDetails extends RoboFragmentActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = drawerLayout.isDrawerOpen(drawerView);
+        if (drawerLayout != null) {
+            boolean drawerOpen = drawerLayout.isDrawerOpen(drawerView);
 
-        menu.findItem(R.id.action_add_expense).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_delete_event).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_share).setVisible(!drawerOpen);
+            menu.findItem(R.id.action_add_expense).setVisible(!drawerOpen);
+            menu.findItem(R.id.action_delete_event).setVisible(!drawerOpen);
+            menu.findItem(R.id.action_share).setVisible(!drawerOpen);
+            menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+            menu.findItem(R.id.action_beam).setVisible(!drawerOpen);
 
-        User me = userService.getMe();
-        if (me.getId().equals(getEvent().getOwnerId())) {
-            menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
-        } else {
-            menu.findItem(R.id.action_edit_event).setVisible(false);
+            User me = userService.getMe();
+            if (me.getId().equals(getEvent().getOwnerId())) {
+                menu.findItem(R.id.action_edit_event).setVisible(!drawerOpen);
+            } else {
+                menu.findItem(R.id.action_edit_event).setVisible(false);
+            }
         }
 
         return super.onPrepareOptionsMenu(menu);

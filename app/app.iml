@@ -85,29 +85,29 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 20 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="support-v4-21.0.0" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="testrunner-1.1" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="espresso-1.1" level="project" />
-    <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="junit-4.11" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.1" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="dagger-1.1.0" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="mockito-core-1.9.5" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="dexmaker-mockito-1.1" level="project" />
-    <orderEntry type="library" exported="" name="asm-3.1" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="hamcrest-library-1.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-21.0.0" level="project" />
-    <orderEntry type="library" exported="" name="cglib-2.2.1-v20090111" level="project" />
-    <orderEntry type="library" exported="" name="roboguice-2.0" level="project" />
-    <orderEntry type="library" exported="" name="guice-3.0-no_aop" level="project" />
-    <orderEntry type="library" exported="" name="guava-17.0" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="testrunner-runtime-1.1" level="project" />
-    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="objenesis-1.0" level="project" />
+    <orderEntry type="library" exported="" name="roboguice-2.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="dagger-1.1.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-21.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="dexmaker-1.1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3" level="project" />
+    <orderEntry type="library" exported="" name="asm-3.1" level="project" />
+    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="hamcrest-library-1.1" level="project" />
+    <orderEntry type="library" exported="" name="guava-17.0" level="project" />
+    <orderEntry type="library" exported="" name="guice-3.0-no_aop" level="project" />
     <orderEntry type="library" exported="" name="play-services-6.1.71" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-integration-1.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="testrunner-runtime-1.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="dexmaker-mockito-1.1" level="project" />
+    <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="testrunner-1.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="junit-4.11" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="mockito-core-1.9.5" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="espresso-1.1" level="project" />
+    <orderEntry type="library" exported="" name="cglib-2.2.1-v20090111" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-21.0.0" level="project" />
   </component>
 </module>
 
