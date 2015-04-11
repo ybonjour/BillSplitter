@@ -159,26 +159,29 @@ public class FixedTabsView extends FrameLayout {
         rectPaint.setColor(indicatorColor);
 
         View currentTab = tabsContainer.getChildAt(currentTabPosition);
-        float lineLeft = currentTab.getLeft();
-        float lineRight = currentTab.getRight();
+        if (currentTab != null) {
+            float lineLeft = currentTab.getLeft();
+            float lineRight = currentTab.getRight();
 
-        if (currentPositionOffset > 0f && currentTabPosition < tabCount - 1) {
+            if (currentPositionOffset > 0f && currentTabPosition < tabCount - 1) {
 
-            View nextTab = tabsContainer.getChildAt(currentTabPosition + 1);
-            final float nextTabLeft = nextTab.getLeft();
-            final float nextTabRight = nextTab.getRight();
+                View nextTab = tabsContainer.getChildAt(currentTabPosition + 1);
+                final float nextTabLeft = nextTab.getLeft();
+                final float nextTabRight = nextTab.getRight();
 
-            lineLeft = (currentPositionOffset * nextTabLeft + (1f - currentPositionOffset) * lineLeft);
-            lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
+                lineLeft = (currentPositionOffset * nextTabLeft + (1f - currentPositionOffset) * lineLeft);
+                lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
+            }
+
+            canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
+
+            dividerPaint.setColor(dividerColor);
+            for (int i = 0; i < tabCount - 1; i++) {
+                View tab = tabsContainer.getChildAt(i);
+                canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), height - dividerPadding, dividerPaint);
+            }
         }
 
-        canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
-
-        dividerPaint.setColor(dividerColor);
-        for (int i = 0; i < tabCount - 1; i++) {
-            View tab = tabsContainer.getChildAt(i);
-            canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), height - dividerPadding, dividerPaint);
-        }
     }
 
     private class PageListener implements OnPageChangeListener {
