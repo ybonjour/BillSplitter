@@ -6,6 +6,8 @@
     <string name="action_edit_event">Gruppe editieren</string>
     <string name="action_delete_event">Gruppe löschen</string>
     <string name="add_event">Gruppe hinzufügen</string>
+    <string name="join_event">Gruppe beitreten</string>
+    <string name="create_event">Gruppe erstellen</string>
     <string name="save">Speichern</string>
     <string name="description">Beschreibung</string>
     <string name="add_expense">Ausgabe hinzufügen</string>

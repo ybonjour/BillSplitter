@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import com.google.inject.Singleton;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.ui.AddEvent;
@@ -36,6 +38,14 @@ public class ActivityStarter {
     public void startAddEvent(Context context) {
         checkNotNull(context);
 
+        Intent intent = new Intent(context, AddEvent.class);
+        context.startActivity(intent);
+    }
+
+    public void startJoinEvent(Context context) {
+        checkNotNull(context);
+
+        // FIXME: Dummy call, replace with join group call
         Intent intent = new Intent(context, AddEvent.class);
         context.startActivity(intent);
     }

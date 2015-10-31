@@ -6,6 +6,8 @@
     <string name="action_edit_event">Edit Group</string>
     <string name="action_delete_event">Delete Group</string>
     <string name="add_event">Add Group</string>
+    <string name="create_event">Create Group</string>
+    <string name="join_event">Join Group</string>
     <string name="save">Save</string>
     <string name="description">Description</string>
     <string name="add_expense">Add Expense</string>

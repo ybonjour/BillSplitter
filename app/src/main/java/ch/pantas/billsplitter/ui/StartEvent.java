@@ -1,9 +1,13 @@
 package ch.pantas.billsplitter.ui;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
 import com.google.inject.Inject;
 
 import ch.pantas.billsplitter.services.ActivityStarter;
@@ -32,7 +36,7 @@ public class StartEvent extends RoboActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (R.id.action_add_event == item.getItemId()) {
-            activityStarter.startAddEvent(this);
+            NewGroupDialog.show(this, activityStarter);
             return true;
         }
         return super.onOptionsItemSelected(item);
