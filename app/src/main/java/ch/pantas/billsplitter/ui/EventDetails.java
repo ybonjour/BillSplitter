@@ -40,7 +40,6 @@ import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.services.UserService;
 import ch.pantas.billsplitter.ui.actions.ActionProvider;
 import ch.pantas.billsplitter.ui.actions.AddExpenseAction;
-import ch.pantas.billsplitter.ui.actions.BeamAction;
 import ch.pantas.billsplitter.ui.actions.DeleteEventAction;
 import ch.pantas.billsplitter.ui.actions.EditEventAction;
 import ch.pantas.billsplitter.ui.actions.EventDetailsAction;
@@ -284,7 +283,6 @@ public class EventDetails extends RoboFragmentActivity {
             menu.findItem(R.id.action_delete_event).setVisible(!drawerOpen);
             menu.findItem(R.id.action_share).setVisible(!drawerOpen);
             menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
-            menu.findItem(R.id.action_beam).setVisible(!drawerOpen);
 
             User me = userService.getMe();
             if (me.getId().equals(getEvent().getOwnerId())) {
@@ -353,7 +351,6 @@ public class EventDetails extends RoboFragmentActivity {
         actionProvider.addEventDetailsAction(R.id.action_edit_event, getInjector(this).getInstance(EditEventAction.class));
         actionProvider.addEventDetailsAction(R.id.action_share, getInjector(this).getInstance(ShareAction.class));
         actionProvider.addEventDetailsAction(R.id.action_settings, getInjector(this).getInstance(SettingsAction.class));
-        actionProvider.addEventDetailsAction(R.id.action_beam, getInjector(this).getInstance(BeamAction.class));
     }
 
     private void selectDrawerItem(int position) {
