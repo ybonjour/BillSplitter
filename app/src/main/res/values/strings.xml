@@ -77,4 +77,9 @@
     <string name="no">No</string>
     <string name="mark_debt_as_paid_title">Mark as paid</string>
     <string name="paid_debt">Paid debt</string>
+    <string name="choose_group_help">Choose a group for the new user to join</string>
+    <string name="choose_group">Choose Group</string>
+    <string name="add_or_replace_participant">Add/Replace Participant</string>
+    <string name="create_new_user">Create New Participant</string>
+    <string name="add_or_replace_participant_help">Either choose to create a new participant or connect with an existing one.</string>
 </resources>

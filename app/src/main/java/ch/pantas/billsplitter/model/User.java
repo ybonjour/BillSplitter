@@ -5,6 +5,7 @@ import java.util.UUID;
 public class User extends Model {
 
     private String name;
+    private String macAddress;
 
     public User(UUID id, String name) {
         super(id);
@@ -15,11 +16,20 @@ public class User extends Model {
         this.name = name;
     }
 
+    public User(String name, String macAddress) {
+        this.name = name;
+        this.macAddress = macAddress;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) { this.name = name; }
+
+    public boolean isConnectedUser() { return macAddress != null; }
+
+    public String getMacAddress() { return macAddress; }
 
     @Override
     public String toString() {

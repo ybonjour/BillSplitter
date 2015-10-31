@@ -76,6 +76,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.pantas.billsplitter.ui.EventDetails" />
         </activity>
+        <activity
+            android:name="ch.pantas.billsplitter.ui.ChooseGroup"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ch.pantas.billsplitter.ui.AddOrReplaceParticipant"
+            android:screenOrientation="portrait" />
 
         <receiver android:name="ch.pantas.billsplitter.receivers.UpdateReceiver">
             <intent-filter>

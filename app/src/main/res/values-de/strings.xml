@@ -77,4 +77,9 @@
     <string name="no">Nein</string>
     <string name="mark_debt_as_paid_title">Schuldtilgung</string>
     <string name="paid_debt">Schuldtilgung</string>
+    <string name="choose_group_help">Wähle eine Gruppe für den neuen Teilnehmer</string>
+    <string name="choose_group">Gruppen Auswahl</string>
+    <string name="add_or_replace_participant">Einen Teilnehmer ersetzen oder hinzufügen</string>
+    <string name="create_new_user">Neuen Teilnehmer erstellen</string>
+    <string name="add_or_replace_participant_help">Du kannst entweder den Teilnehmer neu erstellen oder einen bestehenden verknüpfen:</string>
 </resources>

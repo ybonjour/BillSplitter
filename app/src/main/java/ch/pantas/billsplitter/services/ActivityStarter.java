@@ -10,10 +10,12 @@ import java.util.UUID;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.ui.AddEvent;
+import ch.pantas.billsplitter.ui.AddOrReplaceParticipant;
 import ch.pantas.billsplitter.ui.AddParticipants;
 import ch.pantas.billsplitter.ui.AddExpense;
 import ch.pantas.billsplitter.ui.BeamEvent;
 import ch.pantas.billsplitter.ui.BillSplitterSettings;
+import ch.pantas.billsplitter.ui.ChooseGroup;
 import ch.pantas.billsplitter.ui.EventDetails;
 import ch.pantas.billsplitter.ui.Login;
 import ch.pantas.billsplitter.ui.StartEvent;
@@ -46,7 +48,16 @@ public class ActivityStarter {
         checkNotNull(context);
 
         // FIXME: Dummy call, replace with join group call
-        Intent intent = new Intent(context, AddEvent.class);
+        Intent intent = new Intent(context, ChooseGroup.class);
+        context.startActivity(intent);
+    }
+
+    public void startAddOrReplaceParticipant(Context context, Event event) {
+        checkNotNull(context);
+        checkNotNull(event);
+
+        Intent intent = new Intent(context, AddOrReplaceParticipant.class);
+        intent.putExtra(AddOrReplaceParticipant.EVENT_ID, event.getId());
         context.startActivity(intent);
     }
 

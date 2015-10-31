@@ -24,12 +24,14 @@ public class NewGroupDialog extends Dialog {
         Button addGroup = (Button) findViewById(R.id.action_create_event);
         addGroup.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                dismiss();
                 activityStarter.startAddEvent(context);
             }
         });
         Button joinGroup = (Button) findViewById(R.id.action_join_event);
         joinGroup.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                dismiss();
                 activityStarter.startJoinEvent(context);
             }
         });
