@@ -1,6 +1,7 @@
 package ch.pantas.billsplitter.ui;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -36,14 +38,16 @@ public class AddOrReplaceParticipant extends RoboActivity {
     @InjectView(R.id.participant_list)
     private ListView participantsList;
 
-    private List<Participant> participants;
-    private List<User> users;
+    private List<Pair<Participant, User>> users;
 
     @Inject
     private ParticipantStore participantStore;
 
     @Inject
     private UserStore userStore;
+
+    @Inject
+    private UserService userService;
 
     @Inject
     private ActivityStarter activityStarter;
@@ -62,27 +66,40 @@ public class AddOrReplaceParticipant extends RoboActivity {
         super.onResume();
 
         final UUID eventId = (UUID) getIntent().getSerializableExtra(EVENT_ID);
-        participants = participantStore.getParticipants(eventId);
-
         // FIXME: Load user name, mac (maybe ID?)
         newUser = createNewConnectedUser("TestUser", "TestMac");
 
+        final User me = userService.getMe();
+        List<Participant> participants = participantStore.getParticipants(eventId);
         users = from(participants)
-            .transform(new Function<Participant, User>() {
-                @Override
-                public User apply(Participant input) {
-                    return userStore.getById(input.getUserId());
-                }
-            })
-            .toList();
+                .transform(new Function<Participant, Pair<Participant, User>>() {
+                    @Override
+                    public Pair<Participant, User> apply(Participant input) {
+                        return new Pair(input, userStore.getById(input.getUserId()));
+                    }
+                })
+                .filter(new Predicate<Pair<Participant, User>>() {
+                    @Override
+                    public boolean apply(Pair<Participant, User> input) {
+                        return !input.second.isConnectedUser() &&
+                                !input.second.getId().equals(me.getId());
+                    }
+                })
+                .toList();
 
+        List<User> shownList = from(users).transform(new Function<Pair<Participant, User>, User>() {
+                @Override
+                public User apply(Pair<Participant, User> input) {
+                    return input.second;
+                }
+            }).toList();
         participantsList.setAdapter(new ArrayAdapter<User>(this,
-                android.R.layout.simple_list_item_1, users));
+                android.R.layout.simple_list_item_1, shownList));
 
         participantsList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                replaceParticipantWithConnectedUser(participants.get(position));
+                replaceParticipantWithConnectedUser(users.get(position).first);
                 finish();
             }
         });

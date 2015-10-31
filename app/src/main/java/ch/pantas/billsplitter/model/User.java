@@ -16,6 +16,12 @@ public class User extends Model {
         this.name = name;
     }
 
+    public User(UUID id, String name, String macAddress) {
+        super(id);
+        this.name = name;
+        this.macAddress = macAddress;
+    }
+
     public User(String name, String macAddress) {
         this.name = name;
         this.macAddress = macAddress;

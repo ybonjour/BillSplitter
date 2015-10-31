@@ -13,7 +13,7 @@ import static roboguice.RoboGuice.getInjector;
 public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "BillSplitter";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     private final Context context;
 
@@ -80,17 +80,22 @@ public class BillSplitterDatabaseOpenHelper extends SQLiteOpenHelper {
 
         public static final String ID = "_id";
         public static final String NAME = "Name";
-
+        public static final String MAC = "mac";
 
         public static void onCreate(SQLiteDatabase db) {
             db.execSQL(
                     "CREATE TABLE " + TABLE + "("
                             + ID + " TEXT PRIMARY KEY, "
-                            + NAME + " TEXT);"
+                            + NAME + " TEXT,"
+                            + MAC + " TEXT);"
             );
         }
 
-        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {  }
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion) {
+            if (oldVersion <= 4) {
+                db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + MAC + " TEXT;");
+            }
+        }
     }
 
     public static class ExpenseTable extends Table {
