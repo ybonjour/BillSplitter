@@ -51,7 +51,6 @@ public class StartEventTest extends BaseEspressoTest<StartEvent> {
 
         // When
         onView(withId(R.id.action_add_event)).perform(click());
-        onView(withId(R.id.action_create_event)).perform(click());
 
         // Then
         verify(activityStarter, times(1)).startAddEvent(any(StartEvent.class));

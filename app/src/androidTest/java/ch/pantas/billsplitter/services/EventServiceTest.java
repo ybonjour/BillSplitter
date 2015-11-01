@@ -5,12 +5,18 @@ import android.test.suitebuilder.annotation.SmallTest;
 import com.google.inject.Inject;
 
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.LinkedList;
 import java.util.UUID;
 
+import ch.pantas.billsplitter.dataaccess.AttendeeStore;
 import ch.pantas.billsplitter.dataaccess.EventStore;
+import ch.pantas.billsplitter.dataaccess.ExpenseStore;
+import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.framework.BaseMockitoInstrumentationTest;
+import ch.pantas.billsplitter.framework.CustomMatchers;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.User;
@@ -19,7 +25,10 @@ import static ch.pantas.billsplitter.model.SupportedCurrency.CHF;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,6 +44,15 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private ParticipantStore participantStore;
+
+    @Mock
+    private ExpenseStore expenseStore;
+
+    @Mock
+    private AttendeeStore attendeeStore;
 
     @Mock
     private SharedPreferenceService sharedPreferenceService;
@@ -199,6 +217,16 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
         SupportedCurrency currency = CHF;
         User me = new User(randomUUID(), "Joe");
         when(userService.getMe()).thenReturn(me);
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                Event event = (Event) invocation.getArguments()[0];
+                UUID id = UUID.randomUUID();
+                event.setId(id);
+
+                return null;
+            }
+        }).when(eventStore).persist(any(Event.class));
 
         // When
         Event event = eventService.createEvent(name, currency);
@@ -208,6 +236,7 @@ public class EventServiceTest extends BaseMockitoInstrumentationTest {
         assertEquals(name, event.getName());
         assertEquals(currency, event.getCurrency());
         assertEquals(me.getId(), event.getOwnerId());
+        verify(participantStore, times(1)).persist(argThat(CustomMatchers.matchesParticipant(me.getId(), event.getId(), false, 0)));
         verify(eventStore, times(1)).persist(event);
     }
 }

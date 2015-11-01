@@ -12,6 +12,7 @@ import ch.pantas.billsplitter.dataaccess.ExpenseStore;
 import ch.pantas.billsplitter.dataaccess.ParticipantStore;
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
+import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.SupportedCurrency;
 import ch.pantas.billsplitter.model.User;
 
@@ -71,6 +72,8 @@ public class EventService {
         User me = userService.getMe();
         Event event = new Event(name, currency, me.getId());
         eventStore.persist(event);
+        Participant participant = new Participant(me.getId(), event.getId());
+        participantStore.persist(participant);
         return event;
     }
 
