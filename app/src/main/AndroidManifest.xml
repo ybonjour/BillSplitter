@@ -26,9 +26,6 @@
             android:name="ch.pantas.billsplitter.ui.AddEvent"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ch.pantas.billsplitter.ui.AddParticipants"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="ch.pantas.billsplitter.ui.EventDetails"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
