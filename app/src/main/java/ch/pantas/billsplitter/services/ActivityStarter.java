@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import com.google.inject.Singleton;
 
+import java.util.UUID;
+
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.ui.AddEvent;
@@ -69,11 +71,16 @@ public class ActivityStarter {
     }
 
     public void startEventDetails(Context context, Event event, boolean clearBackStack) {
-        checkNotNull(context);
         checkNotNull(event);
+        startEventDetails(context, event.getId(), clearBackStack);
+    }
+
+    public void startEventDetails(Context context, UUID eventId, boolean clearBackStack) {
+        checkNotNull(context);
+        checkNotNull(eventId);
 
         Intent intent = new Intent(context, EventDetails.class);
-        intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
+        intent.putExtra(ARGUMENT_EVENT_ID, eventId);
         if(clearBackStack){
             intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_NEW_TASK);
         }

@@ -38,8 +38,6 @@ public class AddOrReplaceParticipant extends RoboActivity {
     @InjectView(R.id.participant_list)
     private ListView participantsList;
 
-    private List<Pair<Participant, User>> users;
-
     @Inject
     private ParticipantStore participantStore;
 
@@ -71,7 +69,7 @@ public class AddOrReplaceParticipant extends RoboActivity {
 
         final User me = userService.getMe();
         List<Participant> participants = participantStore.getParticipants(eventId);
-        users = from(participants)
+        final List<Pair<Participant, User>> users = from(participants)
                 .transform(new Function<Participant, Pair<Participant, User>>() {
                     @Override
                     public Pair<Participant, User> apply(Participant input) {
@@ -100,7 +98,7 @@ public class AddOrReplaceParticipant extends RoboActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 replaceParticipantWithConnectedUser(users.get(position).first);
-                finish();
+                activityStarter.startEventDetails(AddOrReplaceParticipant.this, eventId, true);
             }
         });
 
@@ -108,7 +106,7 @@ public class AddOrReplaceParticipant extends RoboActivity {
         addNewUser.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createNewParticipant(eventId);
-                finish();
+                activityStarter.startEventDetails(AddOrReplaceParticipant.this, eventId, true);
             }
         });
     }

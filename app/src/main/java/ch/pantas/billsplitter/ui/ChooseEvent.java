@@ -51,7 +51,6 @@ public class ChooseEvent extends RoboActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event event = events.get(position);
                 activityStarter.startAddOrReplaceParticipant(ChooseEvent.this, event);
-                finish();
             }
         });
     }
