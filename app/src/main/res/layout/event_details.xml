@@ -176,7 +176,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/add_group_button"
+                android:id="@+id/add_event_button"
                 android:src="@drawable/ic_action_new_dark"
                 android:gravity="center_vertical"
                 android:layout_alignParentRight="true"

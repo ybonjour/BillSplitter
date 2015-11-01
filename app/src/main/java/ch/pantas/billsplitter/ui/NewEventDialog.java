@@ -12,7 +12,7 @@ import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.splitty.R;
 import roboguice.fragment.RoboDialogFragment;
 
-public class NewGroupDialog extends RoboDialogFragment {
+public class NewEventDialog extends RoboDialogFragment {
     @Inject
     private ActivityStarter activityStarter;
 

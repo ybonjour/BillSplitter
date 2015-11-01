@@ -5,8 +5,6 @@ import android.content.Intent;
 
 import com.google.inject.Singleton;
 
-import java.util.UUID;
-
 import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.ui.AddEvent;
@@ -15,7 +13,7 @@ import ch.pantas.billsplitter.ui.AddParticipants;
 import ch.pantas.billsplitter.ui.AddExpense;
 import ch.pantas.billsplitter.ui.BeamEvent;
 import ch.pantas.billsplitter.ui.BillSplitterSettings;
-import ch.pantas.billsplitter.ui.ChooseGroup;
+import ch.pantas.billsplitter.ui.ChooseEvent;
 import ch.pantas.billsplitter.ui.EventDetails;
 import ch.pantas.billsplitter.ui.Login;
 import ch.pantas.billsplitter.ui.StartEvent;
@@ -48,7 +46,7 @@ public class ActivityStarter {
         checkNotNull(context);
 
         // FIXME: Dummy call, replace with join group call
-        Intent intent = new Intent(context, ChooseGroup.class);
+        Intent intent = new Intent(context, ChooseEvent.class);
         context.startActivity(intent);
     }
 

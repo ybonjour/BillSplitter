@@ -77,7 +77,7 @@
                 android:value="ch.pantas.billsplitter.ui.EventDetails" />
         </activity>
         <activity
-            android:name="ch.pantas.billsplitter.ui.ChooseGroup"
+            android:name="ch.pantas.billsplitter.ui.ChooseEvent"
             android:screenOrientation="portrait" />
         <activity
             android:name="ch.pantas.billsplitter.ui.AddOrReplaceParticipant"

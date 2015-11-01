@@ -12,7 +12,7 @@
         android:layout_marginBottom="5dp"/>
 
     <ListView
-        android:id="@+id/group_list"
+        android:id="@+id/event_list"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:choiceMode="singleChoice"

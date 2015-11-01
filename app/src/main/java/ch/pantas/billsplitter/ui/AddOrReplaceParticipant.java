@@ -104,8 +104,8 @@ public class AddOrReplaceParticipant extends RoboActivity {
             }
         });
 
-        Button addGroup = (Button) findViewById(R.id.action_create_user);
-        addGroup.setOnClickListener(new View.OnClickListener() {
+        Button addNewUser = (Button) findViewById(R.id.action_create_user);
+        addNewUser.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createNewParticipant(eventId);
                 finish();

@@ -33,7 +33,7 @@ public class StartEvent extends RoboFragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (R.id.action_add_event == item.getItemId()) {
-            (new NewGroupDialog()).show(getSupportFragmentManager(), "newGroup");
+            (new NewEventDialog()).show(getSupportFragmentManager(), "newEvent");
             return true;
         }
         return super.onOptionsItemSelected(item);

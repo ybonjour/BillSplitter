@@ -18,12 +18,12 @@ import ch.pantas.splitty.R;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
-public class ChooseGroup extends RoboActivity {
+public class ChooseEvent extends RoboActivity {
 
-    @InjectView(R.id.group_list)
-    private ListView groupList;
+    @InjectView(R.id.event_list)
+    private ListView eventList;
 
-    private List<Event> groups;
+    private List<Event> events;
 
     @Inject
     private EventStore eventStore;
@@ -34,23 +34,23 @@ public class ChooseGroup extends RoboActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.choose_group);
-        setContentView(R.layout.choose_group);
+        setTitle(R.string.choose_event);
+        setContentView(R.layout.choose_event);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        groups = Lists.reverse(eventStore.getAll());
-        groupList.setAdapter(new ArrayAdapter<Event>(this,
-                R.layout.drawer_list_item, groups));
+        events = Lists.reverse(eventStore.getAll());
+        eventList.setAdapter(new ArrayAdapter<Event>(this,
+                R.layout.drawer_list_item, events));
 
-        groupList.setOnItemClickListener(new ListView.OnItemClickListener() {
+        eventList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event group = groups.get(position);
-                activityStarter.startAddOrReplaceParticipant(ChooseGroup.this, group);
+                Event event = events.get(position);
+                activityStarter.startAddOrReplaceParticipant(ChooseEvent.this, event);
                 finish();
             }
         });
