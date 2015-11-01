@@ -99,7 +99,7 @@ public class AddEvent extends RoboActivity {
         SupportedCurrency currency = SupportedCurrency.valueOf(currencySpinner.getSelectedItem().toString());
         if (event == null) {
             event = eventService.createEvent(eventName, currency);
-            activityStarter.startAddParticipants(this, event);
+            activityStarter.startEventDetails(this, event.getId(), true, 2);
         } else {
             event.setName(eventName);
             event.setCurrency(currency);

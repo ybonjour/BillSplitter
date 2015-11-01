@@ -11,7 +11,6 @@ import ch.pantas.billsplitter.model.Event;
 import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.ui.AddEvent;
 import ch.pantas.billsplitter.ui.AddOrReplaceParticipant;
-import ch.pantas.billsplitter.ui.AddParticipants;
 import ch.pantas.billsplitter.ui.AddExpense;
 import ch.pantas.billsplitter.ui.BeamEvent;
 import ch.pantas.billsplitter.ui.BillSplitterSettings;
@@ -22,7 +21,6 @@ import ch.pantas.billsplitter.ui.StartEvent;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static ch.pantas.billsplitter.ui.AddParticipants.EVENT_ID;
 import static ch.pantas.billsplitter.ui.AddExpense.ARGUMENT_EXPENSE_ID;
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
@@ -72,10 +70,14 @@ public class ActivityStarter {
 
     public void startEventDetails(Context context, Event event, boolean clearBackStack) {
         checkNotNull(event);
-        startEventDetails(context, event.getId(), clearBackStack);
+        startEventDetails(context, event.getId(), clearBackStack, 0);
     }
 
     public void startEventDetails(Context context, UUID eventId, boolean clearBackStack) {
+        startEventDetails(context, eventId, clearBackStack, 0);
+    }
+
+    public void startEventDetails(Context context, UUID eventId, boolean clearBackStack, int fragment) {
         checkNotNull(context);
         checkNotNull(eventId);
 
@@ -84,6 +86,7 @@ public class ActivityStarter {
         if(clearBackStack){
             intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_NEW_TASK);
         }
+        intent.putExtra(EventDetails.SHOW_FRAGMENT, fragment);
         context.startActivity(intent);
     }
 
@@ -109,15 +112,6 @@ public class ActivityStarter {
         checkNotNull(context);
 
         Intent intent = new Intent(context, StartEvent.class);
-        context.startActivity(intent);
-    }
-
-    public void startAddParticipants(Context context, Event event) {
-        checkNotNull(context);
-        checkNotNull(event);
-
-        Intent intent = new Intent(context, AddParticipants.class);
-        intent.putExtra(EVENT_ID, event.getId());
         context.startActivity(intent);
     }
 

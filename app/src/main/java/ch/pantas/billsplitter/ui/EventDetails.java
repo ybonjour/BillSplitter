@@ -55,6 +55,7 @@ import static roboguice.RoboGuice.getInjector;
 public class EventDetails extends RoboFragmentActivity {
 
     public static final String ARGUMENT_EVENT_ID = "event_id";
+    public static final String SHOW_FRAGMENT = "show_fragment";
 
     @InjectView(R.id.drawer_layout)
     private DrawerLayout drawerLayout;
@@ -163,6 +164,9 @@ public class EventDetails extends RoboFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        int fragmentToShow = getIntent().getIntExtra(SHOW_FRAGMENT, 0);
+        setCurrentTab(fragmentToShow);
 
         boolean success = init();
         if (!success) {
