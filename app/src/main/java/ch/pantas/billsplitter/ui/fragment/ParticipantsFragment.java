@@ -1,6 +1,8 @@
 package ch.pantas.billsplitter.ui.fragment;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +27,7 @@ import ch.pantas.billsplitter.model.Expense;
 import ch.pantas.billsplitter.model.Participant;
 import ch.pantas.billsplitter.model.User;
 import ch.pantas.billsplitter.services.UserService;
+import ch.pantas.billsplitter.ui.NewParticipantDialog;
 import ch.pantas.billsplitter.ui.ParticipantManager;
 import ch.pantas.billsplitter.ui.adapter.UserAdapter;
 import ch.pantas.splitty.R;
@@ -32,6 +35,7 @@ import ch.pantas.splitty.R;
 import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.makeText;
+import static ch.pantas.billsplitter.ui.NewParticipantDialog.newParticipantDialog;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.SELECTED;
 import static ch.pantas.billsplitter.ui.adapter.UserItemFormatter.UserItemMode.UNSELECTED;
 import static com.google.inject.internal.util.$Preconditions.checkNotNull;
@@ -74,12 +78,15 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 User user = (User) adapterView.getItemAtPosition(i);
-                if (user.isNew()) {
-                    userStore.persist(user);
-                }
-                participantManager.addParticipant(user);
 
-                storeParticipants(event);
+                if (user.isNew()) {
+                    NewParticipantDialog dialogFragment = newParticipantDialog(user, event.getId());
+                    dialogFragment.show(getActivity().getSupportFragmentManager(), "newParticipant");
+                    dialogFragment.setTargetFragment(ParticipantsFragment.this, 1);
+                } else {
+                    participantManager.addParticipant(user);
+                    storeParticipants(event);
+                }
                 reloadLists();
                 clearNewUserName();
             }
@@ -122,6 +129,11 @@ public class ParticipantsFragment extends BaseEventDetailsFragment {
 
 
         return rootView;
+    }
+
+    public void updateWithNewUser(User user) {
+        setupParticipantManager(getCurrentEvent());
+        reloadLists();
     }
 
     private boolean isParticipantInvolvedInExpense(Expense expense, Participant participant) {

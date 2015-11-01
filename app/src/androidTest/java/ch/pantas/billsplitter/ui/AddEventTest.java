@@ -83,20 +83,6 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
     }
 
     @LargeTest
-    public void testAddParticipantsIsStartedIfNextButtonIsPressed() {
-        // Given
-        String eventName = "An Event";
-        getActivity();
-        onView(withId(R.id.event_name)).perform(typeText(eventName));
-
-        // When
-        onView(withText(R.string.next)).perform(click());
-
-        // Then
-        verify(activityStarter, times(1)).startAddParticipants(any(Context.class), any(Event.class));
-    }
-
-    @LargeTest
     public void testEventIsNotAddedIfNextButtonIsPressedWithEmptyData() {
         // Given
         getActivity();
@@ -124,24 +110,6 @@ public class AddEventTest extends BaseEspressoTest<AddEvent> {
         // Then
         onView(withId(R.id.event_name)).check(matches(withText(event.getName())));
 
-    }
-
-    @LargeTest
-    public void testEditParticipantsIsNotStartedIfNextButtonIsPressed() {
-        // Given
-        Event event = new Event(randomUUID(), "testname", EUR, randomUUID());
-        Intent intent = new Intent();
-        intent.putExtra(ARGUMENT_EVENT_ID, event.getId());
-        setActivityIntent(intent);
-        when(eventStore.getById(event.getId())).thenReturn(event);
-
-        // When
-        getActivity();
-        onView(withText(R.string.next)).perform(click());
-
-        // Then
-        verify(eventStore, times(1)).persist(eq(event));
-        verify(activityStarter, times(0)).startAddParticipants(any(Context.class), eq(event));
     }
 
     private static Matcher<Event> newEventWith(final String eventName) {

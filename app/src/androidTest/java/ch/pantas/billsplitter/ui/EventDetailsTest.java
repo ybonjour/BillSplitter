@@ -248,7 +248,7 @@ public class EventDetailsTest extends BaseEspressoTest<EventDetails> {
         // When
         getActivity();
         onView(withId(R.id.drawer_layout)).perform(actionOpenDrawer());
-        onView(withId(R.id.add_group_button)).perform(click());
+        onView(withId(R.id.add_event_button)).perform(click());
         // Then
         verify(activityStarter, times(1)).startAddEvent(any(Context.class));
     }

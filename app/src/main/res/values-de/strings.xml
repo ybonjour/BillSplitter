@@ -82,4 +82,5 @@
     <string name="add_or_replace_participant">Einen Teilnehmer ersetzen oder hinzufügen</string>
     <string name="create_new_user">Neuen Teilnehmer erstellen</string>
     <string name="add_or_replace_participant_help">Du kannst entweder den Teilnehmer neu erstellen oder einen bestehenden verknüpfen:</string>
+    <string name="connect_user">Mit Teilnehmer verbinden</string>
 </resources>

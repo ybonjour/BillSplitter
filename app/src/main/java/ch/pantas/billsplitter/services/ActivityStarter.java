@@ -130,4 +130,13 @@ public class ActivityStarter {
         intent.putExtra(BeamEvent.ARGUMENT_EVENT_ID, event.getId());
         context.startActivity(intent);
     }
+
+    public void startConnectUser(Context context, UUID eventId) {
+        checkNotNull(context);
+        checkNotNull(eventId);
+
+        // FIXME: Load correct activity
+        Intent intent = new Intent(context, BeamEvent.class);
+        context.startActivity(intent);
+    }
 }
