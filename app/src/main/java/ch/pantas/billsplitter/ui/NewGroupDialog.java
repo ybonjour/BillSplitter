@@ -3,37 +3,54 @@ package ch.pantas.billsplitter.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
+import com.google.inject.Inject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.splitty.R;
+import roboguice.fragment.RoboDialogFragment;
 
-public class NewGroupDialog extends Dialog {
-    public final static void show(Context context, ActivityStarter activityStarter) {
-        new NewGroupDialog(context, activityStarter).show();
-    }
+public class NewGroupDialog extends RoboDialogFragment {
+    @Inject
+    private ActivityStarter activityStarter;
 
-    protected NewGroupDialog(final Context context, final ActivityStarter activityStarter) {
-        super(context);
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.new_group_dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        Button addGroup = (Button) findViewById(R.id.action_create_event);
-        addGroup.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                dismiss();
-                activityStarter.startAddEvent(context);
+        CharSequence[] items = new CharSequence[]{
+                getActivity().getString(R.string.create_event),
+                getActivity().getString(R.string.join_event)
+        };
+
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int selectedIdx) {
+                switch (selectedIdx) {
+                    case 0:
+                        dismiss();
+                        activityStarter.startAddEvent(getActivity());
+                        break;
+                    case 1:
+                        dismiss();
+                        activityStarter.startJoinEvent(getActivity());
+
+                }
+
             }
         });
-        Button joinGroup = (Button) findViewById(R.id.action_join_event);
-        joinGroup.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                dismiss();
-                activityStarter.startJoinEvent(context);
-            }
-        });
+
+        return builder.create();
     }
 }

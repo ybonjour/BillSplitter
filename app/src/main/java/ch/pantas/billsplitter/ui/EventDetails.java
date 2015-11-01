@@ -323,7 +323,7 @@ public class EventDetails extends RoboFragmentActivity {
         addGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NewGroupDialog.show(EventDetails.this, activityStarter);
+                (new NewGroupDialog()).show(getSupportFragmentManager(), "newGroup");
             }
         });
 
