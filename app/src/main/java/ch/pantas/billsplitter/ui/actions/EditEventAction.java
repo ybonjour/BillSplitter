@@ -12,7 +12,9 @@ import ch.pantas.billsplitter.services.ActivityStarter;
 import ch.pantas.billsplitter.services.SharedPreferenceService;
 import ch.pantas.billsplitter.ui.EventDetails;
 import ch.pantas.billsplitter.ui.NewEventDialog;
+import ch.pantas.billsplitter.ui.event.EditEventDialog;
 import ch.pantas.splitty.R;
+import roboguice.RoboGuice;
 
 import static ch.pantas.billsplitter.ui.EventDetails.ARGUMENT_EVENT_ID;
 
@@ -30,7 +32,7 @@ public class EditEventAction implements EventDetailsAction {
         UUID userId = sharedPreferenceService.getUserId();
 
         if (userId.equals(event.getOwnerId())) {
-            NewEventDialog dialog = new NewEventDialog();
+            EditEventDialog dialog = new EditEventDialog();
 
             Bundle arguments = new Bundle();
             arguments.putSerializable(ARGUMENT_EVENT_ID, event.getId());
